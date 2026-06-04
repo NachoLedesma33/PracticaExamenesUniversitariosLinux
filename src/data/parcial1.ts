@@ -28,7 +28,7 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-06', category: 'PARCIAL 1 - FileSystem', instruction: 'Estando en "grupo", crear en el directorio padre ("dire") el archivo "num10" conteniendo en líneas separadas: 12, 56.', hint: 'cat > ../num10', solutionHint: 'cat > ../num10', initialState: goGrupo, validationType: 'state', validateState: fileContains('../num10', '12\n56'), commands: ['cat'], difficulty: 'medio' },
 
-  { id: 'p1-07', category: 'PARCIAL 1 - Filtros', instruction: 'Contar desde tu posición actual el número de caracteres y líneas del archivo "numeros" (ubicado en el home).', hint: 'wc -cl ../../numeros', solutionHint: 'wc -cl ../../numeros', initialState: goGrupo, validationType: 'command', expectedCommandRegex: /wc\s+-[cl]+\s+/, commands: ['wc'], difficulty: 'fácil' },
+  { id: 'p1-07', category: 'PARCIAL 1 - Filtros', instruction: 'Contar desde tu posición actual el número de caracteres y líneas del archivo "numeros" (ubicado en el home).', hint: 'wc -cl ../../numeros', solutionHint: 'wc -cl ../../numeros', initialState: goGrupo, validationType: 'command', expectedCommandRegex: /wc\s+-[cl]{1,2}\s+/, commands: ['wc'], difficulty: 'fácil' },
 
   { id: 'p1-08', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar el contenido de "dire" mostrando únicamente los nombres de los archivos de cualquier tipo que hay en él.', hint: 'ls ..', solutionHint: 'ls ..', initialState: goGrupo, validationType: 'command', expectedCommandRegex: /^ls\s+\.\./, commands: ['ls'], difficulty: 'fácil' },
 
@@ -62,15 +62,15 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-23', category: 'PARCIAL 1 - Filtros', instruction: 'Mostrar por pantalla un listado de "notas" que incluya únicamente el apellido (columna 1) y condición (columna 3) delimitados por espacios.', hint: 'cut -d" " -f 1,3 ../notas', solutionHint: 'cut -d" " -f 1,3 ../notas', initialState: goDire, validationType: 'command', expectedCommandRegex: /cut\s+-d.*-f/, commands: ['cut'], difficulty: 'medio' },
 
-  { id: 'p1-24', category: 'PARCIAL 1 - FileSystem', instruction: 'Comparar byte a byte de forma mecánica los archivos "num10" y "nuevonum".', hint: 'cmp ../num10 ../nuevonum', solutionHint: 'cmp ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cmp/, commands: ['cmp'], difficulty: 'medio' },
+  { id: 'p1-24', category: 'PARCIAL 1 - FileSystem', instruction: 'Comparar byte a byte de forma mecánica los archivos "num10" y "nuevonum".', hint: 'cmp ../num10 ../nuevonum', solutionHint: 'cmp ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cmp\s/, commands: ['cmp'], difficulty: 'medio' },
 
   { id: 'p1-25', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar los archivos "notas" y "num10" en forma concatenada uno detrás del otro.', hint: 'cat ../notas ../num10', solutionHint: 'cat ../notas ../num10', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cat\s+/, commands: ['cat'], difficulty: 'fácil' },
 
-  { id: 'p1-26', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar línea por línea las modificaciones necesarias en "num10" para igualarlo a "nuevonum".', hint: 'diff ../num10 ../nuevonum', solutionHint: 'diff ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^diff/, commands: ['diff'], difficulty: 'medio' },
+  { id: 'p1-26', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar línea por línea las modificaciones necesarias en "num10" para igualarlo a "nuevonum".', hint: 'diff ../num10 ../nuevonum', solutionHint: 'diff ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^diff\s/, commands: ['diff'], difficulty: 'medio' },
 
-  { id: 'p1-27', category: 'PARCIAL 1 - Filtros', instruction: 'Visualizar en forma ordenada el archivo "notas" alfabéticamente de acuerdo al primer campo.', hint: 'sort ../notas', solutionHint: 'sort ../notas', initialState: goDire, validationType: 'command', expectedCommandRegex: /^sort/, commands: ['sort'], difficulty: 'medio' },
+  { id: 'p1-27', category: 'PARCIAL 1 - Filtros', instruction: 'Visualizar en forma ordenada el archivo "notas" alfabéticamente de acuerdo al primer campo.', hint: 'sort ../notas', solutionHint: 'sort ../notas', initialState: goDire, validationType: 'command', expectedCommandRegex: /^sort\s/, commands: ['sort'], difficulty: 'medio' },
 
-  { id: 'p1-28', category: 'PARCIAL 1 - Filtros', instruction: 'Visualizar el contenido de "let10" de a tres líneas por vez a partir de la cuarta línea.', hint: 'more 3 +4 ../let10', solutionHint: 'more 3 +4 ../let10', initialState: goDire, validationType: 'command', expectedCommandRegex: /more/, commands: ['more'], difficulty: 'medio' },
+  { id: 'p1-28', category: 'PARCIAL 1 - Filtros', instruction: 'Visualizar el contenido de "let10" de a tres líneas por vez a partir de la cuarta línea.', hint: 'more 3 +4 ../let10', solutionHint: 'more 3 +4 ../let10', initialState: goDire, validationType: 'command', expectedCommandRegex: /^more\s/, commands: ['more'], difficulty: 'medio' },
 
   { id: 'p1-29', category: 'PARCIAL 1 - Filtros', instruction: 'Visualizar en forma ordenada el archivo "notas" de acuerdo al primer campo en forma inversa o decreciente.', hint: 'sort -r ../notas', solutionHint: 'sort -r ../notas', initialState: goDire, validationType: 'command', expectedCommandRegex: /sort\s+-r/, commands: ['sort'], difficulty: 'medio' },
 

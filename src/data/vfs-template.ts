@@ -20,7 +20,18 @@ function fPerm(name: string, content: string, mode: string): VFSNode {
 }
 
 const HOME: VFSNode = d('home', {
+  alumno20: d('alumno20', {
+    'docs': f('docs', 'Documentos de alumno20.\n'),
+    'datos.txt': f('datos.txt', 'contenido de datos de alumno20\n'),
+  }),
   usuario: d('usuario', {
+    'num10': f('num10', '12\n56\n'),
+    'nuevonum': f('nuevonum', '12\n34\n56\n'),
+    'respaldo.tar': f('respaldo.tar', '[contenido tar simulado]'),
+    'notas.txt': f('notas.txt', 'Apuntes de la materia Sistemas Operativos.'),
+    'script.sh': f('script.sh', '#!/bin/bash\necho "Hola mundo"\n'),
+    'archi350': fPerm('archi350', 'contenido de archi350\n', 'rwx------'),
+    'archi520': fPerm('archi520', 'contenido de archi520\n', 'rwx------'),
     documentos: d('documentos', {
       'notas.txt': f('notas.txt', 'Apuntes de la materia Sistemas Operativos.'),
       'tareas.md': f('tareas.md', '# Tareas\n- Practicar comandos Linux\n- Estudiar permisos\n'),
@@ -69,6 +80,7 @@ const ETC: VFSNode = d('etc', {
   'shadow': f('shadow', 'root:$6$xyz:19700:0:99999:7:::\nusuario:$6$abc:19700:0:99999:7:::\n'),
   'hostname': f('hostname', 'sopractica\n'),
   'os-release': f('os-release', 'NAME="SO-practica"\nVERSION="1.0"\nID=sopractica\n'),
+  'group': f('group', 'root:x:0:\nusuarios:x:100:usuario\nalumnos10:x:210:\nalu20:x:340:\ncurso:x:500:\n'),
 }, true);
 
 const BIN: VFSNode = d('bin', {
@@ -113,6 +125,11 @@ const VAR: VFSNode = d('var', {
 
 const TMP: VFSNode = d('tmp', {}, true);
 const MNT: VFSNode = d('mnt', { usb: d('usb', {}), cdrom: d('cdrom', {}) }, true);
+const MEDIA: VFSNode = d('media', {
+  KINGSTON: d('KINGSTON', {
+    'apuntes': f('apuntes', 'Contenido del archivo apuntes en el pendrive KINGSTON.\n'),
+  }),
+}, true);
 const OPT: VFSNode = d('opt', {}, true);
 const SYS: VFSNode = d('sys', {}, true);
 
@@ -144,6 +161,7 @@ export function createVFS(): VFS {
         'var': VAR,
         'tmp': TMP,
         'mnt': MNT,
+        'media': MEDIA,
         'opt': OPT,
         'sys': SYS,
       },
