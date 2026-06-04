@@ -202,7 +202,7 @@ export function TerminalInput() {
         const store = useTerminalStore.getState();
         const prevResult = store.challengeResults[currentChallenge.id];
         if (!prevResult?.completed) {
-          const validation = validateCommand(cmd);
+          const validation = validateCommand(cmd, result.exitCode);
           setLastValidation(validation);
           recordAttempt(currentChallenge.id, validation.passed, validation.reason);
 

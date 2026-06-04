@@ -6,7 +6,7 @@ function normalise(s: string): string {
   return s.replace(/\s+/g, ' ').replace(/"/g, '').replace(/'/g, '').trim();
 }
 
-function validateByCommand(input: string, challenge: Challenge): string | null {
+function validateByCommand(input: string, challenge: Challenge, exitCode?: number): string | null {
   const trimmed = input.trim();
   const solution = challenge.solutionHint.trim();
 
@@ -14,6 +14,9 @@ function validateByCommand(input: string, challenge: Challenge): string | null {
     challenge.expectedCommandRegex.lastIndex = 0;
     if (!challenge.expectedCommandRegex.test(trimmed)) {
       return `El comando no coincide con el patrón esperado.`;
+    }
+    if (exitCode !== undefined && exitCode !== 0) {
+      return `El comando falló. Revisá que los archivos/directorios necesarios existan.`;
     }
     return null;
   }
@@ -62,7 +65,7 @@ function validateByState(store: any, challenge: Challenge): string | null {
   return challenge.validateState(store);
 }
 
-export function validateCommand(input: string): ValidationResult {
+export function validateCommand(input: string, exitCode?: number): ValidationResult {
   const store = useTerminalStore.getState();
   const challenge = store.getCurrentChallenge();
   if (!challenge) return { passed: false, reason: 'No hay un ejercicio activo.' };
@@ -80,7 +83,7 @@ export function validateCommand(input: string): ValidationResult {
   }
 
   if (challenge.validationType === 'command' || challenge.validationType === 'both') {
-    const cmdErr = validateByCommand(cmd, challenge);
+    const cmdErr = validateByCommand(cmd, challenge, exitCode);
     if (cmdErr) {
       result.reason = cmdErr;
       return result;
