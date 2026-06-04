@@ -61,8 +61,6 @@ export function TerminalInput() {
   const getPrevious = useTerminalStore((s) => s.getPrevious);
   const getNext = useTerminalStore((s) => s.getNext);
   const cwd = useTerminalStore((s) => s.cwd);
-  const user = useTerminalStore((s) => s.user);
-  const hostname = useTerminalStore((s) => s.hostname);
   const clearHistory = useTerminalStore((s) => s.clearHistory);
   const resetFS = useTerminalStore((s) => s.resetFS);
   const createFile = useTerminalStore((s) => s.createFile);
@@ -287,8 +285,6 @@ export function TerminalInput() {
   const challengeResults = useTerminalStore((s) => s.challengeResults);
   const isTextExercise = currentChallenge?.validationType === 'text' && !(currentChallenge.id ? challengeResults[currentChallenge.id]?.completed : false);
 
-  const cwdDisplay = cwd === '/home/usuario' ? '~' : cwd.replace('/home/', '~/');
-
   if (isTextExercise) {
     return (
       <div className="border-b border-[var(--term-border)] bg-[var(--color-terminal-bg)]/90 backdrop-blur-sm px-4 py-3">
@@ -334,8 +330,7 @@ export function TerminalInput() {
           </>
         ) : (
           <>
-            <span className="text-[var(--color-terminal-green)] shrink-0 text-sm font-mono">{user}@<span className="text-[var(--color-terminal-cyan)]">{hostname}</span></span>
-            <span className="text-[var(--color-terminal-dim)] shrink-0 text-sm font-mono">:{cwdDisplay}$</span>
+            <span className="text-[var(--color-terminal-green)] shrink-0 text-sm font-mono">$</span>
             <input
               ref={inputRef}
               type="text"
@@ -343,7 +338,7 @@ export function TerminalInput() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent border-none outline-none text-[var(--color-terminal-fg)] font-mono text-sm caret-[var(--color-terminal-cyan)] placeholder:text-[var(--color-terminal-dim)]"
-              placeholder="Escribí un comando..."
+              placeholder=""
               autoFocus
               spellCheck={false}
               autoComplete="off"

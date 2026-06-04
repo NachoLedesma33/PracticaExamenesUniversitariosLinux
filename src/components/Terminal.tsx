@@ -29,10 +29,10 @@ export function Terminal() {
       {!minimized && (
         <>
           <ChallengeBanner />
-          <TerminalInput />
           <div className="flex-1 overflow-y-auto min-h-0 bg-terminal-bg/95">
             <TerminalOutput />
           </div>
+          <TerminalInput />
         </>
       )}
     </div>
