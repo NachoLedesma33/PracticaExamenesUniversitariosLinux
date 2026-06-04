@@ -11,6 +11,7 @@ import {
 import { resolvePath } from '../utils';
 import { PARCIAL_1_CHALLENGES } from './parcial1';
 import { PARCIAL_2_CHALLENGES } from './parcial2';
+import { PARCIAL_3_CHALLENGES } from './parcial3';
 
 const HOME = '/home/usuario';
 
@@ -706,4 +707,5 @@ export const challenges: Challenge[] = [
   // ============ PARCIAL 1: File System, Enlaces, Permisos y Filtros ============
   ...PARCIAL_1_CHALLENGES,
   ...PARCIAL_2_CHALLENGES,
+  ...PARCIAL_3_CHALLENGES,
 ];
