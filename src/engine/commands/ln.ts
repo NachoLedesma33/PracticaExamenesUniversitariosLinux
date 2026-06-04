@@ -11,7 +11,7 @@ export const ln: CommandHandler = {
     }
 
     const store = useTerminalStore.getState();
-    const isSym = flags.includes('s');
+    const isSym = flags.includes('-s');
 
     const sources = isSym ? [args[0]] : args.slice(0, -1);
     const destArg = args[args.length - 1];

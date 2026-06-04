@@ -1,5 +1,6 @@
 import { TerminalOutput } from './TerminalOutput';
 import { TerminalInput } from './TerminalInput';
+import { ChallengeBanner } from './ChallengeBanner';
 import { Maximize2, Minimize2, Terminal as TerminalIcon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -8,7 +9,7 @@ export function Terminal() {
 
   return (
     <div className={`flex flex-col h-full rounded-xl overflow-hidden shadow-2xl glow-edge ${minimized ? '' : 'animate-pulse-glow'}`}>
-      <div className="flex items-center gap-1.5 px-4 py-2.5 bg-surface-800/90 backdrop-blur-sm border-b border-white/5">
+      <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[var(--term-header-bg)] backdrop-blur-sm border-b border-[var(--term-border)]">
         <div className="w-2.5 h-2.5 rounded-full bg-terminal-red/70 hover:bg-terminal-red transition-colors cursor-pointer" />
         <div className="w-2.5 h-2.5 rounded-full bg-terminal-yellow/70 hover:bg-terminal-yellow transition-colors cursor-pointer" />
         <div className="w-2.5 h-2.5 rounded-full bg-terminal-green/70 hover:bg-terminal-green transition-colors cursor-pointer" />
@@ -27,10 +28,11 @@ export function Terminal() {
       </div>
       {!minimized && (
         <>
+          <ChallengeBanner />
+          <TerminalInput />
           <div className="flex-1 overflow-y-auto min-h-0 bg-terminal-bg/95">
             <TerminalOutput />
           </div>
-          <TerminalInput />
         </>
       )}
     </div>

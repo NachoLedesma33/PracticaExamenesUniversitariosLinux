@@ -15,7 +15,7 @@ export const sortCmd: CommandHandler = {
   name: 'sort',
   execute: (args, flags, stdin) => {
     const store = useTerminalStore.getState();
-    const reverse = flags.includes('r');
+    const reverse = flags.includes('-r');
     const keySpecs: { field: number; numeric: boolean; reverse: boolean }[] = [];
 
     for (let i = 0; i < args.length; i++) {

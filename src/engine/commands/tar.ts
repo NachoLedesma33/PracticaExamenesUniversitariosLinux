@@ -9,8 +9,9 @@ export const tar: CommandHandler = {
       return { stdout: '', stderr: 'tar: uso: tar cvf/tvf/xvf archivo.tar [archivos...]', exitCode: 1 };
     }
     const store = useTerminalStore.getState();
-    const modeOp = flags.includes('c') ? 'c' : flags.includes('t') ? 't' : flags.includes('x') ? 'x' : '';
-    const verbose = flags.includes('v');
+    const modeFlags = args[0].match(/^[a-z]+$/i) ? args[0] : '';
+    const modeOp = modeFlags.includes('c') ? 'c' : modeFlags.includes('t') ? 't' : modeFlags.includes('x') ? 'x' : flags.includes('-c') ? 'c' : flags.includes('-t') ? 't' : flags.includes('-x') ? 'x' : '';
+    const verbose = modeFlags.includes('v') || flags.includes('-v');
     const target = args[0];
     const resolved = resolvePath(store.cwd, target);
 

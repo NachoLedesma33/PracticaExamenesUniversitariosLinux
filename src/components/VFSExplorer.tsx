@@ -32,7 +32,7 @@ function TreeNode({ name, node, path, depth = 0 }: { name: string; node: VFSNode
               ? 'bg-cyan-900/40 text-terminal-cyan border border-cyan-700/30'
               : isActive
                 ? 'bg-cyan-900/20 text-terminal-cyan'
-                : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800/50'
+                : 'sidebar-muted hover:text-[var(--sidebar-fg)] hover-bg'
             }`}
           style={{ paddingLeft: `${8 + indentation}px` }}
         >
@@ -80,11 +80,11 @@ function TreeNode({ name, node, path, depth = 0 }: { name: string; node: VFSNode
         className={`flex items-center gap-1 w-full text-left px-2 py-0.5 rounded text-xs font-mono transition-all cursor-pointer
           ${isSelected
             ? 'bg-cyan-900/40 text-terminal-cyan border border-cyan-700/30'
-            : 'text-surface-500 hover:text-surface-300 hover:bg-surface-800/50'
+            : 'sidebar-dim hover:text-[var(--sidebar-fg-secondary)] hover-bg'
           }`}
         style={{ paddingLeft: `${20 + indentation}px` }}
       >
-        <FileText size={11} className={`shrink-0 ${isSelected ? 'text-terminal-cyan' : 'text-surface-500'}`} />
+        <FileText size={11} className={`shrink-0 ${isSelected ? 'text-terminal-cyan' : 'sidebar-dim'}`} />
         <span className="truncate">{name}</span>
         {isSelected && <Info size={10} className="ml-auto shrink-0 text-terminal-cyan" />}
       </button>
@@ -102,7 +102,7 @@ export function VFSExplorer() {
     <div className="p-3">
       <div className="flex items-center gap-2 mb-3">
         <Folder size={13} className="text-terminal-cyan" />
-        <span className="text-xs font-semibold text-surface-300 uppercase tracking-wider">Sistema de Archivos</span>
+        <span className="text-xs font-semibold sidebar-secondary uppercase tracking-wider">Sistema de Archivos</span>
       </div>
       <div className="space-y-0.5 max-h-[60vh] overflow-y-auto">
         {root.children && Object.entries(root.children)

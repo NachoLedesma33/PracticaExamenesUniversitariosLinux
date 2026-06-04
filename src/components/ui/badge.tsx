@@ -6,11 +6,11 @@ interface BadgeProps {
 }
 
 const colors = {
-  default: 'bg-surface-700 text-surface-300',
-  success: 'bg-green-900/60 text-green-400',
-  warning: 'bg-yellow-900/60 text-yellow-400',
-  danger: 'bg-red-900/60 text-red-400',
-  info: 'bg-blue-900/60 text-blue-400',
+  default: 'bg-[var(--badge-default-bg)] text-[var(--badge-default-text)]',
+  success: 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)]',
+  warning: 'bg-[var(--badge-warning-bg)] text-[var(--badge-warning-text)]',
+  danger: 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)]',
+  info: 'bg-[var(--badge-info-bg)] text-[var(--badge-info-text)]',
 };
 
 export function Badge({ children, variant = 'default' }: BadgeProps) {

@@ -55,7 +55,7 @@ export function Layout() {
 
       <div className="flex-1 flex overflow-hidden gap-0.5 p-1">
         {sidebarOpen && (
-          <aside className={`w-72 shrink-0 overflow-hidden rounded-xl ${
+          <aside className={`w-80 shrink-0 overflow-hidden rounded-xl flex flex-col sidebar-fg ${
             isDark ? 'glass' : 'bg-white/80 backdrop-blur-md border border-surface-200'
           }`}>
             <LeftPanel />
@@ -67,7 +67,7 @@ export function Layout() {
         </main>
 
         {challengePanelOpen && (
-          <aside className={`w-80 shrink-0 overflow-hidden rounded-xl ${
+          <aside className={`w-80 shrink-0 overflow-hidden rounded-xl sidebar-fg ${
             isDark ? 'glass' : 'bg-white/80 backdrop-blur-md border border-surface-200'
           }`}>
             <RightPanel />

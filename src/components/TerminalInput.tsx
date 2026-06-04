@@ -3,6 +3,7 @@ import { useTerminalStore } from '../store/useTerminalStore';
 import { executeCommand } from '../engine/executor';
 import { validateCommand } from '../engine/validation';
 import { parseCommand } from '../engine/parser';
+import { BookOpen } from 'lucide-react';
 
 function getAllVfsPaths(vfs: Record<string, any>, prefix: string): string[] {
   const results: string[] = [];
@@ -152,13 +153,6 @@ export function TerminalInput() {
             timestamp: Date.now(),
             exitCode: 0,
           });
-        } else if (validation.reason) {
-          addToHistory({
-            command: '',
-            output: `❌ ${validation.reason}`,
-            timestamp: Date.now(),
-            exitCode: 1,
-          });
         }
       }
       setInput('');
@@ -209,13 +203,6 @@ export function TerminalInput() {
               output: '✅ ¡Correcto! Ejercicio completado.',
               timestamp: Date.now(),
               exitCode: 0,
-            });
-          } else if (validation.reason) {
-            addToHistory({
-              command: '',
-              output: `❌ ${validation.reason}`,
-              timestamp: Date.now(),
-              exitCode: 1,
             });
           }
         }
@@ -286,51 +273,66 @@ export function TerminalInput() {
     }
   }, [getPrevious, getNext, captureMode, captureBuffer, captureTarget, cwd, createFile, addToHistory, input, vfs]);
 
+  const currentChallenge = useTerminalStore((s) => s.getCurrentChallenge());
+  const challengeResults = useTerminalStore((s) => s.challengeResults);
+  const isTextExercise = currentChallenge?.validationType === 'text' && !(currentChallenge.id ? challengeResults[currentChallenge.id]?.completed : false);
+
   const cwdDisplay = cwd === '/home/usuario' ? '~' : cwd.replace('/home/', '~/');
 
+  if (isTextExercise) {
+    return (
+      <div className="border-b border-[var(--term-border)] bg-[var(--color-terminal-bg)]/90 backdrop-blur-sm px-4 py-3">
+        <div className="flex items-center gap-2 text-[var(--color-terminal-dim)] text-xs font-mono">
+          <BookOpen size={12} />
+          <span>Ejercicio teórico — respondé en el panel de arriba</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="border-t border-white/5 bg-terminal-bg/90 backdrop-blur-sm px-4 py-3">
+    <div className="border-b border-[var(--term-border)] bg-[var(--color-terminal-bg)]/90 backdrop-blur-sm px-4 py-3">
       {tabSuggestions && tabSuggestions.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-1 animate-fade-slide">
           {tabSuggestions.slice(0, 12).map((s, i) => (
-            <span key={i} className="text-[10px] font-mono text-terminal-cyan bg-cyan-900/20 px-1.5 py-0.5 rounded border border-cyan-800/20">
+            <span key={i} className="text-[10px] font-mono text-[var(--color-terminal-cyan)] bg-cyan-900/20 dark:bg-cyan-900/20 px-1.5 py-0.5 rounded border border-cyan-800/20 dark:border-cyan-800/20">
               {s.endsWith('/') ? s : s}
             </span>
           ))}
           {tabSuggestions.length > 12 && (
-            <span className="text-[10px] font-mono text-surface-500">+{tabSuggestions.length - 12} más</span>
+            <span className="text-[10px] font-mono text-[var(--color-terminal-dim)]">+{tabSuggestions.length - 12} más</span>
           )}
         </div>
       )}
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
         {captureMode ? (
           <>
-            <span className="text-terminal-yellow shrink-0 text-sm font-mono font-bold">captura&gt;</span>
+            <span className="text-[var(--color-terminal-yellow)] shrink-0 text-sm font-mono font-bold">captura&gt;</span>
             <input
               ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none outline-none text-terminal-green font-mono text-sm caret-terminal-cyan placeholder:text-surface-500"
+              className="flex-1 bg-transparent border-none outline-none text-[var(--color-terminal-green)] font-mono text-sm caret-[var(--color-terminal-cyan)] placeholder:text-[var(--color-terminal-dim)]"
               placeholder="Escribí el contenido... (Ctrl+D para guardar)"
               autoFocus
               spellCheck={false}
               autoComplete="off"
             />
-            <span className="text-[10px] text-surface-500 font-mono shrink-0">Ctrl+D → guardar</span>
+            <span className="text-[10px] text-[var(--color-terminal-dim)] font-mono shrink-0">Ctrl+D → guardar</span>
           </>
         ) : (
           <>
-            <span className="text-terminal-green shrink-0 text-sm font-mono">{user}@<span className="text-terminal-cyan">{hostname}</span></span>
-            <span className="text-terminal-dim shrink-0 text-sm font-mono">:{cwdDisplay}$</span>
+            <span className="text-[var(--color-terminal-green)] shrink-0 text-sm font-mono">{user}@<span className="text-[var(--color-terminal-cyan)]">{hostname}</span></span>
+            <span className="text-[var(--color-terminal-dim)] shrink-0 text-sm font-mono">:{cwdDisplay}$</span>
             <input
               ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none outline-none text-terminal-fg font-mono text-sm caret-terminal-cyan placeholder:text-surface-500"
+              className="flex-1 bg-transparent border-none outline-none text-[var(--color-terminal-fg)] font-mono text-sm caret-[var(--color-terminal-cyan)] placeholder:text-[var(--color-terminal-dim)]"
               placeholder="Escribí un comando..."
               autoFocus
               spellCheck={false}

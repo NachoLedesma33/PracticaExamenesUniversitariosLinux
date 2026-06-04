@@ -29,6 +29,114 @@
   --glow-green: 0 0 20px rgba(63, 185, 80, 0.12), 0 0 40px rgba(63, 185, 80, 0.06);
 }
 
+:root {
+  --sidebar-fg: #1e293b;
+  --sidebar-fg-secondary: #475569;
+  --sidebar-fg-muted: #64748b;
+  --sidebar-dim: #94a3b8;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: #e2e8f0;
+  --card-hover-bg: rgba(255, 255, 255, 0.85);
+  --card-sol-bg: #f1f5f9;
+  --card-sol-border: #cbd5e1;
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-border: #cbd5e1;
+  --input-focus-bg: #ffffff;
+  --track-bg: #e2e8f0;
+  --hover-bg: rgba(0, 0, 0, 0.03);
+  --hover-bg-sub: rgba(0, 0, 0, 0.05);
+  --banner-bg: rgba(255, 255, 255, 0.85);
+  --banner-border: #e2e8f0;
+  --banner-instruction: #1e293b;
+  --textarea-bg: #ffffff;
+  --textarea-border: #cbd5e1;
+  --textarea-fg: #1e293b;
+  --badge-success-bg: #dcfce7;
+  --badge-success-text: #166534;
+  --badge-warning-bg: #fef3c7;
+  --badge-warning-text: #92400e;
+  --badge-danger-bg: #fee2e2;
+  --badge-danger-text: #991b1b;
+  --badge-info-bg: #dbeafe;
+  --badge-info-text: #1e40af;
+  --badge-default-bg: #f1f5f9;
+  --badge-default-text: #475569;
+  --term-header-bg: rgba(226, 232, 240, 0.9);
+  --term-border: #e2e8f0;
+  --color-terminal-bg: #f8fafc;
+  --color-terminal-fg: #1e293b;
+  --color-terminal-green: #15803d;
+  --color-terminal-cyan: #0891b2;
+  --color-terminal-yellow: #92400e;
+  --color-terminal-red: #dc2626;
+  --color-terminal-dim: #64748b;
+}
+
+.dark {
+  --sidebar-fg: #e2e8f0;
+  --sidebar-fg-secondary: #cbd5e1;
+  --sidebar-fg-muted: #94a3b8;
+  --sidebar-dim: #64748b;
+  --card-bg: rgba(30, 41, 59, 0.2);
+  --card-border: rgba(255, 255, 255, 0.05);
+  --card-hover-bg: rgba(30, 41, 59, 0.4);
+  --card-sol-bg: rgba(15, 23, 42, 0.6);
+  --card-sol-border: rgba(51, 65, 85, 0.5);
+  --input-bg: rgba(30, 41, 59, 0.5);
+  --input-border: rgba(51, 65, 85, 0.5);
+  --input-focus-bg: rgba(30, 41, 59, 0.8);
+  --track-bg: #1e293b;
+  --hover-bg: rgba(148, 163, 184, 0.06);
+  --hover-bg-sub: rgba(148, 163, 184, 0.1);
+  --banner-bg: rgba(15, 23, 42, 0.4);
+  --banner-border: rgba(255, 255, 255, 0.05);
+  --banner-instruction: #e2e8f0;
+  --textarea-bg: rgba(15, 23, 42, 0.6);
+  --textarea-border: rgba(51, 65, 85, 0.5);
+  --textarea-fg: #e2e8f0;
+  --badge-success-bg: rgba(20, 83, 45, 0.6);
+  --badge-success-text: #4ade80;
+  --badge-warning-bg: rgba(113, 63, 18, 0.6);
+  --badge-warning-text: #facc15;
+  --badge-danger-bg: rgba(127, 29, 29, 0.6);
+  --badge-danger-text: #f87171;
+  --badge-info-bg: rgba(30, 58, 138, 0.6);
+  --badge-info-text: #60a5fa;
+  --badge-default-bg: rgba(51, 65, 85, 0.5);
+  --badge-default-text: #cbd5e1;
+  --term-header-bg: rgba(30, 41, 59, 0.9);
+  --term-border: rgba(255, 255, 255, 0.05);
+  --color-terminal-bg: #0d1117;
+  --color-terminal-fg: #e6edf3;
+  --color-terminal-green: #3fb950;
+  --color-terminal-cyan: #58a6ff;
+  --color-terminal-yellow: #d29922;
+  --color-terminal-red: #f85149;
+  --color-terminal-dim: #8b949e;
+}
+
+.sidebar-fg { color: var(--sidebar-fg); }
+.sidebar-secondary { color: var(--sidebar-fg-secondary); }
+.sidebar-muted { color: var(--sidebar-fg-muted); }
+.sidebar-dim { color: var(--sidebar-dim); }
+.card-bg { background: var(--card-bg); }
+.card-border { border-color: var(--card-border); }
+.hover-card-bg:hover { background: var(--card-hover-bg); }
+.card-sol-bg { background: var(--card-sol-bg); }
+.card-sol-border { border-color: var(--card-sol-border); }
+.input-bg { background: var(--input-bg); }
+.input-border { border-color: var(--input-border); }
+.input-focus-bg:focus { background: var(--input-focus-bg); }
+.track-bg { background: var(--track-bg); }
+.hover-bg:hover { background: var(--hover-bg); }
+.hover-bg-sub:hover { background: var(--hover-bg-sub); }
+.banner-bg { background: var(--banner-bg); }
+.banner-border { border-color: var(--banner-border); }
+.banner-instruction { color: var(--banner-instruction); }
+.textarea-bg { background: var(--textarea-bg); }
+.textarea-border { border-color: var(--textarea-border); }
+.txa-fg { color: var(--textarea-fg); }
+
 body {
   margin: 0;
   font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;

@@ -30,10 +30,10 @@ export function InodeInspector() {
 
   if (!selectedNodePath) {
     return (
-      <div className="p-4 text-center text-surface-500 text-[10px] font-mono">
+      <div className="p-4 text-center sidebar-dim text-[10px] font-mono">
         <Eye size={16} className="mx-auto mb-2 opacity-40" />
         <p>Seleccioná un archivo</p>
-        <p className="text-surface-600">en el explorador para inspeccionarlo</p>
+        <p className="sidebar-dim">en el explorador para inspeccionarlo</p>
       </div>
     );
   }
@@ -42,7 +42,7 @@ export function InodeInspector() {
 
   if (!node) {
     return (
-      <div className="p-4 text-center text-surface-500 text-[10px] font-mono">
+      <div className="p-4 text-center sidebar-dim text-[10px] font-mono">
         <p>Nodo no encontrado</p>
       </div>
     );
@@ -71,11 +71,11 @@ export function InodeInspector() {
 
   return (
     <div className="animate-fade-slide">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-surface-700/50">
-        <span className="text-[10px] font-semibold text-surface-400 uppercase tracking-wider">Inspección</span>
+      <div className="flex items-center justify-between px-3 py-2 border-b card-border">
+        <span className="text-[10px] font-semibold sidebar-muted uppercase tracking-wider">Inspección</span>
         <button
           onClick={() => setSelectedNodePath(null)}
-          className="text-surface-500 hover:text-surface-300 transition-colors cursor-pointer"
+          className="sidebar-dim hover:text-[var(--sidebar-fg-secondary)] transition-colors cursor-pointer"
         >
           <X size={12} />
         </button>
@@ -84,54 +84,54 @@ export function InodeInspector() {
       <div className="p-3 space-y-2">
         {rows.map((r) => (
           <div key={r.label} className="flex items-center gap-2">
-            <span className="text-surface-500 shrink-0">{r.icon}</span>
-            <span className="text-[10px] text-surface-500 w-10 shrink-0">{r.label}</span>
-            <span className="text-[10px] font-mono text-surface-200 truncate">{r.value}</span>
+            <span className="sidebar-dim shrink-0">{r.icon}</span>
+            <span className="text-[10px] sidebar-dim w-10 shrink-0">{r.label}</span>
+            <span className="text-[10px] font-mono sidebar-fg truncate">{r.value}</span>
           </div>
         ))}
 
-        <div className="pt-2 border-t border-surface-700/50">
+        <div className="pt-2 border-t card-border">
           <div className="flex items-center gap-2 mb-1.5">
-            <Shield size={11} className="text-surface-500" />
-            <span className="text-[10px] text-surface-500">Permisos</span>
+            <Shield size={11} className="sidebar-dim" />
+            <span className="text-[10px] sidebar-dim">Permisos</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-mono tracking-wider">
-              <span className={mode[0] === 'r' ? 'text-terminal-green' : 'text-surface-600'}>r</span>
-              <span className={mode[1] === 'w' ? 'text-terminal-green' : 'text-surface-600'}>w</span>
-              <span className={mode[2] === 'x' ? 'text-terminal-cyan' : mode[2] === 's' ? 'text-terminal-yellow' : 'text-surface-600'}>{mode[2]}</span>
-              <span className="text-surface-600"> </span>
-              <span className={mode[3] === 'r' ? 'text-terminal-green' : 'text-surface-600'}>r</span>
-              <span className={mode[4] === 'w' ? 'text-terminal-green' : 'text-surface-600'}>w</span>
-              <span className={mode[5] === 'x' ? 'text-terminal-cyan' : mode[5] === 's' ? 'text-terminal-yellow' : 'text-surface-600'}>{mode[5]}</span>
-              <span className="text-surface-600"> </span>
-              <span className={mode[6] === 'r' ? 'text-terminal-green' : 'text-surface-600'}>r</span>
-              <span className={mode[7] === 'w' ? 'text-terminal-green' : 'text-surface-600'}>w</span>
-              <span className={mode[8] === 'x' ? 'text-terminal-cyan' : mode[8] === 't' ? 'text-terminal-yellow' : 'text-surface-600'}>{mode[8]}</span>
+              <span className={mode[0] === 'r' ? 'text-terminal-green' : 'sidebar-dim'}>r</span>
+              <span className={mode[1] === 'w' ? 'text-terminal-green' : 'sidebar-dim'}>w</span>
+              <span className={mode[2] === 'x' ? 'text-terminal-cyan' : mode[2] === 's' ? 'text-terminal-yellow' : 'sidebar-dim'}>{mode[2]}</span>
+              <span className="sidebar-dim"> </span>
+              <span className={mode[3] === 'r' ? 'text-terminal-green' : 'sidebar-dim'}>r</span>
+              <span className={mode[4] === 'w' ? 'text-terminal-green' : 'sidebar-dim'}>w</span>
+              <span className={mode[5] === 'x' ? 'text-terminal-cyan' : mode[5] === 's' ? 'text-terminal-yellow' : 'sidebar-dim'}>{mode[5]}</span>
+              <span className="sidebar-dim"> </span>
+              <span className={mode[6] === 'r' ? 'text-terminal-green' : 'sidebar-dim'}>r</span>
+              <span className={mode[7] === 'w' ? 'text-terminal-green' : 'sidebar-dim'}>w</span>
+              <span className={mode[8] === 'x' ? 'text-terminal-cyan' : mode[8] === 't' ? 'text-terminal-yellow' : 'sidebar-dim'}>{mode[8]}</span>
             </span>
           </div>
-          <div className="mt-1 text-[9px] text-surface-500 font-mono">
+          <div className="mt-1 text-[9px] sidebar-dim font-mono">
             <span>Dueño: </span>
-            <span className={mode.slice(0, 3) === 'rwx' ? 'text-terminal-green' : 'text-surface-400'}>{mode.slice(0, 3)}</span>
+            <span className={mode.slice(0, 3) === 'rwx' ? 'text-terminal-green' : 'sidebar-muted'}>{mode.slice(0, 3)}</span>
             <span className="mx-1">·</span>
             <span>Grupo: </span>
-            <span className={mode.slice(3, 6) === 'r-x' ? 'text-terminal-cyan' : 'text-surface-400'}>{mode.slice(3, 6)}</span>
+            <span className={mode.slice(3, 6) === 'r-x' ? 'text-terminal-cyan' : 'sidebar-muted'}>{mode.slice(3, 6)}</span>
             <span className="mx-1">·</span>
             <span>Otros: </span>
-            <span className={mode.slice(6, 9) === 'r-x' ? 'text-terminal-cyan' : 'text-surface-400'}>{mode.slice(6, 9)}</span>
+            <span className={mode.slice(6, 9) === 'r-x' ? 'text-terminal-cyan' : 'sidebar-muted'}>{mode.slice(6, 9)}</span>
           </div>
         </div>
 
         {contentPreview !== null && (
-          <div className="pt-2 border-t border-surface-700/50">
+          <div className="pt-2 border-t card-border">
             <div className="flex items-center gap-2 mb-1.5">
-              <FileText size={11} className="text-surface-500" />
-              <span className="text-[10px] text-surface-500">Vista previa</span>
+              <FileText size={11} className="sidebar-dim" />
+              <span className="text-[10px] sidebar-dim">Vista previa</span>
             </div>
-            <pre className="text-[10px] font-mono text-surface-300 bg-surface-900/50 rounded p-2 max-h-24 overflow-y-auto whitespace-pre-wrap break-all">
+            <pre className="text-[10px] font-mono sidebar-secondary card-sol-bg rounded p-2 max-h-24 overflow-y-auto whitespace-pre-wrap break-all">
               {contentPreview}
               {node.content && node.content.length > 500 && (
-                <span className="text-surface-500 block mt-1">... ({node.content.length - 500} bytes más)</span>
+                <span className="sidebar-dim block mt-1">... ({node.content.length - 500} bytes más)</span>
               )}
             </pre>
           </div>
