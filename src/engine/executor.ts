@@ -4,12 +4,73 @@ import { commandRegistry } from './commands';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { resolvePath } from '../utils';
 
+function splitSmart(input: string): { cmd: string; op: '&&' | '||' | null }[] {
+  const result: { cmd: string; op: '&&' | '||' | null }[] = [];
+  let current = '';
+  let inQuote: string | null = null;
+  let pendingOp: '&&' | '||' | null = null;
+
+  for (let i = 0; i < input.length; i++) {
+    const c = input[i];
+    if (inQuote) {
+      current += c;
+      if (c === inQuote) inQuote = null;
+    } else if (c === '"' || c === "'") {
+      current += c;
+      inQuote = c;
+    } else if (c === '&' && input[i + 1] === '&') {
+      result.push({ cmd: current.trim(), op: pendingOp });
+      current = '';
+      pendingOp = '&&';
+      i++;
+    } else if (c === '|' && input[i + 1] === '|') {
+      result.push({ cmd: current.trim(), op: pendingOp });
+      current = '';
+      pendingOp = '||';
+      i++;
+    } else {
+      current += c;
+    }
+  }
+  const last = current.trim();
+  if (last) result.push({ cmd: last, op: pendingOp });
+  return result;
+}
+
 export function executeCommand(input: string): CommandOutput {
   if (!input.trim()) {
     return { stdout: '', stderr: '', exitCode: 0 };
   }
 
-  const pipeline = parsePipeline(input);
+  const parts = splitSmart(input);
+  if (parts.length === 0) {
+    return { stdout: '', stderr: '', exitCode: 0 };
+  }
+
+  if (parts.length === 1 && parts[0].op === null) {
+    return executePipeline(parsePipeline(parts[0].cmd));
+  }
+
+  let lastResult: CommandOutput = { stdout: '', stderr: '', exitCode: 0 };
+
+  for (const { cmd, op } of parts) {
+    if (op === '&&' && lastResult.exitCode !== 0) {
+      continue;
+    }
+    if (op === '||' && lastResult.exitCode === 0) {
+      continue;
+    }
+
+    const pipeline = parsePipeline(cmd);
+    if (pipeline.length === 0) continue;
+
+    lastResult = executePipeline(pipeline);
+  }
+
+  return lastResult;
+}
+
+function executePipeline(pipeline: ReturnType<typeof parsePipeline>): CommandOutput {
   if (pipeline.length === 0) {
     return { stdout: '', stderr: '', exitCode: 0 };
   }
