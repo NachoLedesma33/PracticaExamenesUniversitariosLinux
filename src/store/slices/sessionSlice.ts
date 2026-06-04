@@ -5,8 +5,10 @@ export interface SessionSlice {
   user: string;
   hostname: string;
   previousCwd: string | null;
+  pendingInput: string | null;
   setCwd: (cwd: string) => void;
   setUser: (user: string) => void;
+  setPendingInput: (input: string | null) => void;
 }
 
 export const createSessionSlice: StateCreator<SessionSlice> = (set) => ({
@@ -14,9 +16,12 @@ export const createSessionSlice: StateCreator<SessionSlice> = (set) => ({
   user: 'usuario',
   hostname: 'sopractica',
   previousCwd: null,
+  pendingInput: null,
 
   setCwd: (cwd: string) =>
     set((state) => ({ previousCwd: state.cwd, cwd })),
 
   setUser: (user: string) => set({ user }),
+
+  setPendingInput: (input: string | null) => set({ pendingInput: input }),
 });

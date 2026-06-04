@@ -1,4 +1,4 @@
-import { Check, Eye, EyeOff, Lightbulb, X, AlertCircle, Terminal } from 'lucide-react';
+import { Check, Eye, EyeOff, Lightbulb, X, AlertCircle, Terminal, Copy, CheckCheck } from 'lucide-react';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -78,7 +78,43 @@ export function ChallengeCard({ challenge }: ChallengeCardProps) {
                 <Lightbulb size={10} />
                 <span>Solución:</span>
               </div>
-              <code className="text-sm text-terminal-green">{challenge.solutionHint}</code>
+              <pre className="text-xs text-terminal-green whitespace-pre-wrap font-mono leading-relaxed">{challenge.solutionHint}</pre>
+            </div>
+          )}
+
+          {showSolution && challenge.executionCommand && (
+            <div className="rounded p-2 border border-terminal-cyan/15 bg-terminal-cyan/5 dark:bg-terminal-cyan/5">
+              <div className="flex items-center gap-1 text-[10px] text-terminal-cyan/60 mb-1">
+                <Terminal size={10} />
+                <span>Ejecución:</span>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const store = useTerminalStore.getState();
+                  store.setPendingInput(challenge.executionCommand!);
+                }}
+                className="w-full text-left cursor-pointer group"
+                title="Hacé clic para pegar en la terminal"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <code className="text-xs font-mono text-terminal-green">
+                    <span className="text-terminal-dim select-none">$ </span>
+                    {challenge.executionCommand}
+                  </code>
+                  <Copy size={10} className="shrink-0 text-terminal-dim group-hover:text-terminal-cyan transition-colors" />
+                </div>
+              </button>
+            </div>
+          )}
+
+          {showSolution && challenge.expectedOutput && (
+            <div className="rounded p-2 border border-terminal-green/12 bg-black/15 dark:bg-black/15">
+              <div className="flex items-center gap-1 text-[10px] text-terminal-green/60 mb-1">
+                <CheckCheck size={10} />
+                <span>Salida esperada:</span>
+              </div>
+              <pre className="text-xs text-terminal-green/90 whitespace-pre-wrap font-mono leading-relaxed max-h-[100px] overflow-y-auto">{challenge.expectedOutput}</pre>
             </div>
           )}
 

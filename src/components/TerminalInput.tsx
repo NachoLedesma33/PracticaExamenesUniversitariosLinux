@@ -71,6 +71,16 @@ export function TerminalInput() {
   const markChallengeCompleted = useTerminalStore((s) => s.markChallengeCompleted);
   const getCurrentChallenge = useTerminalStore((s) => s.getCurrentChallenge);
   const vfs = useTerminalStore((s) => s.vfs);
+  const pendingInput = useTerminalStore((s) => s.pendingInput);
+  const setPendingInput = useTerminalStore((s) => s.setPendingInput);
+
+  useEffect(() => {
+    if (pendingInput !== null) {
+      setInput(pendingInput);
+      setPendingInput(null);
+      inputRef.current?.focus();
+    }
+  }, [pendingInput, setPendingInput]);
 
   useEffect(() => {
     inputRef.current?.focus();

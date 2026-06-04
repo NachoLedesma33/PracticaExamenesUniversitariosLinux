@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { validateCommand } from '../engine/validation';
-import { ChevronUp, ChevronDown, Lightbulb, Check, BookOpen, Send, X } from 'lucide-react';
+import { ChevronUp, ChevronDown, Lightbulb, Check, BookOpen, Send, X, Terminal, Copy, CheckCheck } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 export function ChallengeBanner() {
@@ -77,9 +77,53 @@ export function ChallengeBanner() {
                   {showHint ? 'Ocultar pista' : 'Ver pista'}
                 </button>
                 {showHint && (
-                  <p className="mt-1 text-[11px] sidebar-secondary leading-relaxed bg-yellow-900/8 dark:bg-yellow-900/8 rounded px-2 py-1.5 border border-yellow-800/15">
-                    {challenge.hint}
-                  </p>
+                  <div className="mt-1 text-[11px] sidebar-secondary leading-relaxed bg-yellow-900/8 dark:bg-yellow-900/8 rounded px-2 py-1.5 border border-yellow-800/15 whitespace-pre-wrap font-mono">
+                    {challenge.hint && <p className="mb-1.5 text-[10px] uppercase tracking-wider text-terminal-yellow/60">Pista: {challenge.hint}</p>}
+                    {challenge.solutionHint}
+                  </div>
+                )}
+              </div>
+            )}
+            {!collapsed && (challenge.executionCommand || challenge.expectedOutput) && (
+              <div className="mt-2.5 space-y-1.5">
+                {challenge.executionCommand && (
+                  <div className="flex items-center gap-1.5">
+                    <Terminal size={10} className="text-terminal-cyan shrink-0" />
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-terminal-cyan/60">Ejecución</span>
+                    <span className="flex-1 border-t border-white/5" />
+                  </div>
+                )}
+                {challenge.executionCommand && (
+                  <button
+                    onClick={() => {
+                      const store = useTerminalStore.getState();
+                      store.setPendingInput(challenge.executionCommand!);
+                    }}
+                    className="w-full text-left cursor-pointer group"
+                    title="Hacé clic para pegar en la terminal"
+                  >
+                    <div className="rounded-lg border border-terminal-cyan/15 bg-terminal-cyan/5 dark:bg-terminal-cyan/5 px-3 py-2 transition-all group-hover:border-terminal-cyan/30 group-hover:bg-terminal-cyan/10">
+                      <div className="flex items-center justify-between gap-2">
+                        <code className="text-xs font-mono text-terminal-green leading-relaxed">
+                          <span className="text-terminal-dim select-none">$ </span>
+                          {challenge.executionCommand}
+                        </code>
+                        <Copy size={11} className="shrink-0 text-terminal-dim group-hover:text-terminal-cyan transition-colors" />
+                      </div>
+                    </div>
+                  </button>
+                )}
+                {challenge.expectedOutput && (
+                  <div className="mt-1.5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <CheckCheck size={10} className="text-terminal-green shrink-0" />
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-terminal-green/60">Salida esperada</span>
+                      <span className="flex-1 border-t border-white/5" />
+                    </div>
+                    <div className="rounded-lg border border-terminal-green/12 bg-black/30 dark:bg-black/30 px-3 py-2 max-h-[120px] overflow-y-auto">
+                      <pre className="text-xs font-mono text-terminal-green/90 leading-relaxed whitespace-pre-wrap">{challenge.expectedOutput}</pre>
+                    </div>
+                  </div>
                 )}
               </div>
             )}

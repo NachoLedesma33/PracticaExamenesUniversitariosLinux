@@ -312,6 +312,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que permita crear un archivo asignándole por contenido 6 informes sobre memoria, procesos, uso de CPU, etc. generados cada 4 segundos.',
     hint: 'vmstat 4 6 > archivo',
     solutionHint: '#!/bin/bash\necho -n "Ingrese el nombre del archivo: "\nread nuevo\nvmstat 4 6 > "$nuevo"\necho "El contenido del archivo $nuevo es el siguiente: "\nmore "$nuevo"',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese el nombre del archivo: infosis\nEl contenido del archivo infosis es el siguiente:\nprocs ---------memory---------- ---swap-- -----io---- -system-- ----cpu----\n r  b  swpd  free  buff  cache  si  so  bi  bo  in  cs us sy id wa\n 0  0  0  12345  6789   ...',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /vmstat\s+4\s+6/i, commands: ['vmstat'], difficulty: 'medio',
   },
   {
@@ -406,6 +408,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que verifique si un archivo es ordinario y tiene permiso de escritura, y en caso afirmativo le agregue un listado con los comandos de Linux. Luego escribir el mismo con parámetros posicionales controlando la cantidad de parámetros.',
     hint: 'Usar test -f y -w, redirección >>, $# para contar parámetros.',
     solutionHint: 'Versión interactiva:\n#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" -a -w "$var10" ]; then\n    ls /bin >> "$var10"\n    more "$var10"\nelse\n    echo "No es archivo ordinario o no tiene permisos de escritura."\nfi\n\nVersión posicional:\n#!/bin/bash\nif [ $# -eq 1 ]; then\n    if [ -f "$1" -a -w "$1" ]; then\n        ls /bin >> "$1"\n        more "$1"\n    else\n        echo "$1 no es archivo ordinario o no tiene permisos."\n    fi\nelse\n    echo "Uso: $0 <nombre_archivo>"\nfi',
+    executionCommand: './script.sh /home/usuario/archivo.txt',
+    expectedOutput: 'ls /bin >> /home/usuario/archivo.txt\nmore /home/usuario/archivo.txt\n... (contenido actualizado del archivo con listado de comandos)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /-f.*-w|ls.*>>|\$\#.*-eq/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -413,6 +417,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que agregue a un archivo ya existente la fecha y hora actual y posteriormente muestre su contenido. Verificar si el archivo es ordinario. Luego con parámetros posicionales.',
     hint: 'date >> archivo, test -f',
     solutionHint: 'Versión interactiva:\n#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    date >> "$var10"\n    more "$var10"\nelse\n    echo "No es un archivo ordinario."\nfi\n\nVersión posicional:\n#!/bin/bash\nif [ $# -eq 1 ]; then\n    if [ -f "$1" ]; then\n        date >> "$1"\n        more "$1"\n    else\n        echo "$1 no es ordinario."\n    fi\nelse\n    echo "Uso: $0 <archivo>"\nfi',
+    executionCommand: './script.sh /home/usuario/archivo.txt',
+    expectedOutput: 'date >> /home/usuario/archivo.txt\nmore /home/usuario/archivo.txt\nmar jun  4 10:30:00 ART 2026\n... (contenido del archivo con fecha agregada)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /date.*>>.*archivo|\$\#.*-eq.*1|test.*-f/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -420,6 +426,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que muestre el contenido de un archivo de a 2 líneas por vez si tiene más de 6 líneas, de lo contrario que indique la cantidad de líneas. Luego con parámetros posicionales.',
     hint: 'wc -l, more -2, if -gt 6',
     solutionHint: 'Versión interactiva:\n#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    can=$(wc -l < "$var10")\n    if [ "$can" -gt 6 ]; then\n        more -2 "$var10"\n    else\n        echo "El archivo tiene $can líneas."\n    fi\nelse\n    echo "No es archivo ordinario."\nfi\n\nVersión posicional:\n#!/bin/bash\nif [ $# -eq 1 ]; then\n    if [ -f "$1" ]; then\n        can=$(wc -l < "$1")\n        if [ "$can" -gt 6 ]; then\n            more -2 "$1"\n        else\n            echo "El archivo $1 tiene $can líneas."\n        fi\n    fi\nelse\n    echo "Uso: $0 <archivo>"\nfi',
+    executionCommand: './script.sh /home/usuario/archivo.txt',
+    expectedOutput: 'can=$(wc -l < /home/usuario/archivo.txt)\nif [ "$can" -gt 6 ]; then\n    more -2 /home/usuario/archivo.txt\nfi',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /wc -l.*more -2|can.*gt.*6.*more.*-2/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -434,6 +442,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que permita visualizar la cantidad de procesos que están ejecutándose desde su terminal.',
     hint: 'ps | wc -l, restar 1 por el encabezado',
     solutionHint: '#!/bin/bash\nlineas=$(ps | wc -l)\ncanproc=$((lineas - 1))\necho "Hay $canproc procesos ejecutándose desde su terminal."',
+    executionCommand: './script.sh',
+    expectedOutput: 'Hay 3 procesos ejecutándose desde su terminal.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ps.*\|.*wc.*-l|lineas.*-1/i, commands: [], difficulty: 'medio',
   },
   {
@@ -441,6 +451,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Elaborar un shellscript para crear un archivo asignándole por contenido un listado en formato extendido de los archivos ordinarios con permiso de lectura y ejecución para el grupo y lectura para los otros que hay en un directorio. Luego con parámetros posicionales.',
     hint: 'ls -l | grep "^-\|...r.xr..\|" > archivo',
     solutionHint: 'Versión interactiva:\n#!/bin/bash\necho -n "Ingrese directorio: "\nread var10\nif [ -d "$var10" ]; then\n    echo -n "Ingrese nombre archivo: "\n    read var20\n    ls -l "$var10" | grep \'^-\|...r.xr..\' > "$var20"\n    cat "$var20"\nelse\n    echo "No es directorio."\nfi\n\nVersión posicional:\n#!/bin/bash\nif [ $# -eq 2 ]; then\n    if [ -d "$1" ]; then\n        ls -l "$1" | grep \'^-\|...r.xr..\' > "$2"\n        cat "$2"\n    fi\nelse\n    echo "Uso: $0 <directorio> <archivo>"\nfi',
+    executionCommand: './script.sh /home/usuario salida.txt',
+    expectedOutput: '-rw-r--r-- 1 usuario users 1024 ene 01 00:00 archivo1.txt\n-rw-r-xr-- 1 usuario users 2048 ene 01 00:00 archivo2.txt',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-l.*grep.*r\.x.*r\.\./i, commands: [], difficulty: 'difícil',
   },
   {
@@ -448,6 +460,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Elaborar un shellscript que cuente la cantidad de subdirectorios en un directorio; si es menor que 4 que lo indique, de lo contrario que muestre los últimos dos subdirectorios. Luego con parámetros posicionales.',
     hint: 'ls -l | grep "^d" | wc -l, tail -2',
     solutionHint: 'Versión interactiva:\n#!/bin/bash\necho -n "Ingrese directorio: "\nread var\nif [ -d "$var" ]; then\n    can=$(ls -l "$var" | grep \'^d\' | wc -l)\n    if [ "$can" -lt 4 ]; then\n        echo "Menos de 4 subdirectorios (Total: $can)."\n    else\n        ls -l "$var" | grep \'^d\' | tail -2\n    fi\nelse\n    echo "No es directorio."\nfi\n\nVersión posicional similar con $#.',
+    executionCommand: './script.sh /home/usuario',
+    expectedOutput: 'drwxr-xr-x 2 usuario users 4096 ene 01 00:00 dir1\ndrwxr-xr-x 2 usuario users 4096 ene 01 00:00 dir2',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /grep.*\^d.*wc.*-l|tail -2/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -455,6 +469,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que permita agregar a un archivo un listado de los tres primeros comandos del sistema LINUX solo si el mismo es regular y tiene permiso de escritura.',
     hint: '-f, -w, ls /bin | head -3 >> archivo',
     solutionHint: '#!/bin/bash\necho -n "Ingrese el archivo de destino: "\nread archivo\nif [ -f "$archivo" -a -w "$archivo" ]; then\n    ls /bin | head -3 >> "$archivo"\n    echo "Agregados los primeros 3 comandos."\nelse\n    echo "No es regular o no tiene permisos de escritura."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese el archivo de destino: /home/usuario/archivo.txt\nAgregados los primeros 3 comandos.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /head.*-3|ls.*\/bin.*>>/i, commands: [], difficulty: 'medio',
   },
   {
@@ -462,6 +478,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que permita crear un archivo asignándole por contenido un listado con el número de nodo-i de los archivos regulares que hay en un directorio.',
     hint: 'ls -li, grep \'^-\', awk \'{print $1, $NF}\'',
     solutionHint: '#!/bin/bash\necho -n "Ingrese el directorio: "\nread dir\necho -n "Ingrese archivo salida: "\nread salida\nif [ -d "$dir" ]; then\n    ls -li "$dir" | grep \'^-\' | awk \'{print $1, $NF}\' > "$salida"\n    echo "Archivo de i-nodos generado."\nelse\n    echo "Directorio inválido."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese el directorio: /home/usuario\nIngrese archivo salida: /home/usuario/inodos.txt\nArchivo de i-nodos generado.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-li.*grep.*awk.*print.*\$1/i, commands: [], difficulty: 'medio',
   },
   {
@@ -469,6 +487,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que permita crear un archivo con la unión de otros dos. Utilizar parámetros posicionales.',
     hint: 'cat $1 $2 > $3, controlar $# -eq 3',
     solutionHint: '#!/bin/bash\nif [ $# -eq 3 ]; then\n    cat "$1" "$2" > "$3"\n    more "$3"\nelse\n    echo "Uso: $0 <archivo1> <archivo2> <archivo_destino>"\nfi\nEjemplo: sh prog1.sh archi20 archi30 nuevo2',
+    executionCommand: './script.sh /home/usuario/a.txt /home/usuario/b.txt /home/usuario/union.txt',
+    expectedOutput: 'Contenido de a.txt\nContenido de b.txt',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /cat.*\$1.*\$2.*>.*\$3|\$\#.*-eq.*3/i, commands: [], difficulty: 'medio',
   },
   {
@@ -476,6 +496,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que permita crear un enlace de un archivo (parámetros posicionales). Controlar la cantidad de parámetros.',
     hint: 'ln $1 $2, test -e $1',
     solutionHint: '#!/bin/bash\nif [ $# -eq 2 ]; then\n    if [ -e "$1" ]; then\n        ln "$1" "$2"\n        echo "Enlace físico: $2 -> $1"\n    else\n        echo "Error: $1 no existe."\n    fi\nelse\n    echo "Uso: $0 <original> <enlace>"\nfi',
+    executionCommand: './script.sh /home/usuario/archivo.txt /home/usuario/mi_enlace',
+    expectedOutput: 'Enlace físico: /home/usuario/mi_enlace -> /home/usuario/archivo.txt',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ln.*\$1.*\$2|enlace.*físico/i, commands: [], difficulty: 'medio',
   },
   {
@@ -483,6 +505,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa con parámetros posicionales que cree un archivo con el contenido de otro ordenado por el segundo campo alfabéticamente y en forma inversa. Controlar cantidad de parámetros.',
     hint: 'sort -r -k2,2 $1 > $2',
     solutionHint: '#!/bin/bash\nif [ $# -eq 2 ]; then\n    if [ -f "$1" ]; then\n        sort -r -k2,2 "$1" > "$2"\n        echo "Archivo ordenado $2 generado."\n    else\n        echo "Error: $1 no es regular."\n    fi\nelse\n    echo "Uso: $0 <origen> <destino>"\nfi',
+    executionCommand: './script.sh /home/usuario/desordenado.txt /home/usuario/ordenado.txt',
+    expectedOutput: 'Archivo ordenado /home/usuario/ordenado.txt generado.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /sort.*-r.*-k2,2|\$\#.*-eq.*2/i, commands: [], difficulty: 'medio',
   },
   {
@@ -497,6 +521,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa para listar los subdirectorios con permiso de lectura y ejecución para el grupo y lectura para los otros que hay en un directorio.',
     hint: 'ls -l dir | grep "^d...r.xr"',
     solutionHint: '#!/bin/bash\necho -n "Ingrese el directorio a listar: "\nread directorio\nif [ -d "$directorio" ]; then\n    ls -l "$directorio" | grep \'^d...r.xr..\'\nelse\n    echo "No es un directorio válido."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese el directorio a listar: /home/usuario\ndrwxr-xr-x 2 usuario users 4096 ene 01 00:00 dir1',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /grep.*\^d.*r\.x.*r/i, commands: [], difficulty: 'medio',
   },
   {
@@ -504,6 +530,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que verifique si el archivo ingresado es ordinario, en caso afirmativo que lo renombre y si no lo es que lo indique.',
     hint: 'test -f, mv',
     solutionHint: '#!/bin/bash\necho -n "Ingrese nombre actual: "\nread archivo\necho -n "Ingrese nuevo nombre: "\nread nuevo\nif [ -f "$archivo" ]; then\n    mv "$archivo" "$nuevo"\n    echo "Renombrado a $nuevo."\nelse\n    echo "No es archivo ordinario."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese nombre actual: /home/usuario/viejo.txt\nIngrese nuevo nombre: /home/usuario/nuevo.txt\nRenombrado a /home/usuario/nuevo.txt.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /-f.*mv.*renombrado/i, commands: [], difficulty: 'medio',
   },
   {
@@ -511,6 +539,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que liste en formato extendido y en orden inverso alfabético el contenido de un archivo. Verificar si es directorio.',
     hint: 'ls -lr, test -d',
     solutionHint: '#!/bin/bash\necho -n "Ingrese el directorio a listar: "\nread dir\nif [ -d "$dir" ]; then\n    ls -lr "$dir"\nelse\n    echo "No es un directorio."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese el directorio a listar: /home/usuario\ntotal 8\n-rw-r--r-- 1 usuario users 2048 ene 01 00:00 z_archivo.txt\n-rw-r--r-- 1 usuario users 1024 ene 01 00:00 a_archivo.txt',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-lr.*directorio/i, commands: [], difficulty: 'medio',
   },
   {
@@ -518,6 +548,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que verifique si un archivo es ordinario y tiene permiso de escritura, en caso afirmativo que le agregue un listado de archivos ordinarios o subdirectorios del directorio actual.',
     hint: 'test -f -w, ls >> archivo',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo destino: "\nread archivo\nif [ -f "$archivo" -a -w "$archivo" ]; then\n    ls >> "$archivo"\n    echo "Listado agregado."\nelse\n    echo "No es regular o no tiene permisos de escritura."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo destino: /home/usuario/archivo.txt\nListado agregado.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ls >>.*archivo|\$\#|test.*-f.*-w/i, commands: [], difficulty: 'medio',
   },
   {
@@ -525,6 +557,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que cambie el modo de un archivo en caso de que sea ordinario y tenga permiso de escritura.',
     hint: 'test -f -w, chmod go-w',
     solutionHint: '#!/bin/bash\necho -n "Ingrese el archivo: "\nread archivo\nif [ -f "$archivo" -a -w "$archivo" ]; then\n    chmod go-w "$archivo"\n    echo "Permisos cambiados."\nelse\n    echo "No es regular o no tiene permisos."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese el archivo: /home/usuario/archivo.txt\nPermisos cambiados.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /chmod.*go-w|test.*-f.*-w.*chmod/i, commands: [], difficulty: 'medio',
   },
   {
@@ -532,6 +566,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que cuente la cantidad de subdirectorios en un directorio; si es menor que 4 que lo indique, de lo contrario que indique la cantidad exacta.',
     hint: 'grep "^d" | wc -l',
     solutionHint: '#!/bin/bash\necho -n "Ingrese directorio: "\nread var\nif [ -d "$var" ]; then\n    can=$(ls -l "$var" | grep \'^d\' | wc -l)\n    if [ "$can" -lt 4 ]; then\n        echo "Menor que cuatro."\n    else\n        echo "Cantidad exacta: $can"\n    fi\nelse\n    echo "No es directorio."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese directorio: /home/usuario\nCantidad exacta: 2',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /grep.*\^d.*wc.*-l.*can.*lt/i, commands: [], difficulty: 'medio',
   },
   {
@@ -539,6 +575,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa que cuente las palabras de un archivo ordinario; si tiene 15 o más que muestre su contenido desde línea 3 de a 2 por vez; de lo contrario que indique la cantidad de palabras.',
     hint: 'wc -w, if ge 15, tail -n +3 | more -2',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo: "\nread archivo\nif [ -f "$archivo" ]; then\n    cant=$(wc -w < "$archivo")\n    if [ "$cant" -ge 15 ]; then\n        tail -n +3 "$archivo" | more -2\n    else\n        echo "Cantidad de palabras: $cant"\n    fi\nelse\n    echo "No es archivo ordinario."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo: /home/usuario/archivo.txt\n... (tail -n +3 | more -2)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /wc.*-w.*ge.*15|tail.*\+3.*more.*-2/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -546,6 +584,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa menú con opciones:\na) Listar un directorio en forma recursiva.\nb) Contar la cantidad de subdirectorios que hay en un subdirectorio.',
     hint: 'case, ls -R para a, grep "^d" | wc -l para b',
     solutionHint: '#!/bin/bash\necho "a) Listar recursivo"\necho "b) Contar subdirectorios"\necho -n "Opción: "\nread opcion\ncase "$opcion" in\n    a|A) echo -n "Directorio: "; read dir; if [ -d "$dir" ]; then ls -R "$dir"; fi ;;\n    b|B) echo -n "Directorio: "; read dir; if [ -d "$dir" ]; then cant=$(ls -l "$dir" | grep \'^d\' | wc -l); echo "Subdirectorios: $cant"; fi ;;\n    *) echo "Opción incorrecta." ;;\nesac',
+    executionCommand: './script.sh',
+    expectedOutput: 'a) Listar recursivo\nb) Contar subdirectorios\nOpción: a\nDirectorio: /home/usuario\n... (listado recursivo)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /case.*ls -R.*grep.*\^d/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -553,13 +593,17 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Crear un programa menú con opciones:\na) Crear un subdirectorio.\nb) Contar archivos regulares con ejecución para dueño y escritura para grupo.',
     hint: 'mkdir para a, grep "^-..x.w" | wc -l para b',
     solutionHint: '#!/bin/bash\necho "a) Crear subdirectorio"\necho "b) Contar archivos regulares (dueño x, grupo w)"\necho -n "Opción: "\nread opcion\ncase "$opcion" in\n    a|A) echo -n "Nombre: "; read nd; mkdir "$nd"; echo "Creado $nd." ;;\n    b|B) echo -n "Directorio: "; read dir; if [ -d "$dir" ]; then cant=$(ls -l "$dir" | grep \'^-..x.w\' | wc -l); echo "Cantidad: $cant"; fi ;;\n    *) echo "Opción inválida." ;;\nesac',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /case.*mkdir.*grep.*\^-\|\.\.x\.w/i, commands: [], difficulty: 'difícil',
+    executionCommand: './script.sh',
+    expectedOutput: 'a) Crear subdirectorio\nb) Contar archivos regulares (dueño x, grupo w)\nOpción: a\nNombre: nuevodir\nCreado nuevodir.',
+    initialState: goHome, validationType: 'text', expectedCommandRegex: /case.*mkdir.*grep.*\^-|\.\.x\.w/i, commands: [], difficulty: 'difícil',
   },
   {
     id: 'p2-69', category: 'PARCIAL 2 - Shell Scripting',
     instruction: 'Crear un programa para listar los archivos de cualquier tipo que hay en un directorio y que tengan permiso de lectura para los otros.',
     hint: 'ls -l | grep "^.......r"',
     solutionHint: '#!/bin/bash\necho -n "Ingrese directorio: "\nread dir\nif [ -d "$dir" ]; then\n    ls -l "$dir" | grep \'^.......r\'\nelse\n    echo "No existe."\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese directorio: /home/usuario\n-rw-r--r-- 1 usuario users 1024 ene 01 00:00 archivo1.txt\ndrwxr-xr-- 2 usuario users 4096 ene 01 00:00 dir_publico',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /grep.*\^\.\{7\}r|grep.*\.\.\.\.\.\.\.r/i, commands: [], difficulty: 'medio',
   },
   {
@@ -567,7 +611,9 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que:\n- Si es archivo regular: agregue un listado de subdirectorios con permiso de escritura para dueño y lectura/ejecución para grupo.\n- Si es directorio: muestre su contenido ordenado decreciente por tamaño.',
     hint: 'test -f vs -d. ls -lS para ordenar por tamaño.',
     solutionHint: '#!/bin/bash\necho -n "Ingrese ruta: "\nread entrada\nif [ -f "$entrada" ]; then\n    ls -l | grep \'^d.w..r.x\' >> "$entrada"\n    echo "Listado anexado."\nelif [ -d "$entrada" ]; then\n    ls -lS "$entrada"\nelse\n    echo "No existe."\nfi',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-lS.*orden|grep.*\^d\.w\|\.r\.x/i, commands: [], difficulty: 'difícil',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese ruta: /home/usuario\ntotal 8\n-rw-r--r-- 1 usuario users 2048 ene 01 00:00 archivo_grande.txt\n-rw-r--r-- 1 usuario users 1024 ene 01 00:00 archivo_chico.txt',
+    initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-lS.*orden|grep.*\^d\.w|\.r\.x/i, commands: [], difficulty: 'difícil',
   },
 
   // ============ BLOQUE 6: Cuestiones Generales (36-37, 76) ============
@@ -738,6 +784,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa utilizando parámetros posicionales que permita crear un archivo asignándole por contenido otro archivo ordenado de acuerdo al segundo campo alfabéticamente y en forma inversa. El programa deberá controlar que la cantidad de parámetros ingresada sea la correcta.',
     hint: 'sort -r -k2,2 $1 > $2, $# -eq 2',
     solutionHint: '#!/bin/bash\nif [ $# -eq 2 ]; then\n    if [ -f "$1" ]; then\n        sort -r -k2,2 "$1" > "$2"\n        echo "Archivo ordenado $2 generado."\n    else\n        echo "Error: $1 no es regular."\n    fi\nelse\n    echo "Uso: $0 <origen> <destino>"\nfi',
+    executionCommand: './script.sh /home/usuario/desordenado.txt /home/usuario/ordenado.txt',
+    expectedOutput: 'Archivo ordenado /home/usuario/ordenado.txt generado.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /sort.*-r.*-k2,2|\$\#.*-eq.*2/i, commands: [], difficulty: 'medio',
   },
   {
@@ -775,6 +823,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que ejecute lo siguiente: Si el archivo es regular, que cuente las palabras que contiene y muestre el mensaje. Si es directorio, que muestre listado de archivos regulares ordenados alfabéticamente por nombre del propietario.',
     hint: 'wc -w, sort -k3, grep \'^-\'',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    can=$(wc -w < "$var10")\n    echo "El archivo tiene $can palabras"\nelse\n    if [ -d "$var10" ]; then\n        ls -l "$var10" | grep \'^-\' | sort -k3\n    fi\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo: /home/usuario\n-rw-r--r-- 1 root root 2048 ene 01 00:00 archivo_root.txt\n-rw-r--r-- 1 usuario users 1024 ene 01 00:00 archivo.txt',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /wc.*-w.*palabras|sort.*-k3.*grep.*\^-/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -782,6 +832,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que ejecute lo siguiente: Si el archivo es regular, que muestre su número de nodo i. Si es directorio, que muestre listado de archivos regulares ordenados decrecientemente por número de enlaces.',
     hint: 'ls -i, sort -k2rn',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    num=$(ls -i "$var10" | cut -d" " -f1)\n    echo "El número de nodo i del archivo es: $num"\nelse\n    if [ -d "$var10" ]; then\n        ls -l "$var10" | grep \'^-\' | sort -k2rn\n    fi\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo: /home/usuario/archivo.txt\nEl número de nodo i del archivo es: 123456',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-i.*nodo.*i|sort.*-k2rn/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -789,6 +841,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que ejecute lo siguiente: Si el archivo es regular, que le agregue un listado de los dos primeros comandos cuyo nombre comienza con "l" y muestre su contenido actualizado. Si es directorio, que muestre archivos regulares ordenados alfabéticamente por nombre del grupo.',
     hint: 'ls /bin | grep "^l" | head -2, sort -k4',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    ls /bin | grep \'^l\' | head -2 > "$var10"\n    echo "El nuevo contenido es:"\n    more "$var10"\nelse\n    if [ -d "$var10" ]; then\n        ls -l "$var10" | grep \'^-\' | sort -k4\n    fi\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo: /home/usuario/archivo.txt\nEl nuevo contenido es:\nless\nln',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /grep.*\^l.*head.*-2|sort.*-k4/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -796,6 +850,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que ejecute lo siguiente: Si el archivo es regular, que cuente líneas; si tiene 6 o más mostrar las últimas 2, si no mostrar la cantidad exacta. Si es directorio, listar todos los archivos con nodo i en formato extendido ordenados alfabéticamente inverso.',
     hint: 'wc -l, tail -2, ls -lri',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    can=$(wc -l < "$var10")\n    if [ "$can" -ge 6 ]; then\n        tail -2 "$var10"\n    else\n        echo "El archivo tiene $can lineas"\n    fi\nelse\n    if [ -d "$var10" ]; then\n        ls -lri "$var10"\n    fi\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo: /home/usuario\n123456 -rw-r--r-- 1 usuario users 1024 ene 01 00:00 archivo1.txt\n789012 drwxr-xr-x 2 usuario users 4096 ene 01 00:00 dir1',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /wc.*-l.*tail.*-2|ls.*-lri/i, commands: [], difficulty: 'difícil',
   },
   {
@@ -803,6 +859,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Escribir un programa que ejecute lo siguiente: Si el archivo es regular, que cuente líneas que comienzan con "r"; si tiene más de 5 mostrar las últimas 2 que comienzan con dicha letra. Si es directorio, que muestre subdirectorios con permiso de lectura para el grupo y ejecución para otros.',
     hint: 'grep "^r" | wc -l, grep "^d...r....x"',
     solutionHint: '#!/bin/bash\necho -n "Ingrese archivo: "\nread var10\nif [ -f "$var10" ]; then\n    can=$(grep \'^r\' "$var10" | wc -l)\n    if [ "$can" -gt 5 ]; then\n        grep \'^r\' "$var10" | tail -2\n    fi\nelse\n    if [ -d "$var10" ]; then\n        ls -l "$var10" | grep \'^d...r....x\'\n    fi\nfi',
+    executionCommand: './script.sh',
+    expectedOutput: 'Ingrese archivo: /home/usuario\ndrwxr--r-x 2 usuario users 4096 ene 01 00:00 dir_publico',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /grep.*\^r.*tail.*-2|grep.*\^d.*\.\.\.r/i, commands: [], difficulty: 'difícil',
   },
 ];

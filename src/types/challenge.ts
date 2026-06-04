@@ -3,6 +3,8 @@ export interface Challenge {
   instruction: string;
   hint?: string;
   solutionHint: string;
+  executionCommand?: string;
+  expectedOutput?: string;
   initialState?: (store: any) => void;
   validationType: 'command' | 'state' | 'both' | 'text';
   expectedCommandRegex?: RegExp;
