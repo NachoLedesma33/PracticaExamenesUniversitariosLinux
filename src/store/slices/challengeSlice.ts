@@ -15,6 +15,7 @@ export interface ChallengeSlice {
   setLastValidation: (result: ValidationResult | null) => void;
   getCurrentChallenge: () => Challenge | null;
   getProgress: () => { completed: number; total: number };
+  importChallenges: (newChallenges: Challenge[]) => void;
 }
 
 export const createChallengeSlice: StateCreator<ChallengeSlice> = (set, get) => ({
@@ -79,4 +80,11 @@ export const createChallengeSlice: StateCreator<ChallengeSlice> = (set, get) => 
     ).length;
     return { completed, total: challenges.length };
   },
+
+  importChallenges: (newChallenges: Challenge[]) =>
+    set((state) => {
+      const existingIds = new Set(state.challenges.map((c) => c.id));
+      const unique = newChallenges.filter((c) => !existingIds.has(c.id));
+      return { challenges: [...state.challenges, ...unique] };
+    }),
 });

@@ -4,11 +4,57 @@ import { executeCommand } from '../engine/executor';
 import { validateCommand } from '../engine/validation';
 import { parseCommand } from '../engine/parser';
 
+function getAllVfsPaths(vfs: Record<string, any>, prefix: string): string[] {
+  const results: string[] = [];
+  const searchPrefix = prefix.replace(/\/$/, '');
+  for (const [path] of Object.entries(vfs)) {
+    if (path.startsWith(searchPrefix) && path !== searchPrefix) {
+      results.push(path);
+    }
+  }
+  return results.sort();
+}
+
+function findTabCompletion(input: string, vfs: Record<string, any>, cwd: string): string | null {
+  const parts = input.split(/\s+/);
+  const last = parts[parts.length - 1];
+  if (!last) return null;
+
+  const isAbsolute = last.startsWith('/');
+  const searchBase = isAbsolute ? last : (cwd.endsWith('/') ? cwd + last : cwd + '/' + last);
+  const matches = getAllVfsPaths(vfs, searchBase);
+
+  if (matches.length === 0) return null;
+
+  if (matches.length === 1) {
+    const completion = matches[0];
+    const displayPath = isAbsolute ? completion : completion.slice(cwd.length).replace(/^\//, '');
+    parts[parts.length - 1] = displayPath;
+    return parts.join(' ') + ' ';
+  }
+
+  let commonPrefix = matches[0];
+  for (const m of matches.slice(1)) {
+    while (!m.startsWith(commonPrefix)) {
+      commonPrefix = commonPrefix.slice(0, -1);
+    }
+  }
+
+  if (commonPrefix.length > searchBase.length) {
+    const extra = commonPrefix.slice(searchBase.length);
+    parts[parts.length - 1] = last + extra;
+    return parts.join(' ');
+  }
+
+  return null;
+}
+
 export function TerminalInput() {
   const [input, setInput] = useState('');
   const [captureMode, setCaptureMode] = useState(false);
   const [captureBuffer, setCaptureBuffer] = useState('');
   const [captureTarget, setCaptureTarget] = useState('');
+  const [tabSuggestions, setTabSuggestions] = useState<string[] | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const addToHistory = useTerminalStore((s) => s.addToHistory);
   const getPrevious = useTerminalStore((s) => s.getPrevious);
@@ -23,6 +69,7 @@ export function TerminalInput() {
   const recordAttempt = useTerminalStore((s) => s.recordAttempt);
   const markChallengeCompleted = useTerminalStore((s) => s.markChallengeCompleted);
   const getCurrentChallenge = useTerminalStore((s) => s.getCurrentChallenge);
+  const vfs = useTerminalStore((s) => s.vfs);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -82,6 +129,42 @@ export function TerminalInput() {
       return;
     }
 
+    const challenge = getCurrentChallenge();
+
+    if (challenge && challenge.validationType === 'text') {
+      addToHistory({
+        command: cmd,
+        output: '',
+        timestamp: Date.now(),
+        exitCode: 0,
+      });
+      const store = useTerminalStore.getState();
+      const prevResult = store.challengeResults[challenge.id];
+      if (!prevResult?.completed) {
+        const validation = validateCommand(cmd);
+        setLastValidation(validation);
+        recordAttempt(challenge.id, validation.passed, validation.reason);
+        if (validation.passed) {
+          markChallengeCompleted(challenge.id);
+          addToHistory({
+            command: '',
+            output: '✅ ¡Correcto! Ejercicio completado.',
+            timestamp: Date.now(),
+            exitCode: 0,
+          });
+        } else if (validation.reason) {
+          addToHistory({
+            command: '',
+            output: `❌ ${validation.reason}`,
+            timestamp: Date.now(),
+            exitCode: 1,
+          });
+        }
+      }
+      setInput('');
+      return;
+    }
+
     const parsed = parseCommand(cmd);
     if (parsed?.name === 'cat' && parsed.args.length === 0 && parsed.redirect?.type === '>') {
       setCaptureTarget(parsed.redirect.target);
@@ -110,17 +193,17 @@ export function TerminalInput() {
         exitCode: result.exitCode,
       });
 
-      const challenge = getCurrentChallenge();
-      if (challenge) {
+      const currentChallenge = getCurrentChallenge();
+      if (currentChallenge && currentChallenge.validationType !== 'text') {
         const store = useTerminalStore.getState();
-        const prevResult = store.challengeResults[challenge.id];
+        const prevResult = store.challengeResults[currentChallenge.id];
         if (!prevResult?.completed) {
           const validation = validateCommand(cmd);
           setLastValidation(validation);
-          recordAttempt(challenge.id, validation.passed, validation.reason);
+          recordAttempt(currentChallenge.id, validation.passed, validation.reason);
 
           if (validation.passed) {
-            markChallengeCompleted(challenge.id);
+            markChallengeCompleted(currentChallenge.id);
             addToHistory({
               command: '',
               output: '✅ ¡Correcto! Ejercicio completado.',
@@ -140,6 +223,7 @@ export function TerminalInput() {
     }
 
     setInput('');
+    setTabSuggestions(null);
   }, [input, captureMode, captureBuffer, captureTarget, addToHistory, clearHistory, resetFS, createFile, setLastValidation, recordAttempt, markChallengeCompleted, getCurrentChallenge]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -172,20 +256,52 @@ export function TerminalInput() {
       e.preventDefault();
       const prev = getPrevious();
       if (prev !== null) setInput(prev);
+      setTabSuggestions(null);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       const next = getNext();
       if (next !== null) setInput(next);
       else setInput('');
+      setTabSuggestions(null);
     } else if (e.key === 'Tab') {
       e.preventDefault();
+      const completion = findTabCompletion(input, vfs, cwd);
+      if (completion) {
+        setInput(completion);
+        setTabSuggestions(null);
+      } else {
+        const parts = input.split(/\s+/);
+        const last = parts[parts.length - 1];
+        if (last) {
+          const isAbsolute = last.startsWith('/');
+          const searchBase = isAbsolute ? last : (cwd.endsWith('/') ? cwd + last : cwd + '/' + last);
+          const matches = getAllVfsPaths(vfs, searchBase);
+          if (matches.length > 1) {
+            setTabSuggestions(matches.map(m => isAbsolute ? m : m.slice(cwd.length).replace(/^\//, '')));
+          }
+        }
+      }
+    } else {
+      setTabSuggestions(null);
     }
-  }, [getPrevious, getNext, captureMode, captureBuffer, captureTarget, cwd, createFile, addToHistory]);
+  }, [getPrevious, getNext, captureMode, captureBuffer, captureTarget, cwd, createFile, addToHistory, input, vfs]);
 
   const cwdDisplay = cwd === '/home/usuario' ? '~' : cwd.replace('/home/', '~/');
 
   return (
-    <div className="border-t border-surface-700 bg-terminal-bg px-4 py-3">
+    <div className="border-t border-white/5 bg-terminal-bg/90 backdrop-blur-sm px-4 py-3">
+      {tabSuggestions && tabSuggestions.length > 0 && (
+        <div className="mb-2 flex flex-wrap gap-1 animate-fade-slide">
+          {tabSuggestions.slice(0, 12).map((s, i) => (
+            <span key={i} className="text-[10px] font-mono text-terminal-cyan bg-cyan-900/20 px-1.5 py-0.5 rounded border border-cyan-800/20">
+              {s.endsWith('/') ? s : s}
+            </span>
+          ))}
+          {tabSuggestions.length > 12 && (
+            <span className="text-[10px] font-mono text-surface-500">+{tabSuggestions.length - 12} más</span>
+          )}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
         {captureMode ? (
           <>

@@ -6,6 +6,7 @@ export interface SessionSlice {
   hostname: string;
   previousCwd: string | null;
   setCwd: (cwd: string) => void;
+  setUser: (user: string) => void;
 }
 
 export const createSessionSlice: StateCreator<SessionSlice> = (set) => ({
@@ -16,4 +17,6 @@ export const createSessionSlice: StateCreator<SessionSlice> = (set) => ({
 
   setCwd: (cwd: string) =>
     set((state) => ({ previousCwd: state.cwd, cwd })),
+
+  setUser: (user: string) => set({ user }),
 });

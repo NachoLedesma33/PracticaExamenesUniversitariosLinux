@@ -8,12 +8,14 @@ export interface UISlice {
   sidebarOpen: boolean;
   challengePanelOpen: boolean;
   panelLayout: PanelLayout;
+  selectedNodePath: string | null;
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
   toggleChallengePanel: () => void;
   setPanelLayout: (layout: PanelLayout) => void;
+  setSelectedNodePath: (path: string | null) => void;
 }
 
 export const createUISlice: StateCreator<UISlice> = (set) => ({
@@ -21,6 +23,7 @@ export const createUISlice: StateCreator<UISlice> = (set) => ({
   sidebarOpen: true,
   challengePanelOpen: true,
   panelLayout: 'default',
+  selectedNodePath: null,
 
   setTheme: (theme: Theme) => set({ theme }),
 
@@ -36,4 +39,6 @@ export const createUISlice: StateCreator<UISlice> = (set) => ({
     set((state) => ({ challengePanelOpen: !state.challengePanelOpen })),
 
   setPanelLayout: (layout: PanelLayout) => set({ panelLayout: layout }),
+
+  setSelectedNodePath: (path: string | null) => set({ selectedNodePath: path }),
 });

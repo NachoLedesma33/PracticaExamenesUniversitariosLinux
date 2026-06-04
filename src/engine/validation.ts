@@ -38,6 +38,25 @@ function validateByCommand(input: string, challenge: Challenge): string | null {
   return 'El comando no produce la salida esperada.';
 }
 
+function validateByText(input: string, challenge: Challenge): string | null {
+  const trimmed = input.trim().toLowerCase();
+  const solution = challenge.solutionHint.trim().toLowerCase();
+
+  if (challenge.expectedCommandRegex) {
+    challenge.expectedCommandRegex.lastIndex = 0;
+    if (challenge.expectedCommandRegex.test(trimmed)) return null;
+    return 'La respuesta no coincide con el patrón esperado.';
+  }
+
+  if (trimmed === solution) return null;
+
+  const words = solution.split(/\s+/);
+  const matched = words.filter(w => trimmed.includes(w));
+  if (matched.length >= Math.ceil(words.length * 0.6)) return null;
+
+  return 'La respuesta no es correcta.';
+}
+
 function validateByState(store: any, challenge: Challenge): string | null {
   if (!challenge.validateState) return null;
   return challenge.validateState(store);
@@ -52,6 +71,13 @@ export function validateCommand(input: string): ValidationResult {
   if (!cmd) return { passed: false, reason: 'No escribiste ningún comando.' };
 
   const result: ValidationResult = { passed: false };
+
+  if (challenge.validationType === 'text') {
+    const txtErr = validateByText(cmd, challenge);
+    if (txtErr) { result.reason = txtErr; return result; }
+    result.passed = true;
+    return result;
+  }
 
   if (challenge.validationType === 'command' || challenge.validationType === 'both') {
     const cmdErr = validateByCommand(cmd, challenge);

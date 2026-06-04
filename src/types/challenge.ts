@@ -4,7 +4,7 @@ export interface Challenge {
   hint?: string;
   solutionHint: string;
   initialState?: (store: any) => void;
-  validationType: 'command' | 'state' | 'both';
+  validationType: 'command' | 'state' | 'both' | 'text';
   expectedCommandRegex?: RegExp;
   validateState?: (store: any) => string | null;
   commands: string[];

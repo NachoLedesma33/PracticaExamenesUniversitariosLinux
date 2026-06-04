@@ -15,6 +15,10 @@ function f(name: string, content = ''): VFSNode {
   return { name, type: '-', permissions: defaultPerms('-'), content, inode: nextInode() };
 }
 
+function fPerm(name: string, content: string, mode: string): VFSNode {
+  return { name, type: '-', permissions: { owner: 'usuario', group: 'usuarios', mode }, content, inode: nextInode() };
+}
+
 const HOME: VFSNode = d('home', {
   usuario: d('usuario', {
     documentos: d('documentos', {
@@ -32,6 +36,27 @@ const HOME: VFSNode = d('home', {
       }),
       'README.md': f('README.md', '# Mi Proyecto\n'),
     }),
+    dire: d('dire', {
+      lista: d('lista', {}),
+      grupo: d('grupo', {}),
+      let10: f('let10', 'a\nb\nc\nd\ne\nf\ng\nh\ni\nj\n'),
+    }, false),
+    dire1: d('dire1', {}),
+    dire2: d('dire2', {}),
+    dire3: d('dire3', {}),
+    numeros: f('numeros', '12\n34\n56\n'),
+    letras: f('letras', 'a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\nñ\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz\n'),
+    notas: f('notas', 'apellido 85 regular\ngonzalez 75 promocion\nmartinez 90 promocion\nlopez 60 regular\nperez 55 libre\n'),
+    texto: fPerm('texto', 'contenido de texto\n', 'rwx------'),
+    archi100: fPerm('archi100', 'contenido de archi100\n', 'rwx------'),
+    texto20: fPerm('texto20', 'contenido de texto20\n', 'rwx------'),
+    archi10: fPerm('archi10', 'contenido archi10\n', 'rwx------'),
+    archi20: fPerm('archi20', 'contenido archi20\n', 'rwx------'),
+    archi30: fPerm('archi30', 'contenido archi30\n', 'rwx------'),
+    archi40: fPerm('archi40', 'contenido archi40\n', 'rwx------'),
+    texto30: fPerm('texto30', 'contenido texto30\n', 'rwx------'),
+    texto40: fPerm('texto40', 'contenido texto40\n', 'rwx------'),
+    reporte: f('reporte.txt', 'reporte de ejemplo\n'),
     '.bashrc': f('.bashrc', 'export PS1="\\u@\\h:\\w$ "\nalias ll="ls -la"\n'),
     'practica.txt': f('practica.txt', 'Contenido de práctica para comandos.'),
     'datos.csv': f('datos.csv', 'nombre,edad,ciudad\nJuan,30,Buenos Aires\nMaria,25,Cordoba\nPedro,35,Rosario\n'),
@@ -51,6 +76,12 @@ const BIN: VFSNode = d('bin', {
   'ls': f('ls', '[binario simulado]'),
   'cat': f('cat', '[binario simulado]'),
   'grep': f('grep', '[binario simulado]'),
+  'more': f('more', '[binario simulado]'),
+  'cut': f('cut', '[binario simulado]'),
+  'wc': f('wc', '[binario simulado]'),
+  'cmp': f('cmp', '[binario simulado]'),
+  'ln': f('ln', '[binario simulado]'),
+  'chgrp': f('chgrp', '[binario simulado]'),
 }, true);
 
 const DEV: VFSNode = d('dev', {
@@ -58,6 +89,17 @@ const DEV: VFSNode = d('dev', {
   'zero': f('zero', ''),
   'tty': f('tty', ''),
   'sda': f('sda', '[disco simulado]'),
+  'sdb': f('sdb', '[disco simulado]'),
+  'sdc': f('sdc', '[disco simulado]'),
+  'sdd': f('sdd', '[disco simulado]'),
+  'sde': f('sde', '[disco simulado]'),
+  'sdf': f('sdf', '[disco simulado]'),
+  'sdg': f('sdg', '[disco simulado]'),
+  'sdh': f('sdh', '[disco simulado]'),
+  'nvme0n1': f('nvme0n1', '[nvme simulado]'),
+  'nvme0n1p1': f('nvme0n1p1', '[nvme partition]'),
+  'loop0': f('loop0', '[loop device]'),
+  'loop1': f('loop1', '[loop device]'),
 }, true);
 
 const VAR: VFSNode = d('var', {

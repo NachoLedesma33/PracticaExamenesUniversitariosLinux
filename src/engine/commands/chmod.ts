@@ -22,8 +22,10 @@ export const chmod: CommandHandler = {
 
       const newNode = { ...node, permissions: { ...node.permissions } };
 
-      if (/^\d{3}$/.test(mode)) {
-        newNode.permissions.mode = parseMode(mode);
+      if (/^\d{3,4}$/.test(mode)) {
+        const oct = mode.length === 4 ? mode : '0' + mode;
+        const modeStr = parseMode(oct.slice(1));
+        newNode.permissions.mode = modeStr;
       } else if (mode.includes('+') || mode.includes('-') || mode.includes('=')) {
         const who = mode.replace(/[+\-=].*$/, '') || 'a';
         const op = mode.includes('+') ? '+' : mode.includes('-') ? '-' : '=';
@@ -45,6 +47,15 @@ export const chmod: CommandHandler = {
           if (ch === 'r') { if (applyTo) setPerm(0, 'r'); if (applyG) setPerm(3, 'r'); if (applyO) setPerm(6, 'r'); }
           if (ch === 'w') { if (applyTo) setPerm(1, 'w'); if (applyG) setPerm(4, 'w'); if (applyO) setPerm(7, 'w'); }
           if (ch === 'x') { if (applyTo) setPerm(2, 'x'); if (applyG) setPerm(5, 'x'); if (applyO) setPerm(8, 'x'); }
+          if (ch === 's') {
+            if (op === '+') {
+              if (who.includes('u') || who === 'a') newMode[2] = newMode[2] === 'x' ? 's' : 'S';
+              if (who.includes('g') || who === 'a') newMode[5] = newMode[5] === 'x' ? 's' : 'S';
+            } else if (op === '-') {
+              if (who.includes('u') || who === 'a') newMode[2] = newMode[2] === 's' || newMode[2] === 'S' ? '-' : newMode[2];
+              if (who.includes('g') || who === 'a') newMode[5] = newMode[5] === 's' || newMode[5] === 'S' ? '-' : newMode[5];
+            }
+          }
         }
 
         newNode.permissions.mode = newMode.join('');
