@@ -282,7 +282,7 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     commands: ['crontab'], difficulty: 'medio',
   },
 
-  // ============ BLOQUE 3: Control de Trabajos (12, 22-23, 27, 71-72) ============
+  // ============ BLOQUE 3: Control de Trabajos (12, 22-23, 27) ============
 
   {
     id: 'p2-12', category: 'PARCIAL 2 - Control de Trabajos',
@@ -317,20 +317,6 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     executionCommand: 'kill -19 1265',
     expectedOutput: '$ kill -19 1265\nSe envía la señal SIGSTOP (19) al proceso PID 1265.\nEl proceso es suspendido temporalmente.\n\nSeñales de control de procesos:\n  SIGSTOP (19) → suspende (pausa) el proceso\n  SIGCONT (18) → reanuda un proceso suspendido\n  SIGKILL (9)  → termina forzosamente\n  SIGTERM (15) → termina suavemente\n\nPara reanudar el proceso luego de suspenderlo:\n  kill -18 1265  (SIGCONT)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /kill.*-19.*1265|kill.*-STOP.*1265|kill.*19.*PID/i, commands: ['kill'], difficulty: 'medio',
-  },
-  {
-    id: 'p2-71', category: 'PARCIAL 2 - Control de Trabajos',
-    instruction: 'Describir los modos de ejecución Foreground y Background.',
-    hint: 'Foreground retiene el prompt, Background lo libera.',
-    solutionHint: 'Foreground retiene la terminal hasta concluir el comando. Background (con &) libera el prompt de inmediato permitiendo procesamiento concurrente en paralelo.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /foreground.*retiene|background.*libera.*prompt|&/i, commands: [], difficulty: 'fácil',
-  },
-  {
-    id: 'p2-72', category: 'PARCIAL 2 - Control de Trabajos',
-    instruction: 'Indicar cuál es el comando que permite el monitoreo en tiempo real del estado de los procesos, por defecto se actualiza cada 3 segundos.',
-    hint: 'top',
-    solutionHint: 'El comando top.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /\btop\b/i, commands: ['top'], difficulty: 'fácil',
   },
 
   // ============ BLOQUE 4: Monitoreo del Sistema (40, 45-52, 56-59) ============
@@ -644,7 +630,7 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     initialState: goHome, validationType: 'text', expectedCommandRegex: /ls.*-lS.*orden|grep.*\^d\.w|\.r\.x/i, commands: [], difficulty: 'difícil',
   },
 
-  // ============ BLOQUE 6: Cuestiones Generales (36-37, 76) ============
+  // ============ BLOQUE 6: Cuestiones Generales (36-37) ============
 
   {
     id: 'p2-36', category: 'PARCIAL 2 - General',
@@ -659,15 +645,6 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     hint: 'Administrador de tareas → Finalizar tarea',
     solutionHint: 'Se accede al Administrador de tareas, se localiza el proceso en "Procesos" o "Detalles", clic derecho → "Finalizar tarea".',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /administrador.*tareas|finalizar.*tarea/i, commands: [], difficulty: 'fácil',
-  },
-  {
-    id: 'p2-76', category: 'PARCIAL 2 - General',
-    instruction: 'Diferencias entre at, cron y batch.',
-    hint: 'at y batch = única vez, cron = periódico',
-    solutionHint: 'at y batch planifican tareas por única vez en el futuro. cron planifica con periodicidad regular. En at el usuario fija la hora exacta; en batch el sistema ejecuta cuando la carga es baja.',
-    executionCommand: 'echo "backup" | at 02:00\n*/30 * * * * who\nbatch',
-    expectedOutput: '--- at: único, hora fija ---\n$ echo "backup" | at 02:00\njob 4 at Thu Jun 11 02:00:00 2026\n\n--- cron: periódico ---\n$ */30 * * * * who\nEjecuta who cada 30 minutos.\n\n--- batch: único, cuando baja la carga ---\n$ batch\n> echo "tarea batch"\n> Ctrl+D\n\nResumen:\n  at:     ejecución diferida ÚNICA, el usuario elige la hora.\n  batch:  ejecución diferida ÚNICA, el sistema elige el momento.\n  cron:   ejecución PERIÓDICA, con formato de 5 campos.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /at.*única|batch.*carga.*baja|cron.*periódic/i, commands: [], difficulty: 'medio',
   },
 
   // ============ BLOQUE 7: Ejercicios Adicionales (81-107) ============
@@ -695,24 +672,6 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     commands: ['crontab'], difficulty: 'medio',
   },
   {
-    id: 'p2-83', category: 'PARCIAL 2 - Control de Trabajos',
-    instruction: 'Semejanzas y diferencias entre los comandos fg y bg.',
-    hint: 'Ambos reanudan. fg en foreground, bg en background.',
-    solutionHint: 'Semejanza: Ambos comandos permiten reanudar la ejecución de un proceso. Diferencia: El comando fg permite reanudar la ejecución de un proceso en modo foreground, mientras que el comando bg permite reanudar la ejecución de un proceso en modo background.',
-    executionCommand: 'find / -name config 2>/dev/null',
-    expectedOutput: '$ find / -name config 2>/dev/null\n^Z (Ctrl+Z)\n[1]+ Stopped        find / -name config 2>/dev/null\n\n$ bg %1\n[1]+ find / -name config 2>/dev/null &\n(El proceso corre en background, el prompt vuelve inmediatamente)\n\n$ fg %1\nfind / -name config 2>/dev/null\n(El proceso corre en foreground, la terminal queda ocupada)\n\nSemejanza: ambos reanudan un trabajo suspendido.\nDiferencia:\n  fg → foreground (terminal ocupada hasta que termine).\n  bg → background (terminal libre para seguir trabajando).',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /fg.*foreground.*bg.*background/i, commands: ['fg', 'bg'], difficulty: 'medio',
-  },
-  {
-    id: 'p2-84', category: 'PARCIAL 2 - Planificación',
-    instruction: 'Describir la utilidad cron.',
-    hint: 'Demonio que ejecuta tareas programadas.',
-    solutionHint: 'El programa cron ejecuta las tareas planificadas para que se ejecuten en determinado momento con cierta periodicidad. Cron se activa cada minuto para verificar si hay tareas planificadas para ese instante, en caso afirmativo las ejecuta y envía la respuesta en forma de correspondencia a través del correo electrónico interno de Linux al usuario que encargó la tarea.',
-    executionCommand: 'crontab -e\n0 6 * * 1-5 tar -czf backup.tar.gz /home',
-    expectedOutput: 'Al editar crontab con crontab -e:\n  0 6 * * 1-5 tar -czf backup.tar.gz /home\n  → Ejecuta backup de /home todos los días de semana (1-5) a las 6:00 AM.\n\nEstructura de cron:\n  ┌ minuto (0-59)\n  │ ┌ hora (0-23)\n  │ │ ┌ día del mes (1-31)\n  │ │ │ ┌ mes (1-12)\n  │ │ │ │ ┌ día de la semana (0-7, 0=domingo)\n  │ │ │ │ │\n  * * * * * comando\n\ncron es un demonio (servicio en segundo plano) que se activa cada minuto, revisa si hay tareas programadas para ese instante y las ejecuta.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /cron.*tareas.*periódicas|cron.*cada.*minuto/i, commands: [], difficulty: 'medio',
-  },
-  {
     id: 'p2-85', category: 'PARCIAL 2 - Procesos',
     instruction: 'Si un proceso que está ejecutándose, y ejecuta el siguiente comando: renice 5 2431 (Old priority 2 New priority 5). a) La prioridad fue decrementada b) La prioridad fue incrementada c) No es posible incrementar la prioridad de un proceso que ya fue lanzado d) No es posible decrementar la prioridad de un proceso que ya fue lanzado',
     hint: 'NI sube de 2 a 5, PRI aumenta, prioridad baja.',
@@ -725,20 +684,6 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     hint: '/proc/meminfo y /proc/stat',
     solutionHint: 'El comando vmstat extrae información del archivo /proc/meminfo y del archivo /proc/stat.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /\/proc\/meminfo.*\/proc\/stat/i, commands: ['vmstat'], difficulty: 'medio',
-  },
-  {
-    id: 'p2-87', category: 'PARCIAL 2 - Monitoreo',
-    instruction: 'Describir la información de la categoría swap que contiene el informe obtenido a través del comando vmstat.',
-    hint: 'si y so',
-    solutionHint: 'La categoría swap comprende dos campos: si: intercambio en kbytes por segundo desde el disco hacia la memoria RAM. so: intercambio en kbytes por segundo desde la memoria RAM hacia el disco.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /si.*disco.*RAM|so.*RAM.*disco/i, commands: ['vmstat'], difficulty: 'medio',
-  },
-  {
-    id: 'p2-88', category: 'PARCIAL 2 - Monitoreo',
-    instruction: 'Obtener un informe sobre procesos, memoria, paginación, E/S, etc.',
-    hint: 'vmstat',
-    solutionHint: 'vmstat. Brinda un panorama general sobre procesos, memoria, intercambio, sistema, E/S y uso de CPU. Muestra de manera resumida el rendimiento del sistema con valores promedio desde el arranque.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /\bvmstat\b/i, commands: ['vmstat'], difficulty: 'fácil',
   },
   {
     id: 'p2-89', category: 'PARCIAL 2 - Monitoreo',
@@ -821,20 +766,6 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     executionCommand: './script.sh /home/usuario/desordenado.txt /home/usuario/ordenado.txt',
     expectedOutput: 'Archivo ordenado /home/usuario/ordenado.txt generado.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /sort.*-r.*-k2,2|\$\#.*-eq.*2/i, commands: [], difficulty: 'medio',
-  },
-  {
-    id: 'p2-100', category: 'PARCIAL 2 - Shell Scripting',
-    instruction: 'Ejecutar el programa del punto anterior (99). Indicar los comandos para hacer ejecutable y correr el script.',
-    hint: 'chmod +x, ./, sh',
-    solutionHint: 'chmod +x ordenar.sh\n./ordenar.sh lista.txt resultado.txt',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /chmod.*\+x.*ordenar.*\.\/ordenar/i, commands: [], difficulty: 'fácil',
-  },
-  {
-    id: 'p2-101', category: 'PARCIAL 2 - Monitoreo',
-    instruction: 'Indicar de qué archivo/s extrae la información el comando free.',
-    hint: '/proc/meminfo',
-    solutionHint: 'El comando free extrae la información del archivo /proc/meminfo.',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /\/proc\/meminfo/i, commands: ['free'], difficulty: 'fácil',
   },
   {
     id: 'p2-102a', category: 'PARCIAL 2 - Monitoreo',
