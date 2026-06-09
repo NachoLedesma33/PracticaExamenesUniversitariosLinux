@@ -1,7 +1,41 @@
 import type { StateCreator } from 'zustand';
 import type { VFS, VFSNode } from '../../types';
-import { createVFS, getNextInode } from '../../data/vfs-template';
+import { createVFS, getNextInode, setGlobalInode } from '../../data/vfs-template';
 import { normalizePath, basename } from '../../utils';
+
+const STORAGE_KEY_VFS = 'so-ejercitacion:vfs';
+const STORAGE_KEY_INODE = 'so-ejercitacion:inode';
+
+function persistVFS(vfs: VFS): void {
+  try {
+    localStorage.setItem(STORAGE_KEY_VFS, JSON.stringify(vfs));
+    localStorage.setItem(STORAGE_KEY_INODE, String(getNextInode() - 1));
+  } catch {
+    /* storage full or unavailable */
+  }
+}
+
+function loadPersistedVFS(): VFS | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_VFS);
+    const inodeRaw = localStorage.getItem(STORAGE_KEY_INODE);
+    if (!raw) return null;
+    const vfs = JSON.parse(raw) as VFS;
+    if (inodeRaw) setGlobalInode(Number(inodeRaw) + 1);
+    return vfs;
+  } catch {
+    return null;
+  }
+}
+
+function clearPersistedVFS(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY_VFS);
+    localStorage.removeItem(STORAGE_KEY_INODE);
+  } catch {
+    /* ignore */
+  }
+}
 
 export interface FSSlice {
   vfs: VFS;
@@ -70,23 +104,26 @@ function cloneNode(node: VFSNode): VFSNode {
 }
 
 export const createFSSlice: StateCreator<FSSlice> = (set, get) => ({
-  vfs: createVFS(),
+  vfs: loadPersistedVFS() ?? createVFS(),
 
-  resetFS: () => set({ vfs: createVFS() }),
+  resetFS: () => {
+    clearPersistedVFS();
+    set({ vfs: createVFS() });
+  },
 
   getNode: (path: string) => findNode(get().vfs, path),
 
   setNode: (path: string, node: VFSNode) => {
     const vfs = get().vfs;
     const ok = setNodeInTree(vfs, path, node);
-    if (ok) set({ vfs: { ...vfs } });
+    if (ok) { set({ vfs: { ...vfs } }); persistVFS(vfs); }
     return ok;
   },
 
   removeNode: (path: string) => {
     const vfs = get().vfs;
     const ok = removeNodeFromTree(vfs, path);
-    if (ok) set({ vfs: { ...vfs } });
+    if (ok) { set({ vfs: { ...vfs } }); persistVFS(vfs); }
     return ok;
   },
 
@@ -100,7 +137,7 @@ export const createFSSlice: StateCreator<FSSlice> = (set, get) => ({
       content,
     };
     const ok = setNodeInTree(vfs, path, node);
-    if (ok) set({ vfs: { ...vfs } });
+    if (ok) { set({ vfs: { ...vfs } }); persistVFS(vfs); }
     return ok;
   },
 
@@ -114,7 +151,7 @@ export const createFSSlice: StateCreator<FSSlice> = (set, get) => ({
       children: {},
     };
     const ok = setNodeInTree(vfs, path, node);
-    if (ok) set({ vfs: { ...vfs } });
+    if (ok) { set({ vfs: { ...vfs } }); persistVFS(vfs); }
     return ok;
   },
 
@@ -123,7 +160,7 @@ export const createFSSlice: StateCreator<FSSlice> = (set, get) => ({
     const source = findNode(vfs, src);
     if (!source) return false;
     const ok = setNodeInTree(vfs, dest, cloneNode(source));
-    if (ok) set({ vfs: { ...vfs } });
+    if (ok) { set({ vfs: { ...vfs } }); persistVFS(vfs); }
     return ok;
   },
 
@@ -135,6 +172,7 @@ export const createFSSlice: StateCreator<FSSlice> = (set, get) => ({
     if (!setNodeInTree(vfs, dest, cloned)) return false;
     if (!removeNodeFromTree(vfs, src)) return false;
     set({ vfs: { ...vfs } });
+    persistVFS(vfs);
     return true;
   },
 

@@ -143,6 +143,10 @@ export function resetInodeCounter(): void {
   globalInode = 1000;
 }
 
+export function setGlobalInode(value: number): void {
+  globalInode = value;
+}
+
 export function createVFS(): VFS {
   inodeCounter = 2;
   globalInode = 1000;
