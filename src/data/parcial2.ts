@@ -34,6 +34,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Indicar qué comando se utiliza para terminar o interrumpir o eliminar un proceso que fue lanzado en modo background y cuál es la sintaxis utilizada.',
     hint: 'kill -9 PID',
     solutionHint: 'Se utiliza el comando kill. Sintaxis: kill -9 PID (donde -9 es SIGKILL que fuerza la terminación inmediata).',
+    executionCommand: 'kill -9 1234',
+    expectedOutput: 'Se envía la señal SIGKILL (9) al proceso PID 1234.\nEl proceso 1234 es terminado forzosamente de forma inmediata.\n\nkill -9 es una señal de terminación forzada que no puede ser ignorada ni manejada por el proceso. A diferencia de SIGTERM (-15), que permite al proceso hacer una limpieza antes de salir, SIGKILL (-9) lo elimina de golpe. Es la señal más drástica, útil cuando un proceso no responde.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /kill.*-9.*PID|kill.*-9/i, commands: ['kill'], difficulty: 'fácil',
   },
   {
@@ -41,6 +43,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Qué comando permite lanzar un proceso con una prioridad distinta a la que le es asignada por defecto.',
     hint: 'Comando de 4 letras',
     solutionHint: 'El comando nice.',
+    executionCommand: 'nice -n 15 ./script.sh',
+    expectedOutput: 'Lanza ./script.sh con un valor nice de 15.\nEl proceso se ejecuta con menor prioridad que la default (NI=15 en vez de NI=0).\n\nEl valor nice puede ir de -20 (máxima prioridad) a 19 (mínima prioridad). Por defecto los procesos heredan NI=0. nice -n 15 le asigna menor prioridad, dejando más CPU disponible para otros procesos.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /\bnice\b/i, commands: ['nice'], difficulty: 'fácil',
   },
   {
@@ -48,6 +52,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'El comando nice permite cambiar la prioridad de un proceso cuando ya se inició su ejecución es decir en tiempo real. ¿Verdadero o Falso? Justifique.',
     hint: 'Hay otro comando para eso: renice',
     solutionHint: 'Falso. nice solo se usa para establecer la prioridad al momento de lanzar un proceso nuevo. Si el proceso ya está en ejecución, el comando correcto es renice.',
+    executionCommand: 'nice -n 10 ./proceso &\nrenice 5 5678',
+    expectedOutput: '$ nice -n 10 ./proceso &\n[1] 5678\nLanza proceso con NI=10 (baja prioridad).\n\n$ renice 5 5678\n5678 (process ID) old priority 10, new priority 5\nCambia en tiempo real NI de 10 a 5 (gana prioridad).\n\nDiferencia clave: nice establece la prioridad al lanzar el proceso, renice la modifica mientras se ejecuta.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /falso|false|renice/i, commands: ['nice', 'renice'], difficulty: 'medio',
   },
   {
@@ -83,6 +89,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Para eliminar un proceso que está siendo ejecutado en background se procede de la siguiente manera: a) kill -15 PID b) kill -9 PID c) Ctrl+C d) Ctrl+Z',
     hint: 'Señal 9 = SIGKILL',
     solutionHint: 'b. kill -9 PID',
+    executionCommand: 'kill -9 1234',
+    expectedOutput: 'Se envía señal SIGKILL (9) al proceso PID 1234.\nTerminación forzada inmediata.\n\nkill -9 (SIGKILL): terminación abrupta, no puede ignorarse.\nkill -15 (SIGTERM): terminación suave, el proceso puede hacer limpieza.\nCtrl+C: envía SIGINT (2) al proceso en foreground.\nCtrl+Z: suspende (no elimina) el proceso.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /[bB]\)|kill.*-9/i, commands: ['kill'], difficulty: 'fácil',
   },
   {
@@ -125,6 +133,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Indicar qué comando se utiliza para:\na) Terminar un proceso en background.\nb) Suspender temporalmente un proceso en background.\nc) Terminar un proceso en foreground.\nd) Suspender temporalmente un proceso en foreground.',
     hint: 'kill -9, kill -19, Ctrl+C, Ctrl+Z',
     solutionHint: 'a) kill -9 PID. b) kill -19 PID (SIGSTOP). c) Ctrl + C. d) Ctrl + Z.',
+    executionCommand: 'kill -9 1234\nkill -19 5678',
+    expectedOutput: '$ kill -9 1234\nEnvía SIGKILL → proceso 1234 terminado forzosamente.\n\n$ kill -19 5678\nEnvía SIGSTOP → proceso 5678 suspendido temporalmente.\n\nSeñales comunes:\n  SIGTERM (15) → terminación suave (default)\n  SIGKILL (9)  → terminación forzada\n  SIGSTOP (19) → suspender proceso\n  SIGCONT (18) → reanudar proceso suspendido\n  SIGINT (2)   → interrupción (Ctrl+C)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /kill.*-9.*kill.*-19.*Ctrl.*C.*Ctrl.*Z/i, commands: ['kill'], difficulty: 'medio',
   },
   {
@@ -132,6 +142,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Qué comando permite lanzar un proceso con una prioridad distinta a la que le es asignada por defecto.',
     hint: 'nice',
     solutionHint: 'El comando nice.',
+    executionCommand: 'nice -n 5 ./programa',
+    expectedOutput: 'Lanza ./programa con NI=5.\nEl proceso corre con menor prioridad que la default.\n\n  nice -20 → máxima prioridad (solo root)\n  nice -10 → alta prioridad (solo root)\n  nice 0   → prioridad por defecto\n  nice 10  → baja prioridad\n  nice 19  → mínima prioridad',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /\bnice\b/i, commands: ['nice'], difficulty: 'fácil',
   },
   {
@@ -139,6 +151,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Diferencias entre los comandos nice y renice.',
     hint: 'nice = al lanzar, renice = proceso ya corriendo',
     solutionHint: 'nice se usa para iniciar un proceso asignándole un valor NI. Sintaxis: nice -NI comando. renice altera en tiempo real el valor NI de un proceso que ya está corriendo mediante su PID. Sintaxis: renice NI PID.',
+    executionCommand: 'nice -n 10 ./script.sh &\nrenice 5 5678',
+    expectedOutput: '$ nice -n 10 ./script.sh &\n[1] 5678\nLanza script con NI=10 → baja prioridad.\n\n$ renice 5 5678\n5678 (process ID) old priority 10, new priority 5\nModifica en caliente NI de 10 a 5 → gana prioridad.\n\nResumen:\n  nice  → define NI al INICIAR el proceso.\n  renice → modifica NI de un proceso YA EN EJECUCIÓN.\n  Un usuario común solo puede aumentar NI (bajar prioridad), nunca reducirlo.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /nice.*lanzar|renice.*ya.*corr|nice.*iniciar.*renice.*modif/i, commands: ['nice', 'renice'], difficulty: 'medio',
   },
 
@@ -149,6 +163,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Diferencias entre at, cron y batch.',
     hint: 'at y batch son única vez; cron es periódico. at fija la hora, batch decide según carga.',
     solutionHint: 'at y batch planifican tareas por única vez en el futuro. cron planifica con periodicidad regular. La diferencia entre at y batch: con at el usuario decide el momento exacto; con batch el sistema ejecuta cuando la carga global sea baja.',
+    executionCommand: 'echo "copia de seguridad" > respaldo.txt | at 14:30\n30 18 * * 3 ps -aef\nbatch',
+    expectedOutput: '--- at: ejecución única ---\n$ echo "copia de seguridad" > respaldo.txt | at 14:30\nwarning: commands will be executed using /bin/sh\njob 1 at Wed Jun 10 14:30:00 2026\n\n--- cron: ejecución periódica ---\n$ 30 18 * * 3 ps -aef\nSe ejecuta "ps -aef" todos los miércoles a las 18:30.\n\n--- batch: ejecución única cuando el sistema esté con baja carga ---\n$ batch\n> echo "tarea programada" >> tareas.log\n> Ctrl+D\n\nDiferencias:\n- at: programación única, el usuario fija la hora exacta.\n- batch: programación única, el sistema ejecuta cuando baja la carga.\n- cron: programación periódica (minutos, horas, días, meses).',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /at.*única|cron.*periódic|batch.*carga.*baja/i, commands: ['at', 'cron', 'batch'], difficulty: 'medio',
   },
   {
@@ -204,6 +220,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'La orden at permite programar trabajos con determinada periodicidad. ¿Verdadero o Falso? Justifique.',
     hint: 'at ejecuta solo una vez.',
     solutionHint: 'Falso. El comando at sirve para programar ejecución de comandos en un momento determinado del futuro por única vez. No tiene soporte nativo para repeticiones periódicas.',
+    executionCommand: 'at 13:30',
+    expectedOutput: '$ at 13:30\nwarning: commands will be executed using /bin/sh\nat> echo "Hola" > mensaje.txt\nat> Ctrl+D\njob 2 at Wed Jun 10 13:30:00 2026\n\nLa tarea se ejecutará UNA SOLA VEZ hoy a las 13:30.\nSi la hora ya pasó, se ejecuta mañana a las 13:30.\nPara tareas periódicas (diarias, semanales) debe usarse cron, no at.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /falso|false|única.*vez|no.*periódic/i, commands: ['at'], difficulty: 'fácil',
   },
   {
@@ -211,6 +229,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Ejecutando "at 13:30" -> ingresando un comando -> y saliendo con CTRL-D. ¿De esta manera podemos programar una tarea para que se ejecute todos los días a las 13:30? ¿Verdadero o Falso? Justifique.',
     hint: 'at es de una sola vez.',
     solutionHint: 'Falso. La tarea se ejecutará una única vez a las 13:30 (del día de hoy si no pasó, o de mañana si ya pasó), ya que at planifica eventos únicos no recurrentes.',
+    executionCommand: 'at 13:30',
+    expectedOutput: '$ at 13:30\nwarning: commands will be executed using /bin/sh\nat> echo "ejecutando tarea"\nat> Ctrl+D\njob 3 at Wed Jun 10 13:30:00 2026\n\nLa tarea se ejecuta UNA VEZ. Para repetir todos los días a las 13:30:\n  crontab -e\n  30 13 * * * echo "ejecutando tarea"\n\nCron permite periodicidad: minutos horas dias_mes meses dias_semana comando.\nat solo sirve para ejecución diferida única.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /falso|false|única.*vez|no.*recurrente/i, commands: ['at'], difficulty: 'fácil',
   },
   {
@@ -218,6 +238,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Describir la utilidad cron.',
     hint: 'Demonio que ejecuta tareas periódicas.',
     solutionHint: 'El programa cron ejecuta las tareas planificadas para que se ejecuten en determinado momento con cierta periodicidad. Cron se activa cada minuto para verificar si hay tareas planificadas para ese instante, en caso afirmativo las ejecuta y envía la respuesta en forma de correspondencia a través del correo electrónico interno de Linux al usuario que encargó la tarea.',
+    executionCommand: 'crontab -e\n30 18 * * 3 ps -aef',
+    expectedOutput: 'Al ejecutar crontab -e se abre el editor para definir tareas periódicas.\nCada línea sigue el formato:\n  minuto hora día_mes mes día_semana comando\n\nEjemplo:\n  30 18 * * 3 ps -aef\n  → Ejecuta ps -aef todos los miércoles (3) a las 18:30.\n\nCampos:\n  minuto (0-59), hora (0-23), día_mes (1-31), mes (1-12), día_semana (0-7 donde 0=domingo).\n  * significa "todos los valores posibles".\n  */n significa "cada n unidades".\n  a,b,c significa "valores específicos".',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /demonio|tareas.*periódicas|crontab|automati/i, commands: ['cron'], difficulty: 'medio',
   },
   {
@@ -274,6 +296,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Completar el ciclo de control de trabajos:\n$ find / -name archi\n- Suspender su ejecución: ______\n- Antes de reanudar debe obtener un número con: ______\n- ¿Qué representa este número? ______\n- Reanudar en primer plano: ______',
     hint: 'Ctrl+Z, jobs, Job ID, fg %N',
     solutionHint: 'Suspender: Ctrl+Z. Obtener número: jobs. El número representa el Job ID asignado por la shell. Reanudar en primer plano: fg %número_de_tarea (o fg número_de_tarea).',
+    executionCommand: 'find / -name archi',
+    expectedOutput: '$ find / -name archi\n(comienza a buscar archivos...)\n^Z (Ctrl+Z)\n[1]+ Stopped        find / -name archi\n\n$ jobs\n[1]+ Stopped        find / -name archi\n\n$ fg %1\nfind / -name archi\n(continúa en primer plano)\n\nCiclo completo:\n1. Ctrl+Z → suspende el trabajo (Job ID [1]).\n2. jobs → lista los trabajos con sus IDs.\n3. fg %N → reanuda el trabajo N en foreground.\n4. bg %N → reanuda el trabajo N en background.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /Ctrl.*Z.*jobs.*Job.*ID.*fg/i, commands: ['fg', 'bg', 'jobs'], difficulty: 'medio',
   },
   {
@@ -281,6 +305,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Semejanzas y diferencias entre los comandos fg y bg.',
     hint: 'Ambos reanudan procesos. fg en foreground, bg en background.',
     solutionHint: 'Semejanza: Ambos comandos permiten reanudar la ejecución de un proceso. Diferencia: El comando fg permite reanudar la ejecución de un proceso en modo foreground, mientras que el comando bg permite reanudar la ejecución de un proceso en modo background.',
+    executionCommand: 'find / -name "*.txt"',
+    expectedOutput: '$ find / -name "*.txt"\n(comienza a buscar)\n^Z (Ctrl+Z)\n[1]+ Stopped        find / -name "*.txt"\n\n$ bg %1\n[1]+ find / -name "*.txt" &\nEl trabajo reanuda en background (el prompt vuelve de inmediato).\n\n$ fg %1\nfind / -name "*.txt"\nEl trabajo reanuda en foreground (retiene la terminal hasta terminar).\n\nSemejanza: ambos reanudan un trabajo suspendido.\nDiferencia: fg lo reanuda en primer plano (retiene prompt), bg en segundo plano (libera prompt).',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /reanudan.*fg.*primer.*bg.*segundo/i, commands: ['fg', 'bg'], difficulty: 'medio',
   },
   {
@@ -288,6 +314,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Indicar de qué manera suspendería (detendría temporalmente) la ejecución del siguiente proceso:\n$ find / -name dire/grupo &\n[1] 1265\n$ ______ (Completar)',
     hint: 'kill -19 PID (SIGSTOP)',
     solutionHint: 'kill -19 1265 (la señal 19 es SIGSTOP, que suspende temporalmente el proceso).',
+    executionCommand: 'kill -19 1265',
+    expectedOutput: '$ kill -19 1265\nSe envía la señal SIGSTOP (19) al proceso PID 1265.\nEl proceso es suspendido temporalmente.\n\nSeñales de control de procesos:\n  SIGSTOP (19) → suspende (pausa) el proceso\n  SIGCONT (18) → reanuda un proceso suspendido\n  SIGKILL (9)  → termina forzosamente\n  SIGTERM (15) → termina suavemente\n\nPara reanudar el proceso luego de suspenderlo:\n  kill -18 1265  (SIGCONT)',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /kill.*-19.*1265|kill.*-STOP.*1265|kill.*19.*PID/i, commands: ['kill'], difficulty: 'medio',
   },
   {
@@ -637,6 +665,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Diferencias entre at, cron y batch.',
     hint: 'at y batch = única vez, cron = periódico',
     solutionHint: 'at y batch planifican tareas por única vez en el futuro. cron planifica con periodicidad regular. En at el usuario fija la hora exacta; en batch el sistema ejecuta cuando la carga es baja.',
+    executionCommand: 'echo "backup" | at 02:00\n*/30 * * * * who\nbatch',
+    expectedOutput: '--- at: único, hora fija ---\n$ echo "backup" | at 02:00\njob 4 at Thu Jun 11 02:00:00 2026\n\n--- cron: periódico ---\n$ */30 * * * * who\nEjecuta who cada 30 minutos.\n\n--- batch: único, cuando baja la carga ---\n$ batch\n> echo "tarea batch"\n> Ctrl+D\n\nResumen:\n  at:     ejecución diferida ÚNICA, el usuario elige la hora.\n  batch:  ejecución diferida ÚNICA, el sistema elige el momento.\n  cron:   ejecución PERIÓDICA, con formato de 5 campos.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /at.*única|batch.*carga.*baja|cron.*periódic/i, commands: [], difficulty: 'medio',
   },
 
@@ -669,6 +699,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Semejanzas y diferencias entre los comandos fg y bg.',
     hint: 'Ambos reanudan. fg en foreground, bg en background.',
     solutionHint: 'Semejanza: Ambos comandos permiten reanudar la ejecución de un proceso. Diferencia: El comando fg permite reanudar la ejecución de un proceso en modo foreground, mientras que el comando bg permite reanudar la ejecución de un proceso en modo background.',
+    executionCommand: 'find / -name config 2>/dev/null',
+    expectedOutput: '$ find / -name config 2>/dev/null\n^Z (Ctrl+Z)\n[1]+ Stopped        find / -name config 2>/dev/null\n\n$ bg %1\n[1]+ find / -name config 2>/dev/null &\n(El proceso corre en background, el prompt vuelve inmediatamente)\n\n$ fg %1\nfind / -name config 2>/dev/null\n(El proceso corre en foreground, la terminal queda ocupada)\n\nSemejanza: ambos reanudan un trabajo suspendido.\nDiferencia:\n  fg → foreground (terminal ocupada hasta que termine).\n  bg → background (terminal libre para seguir trabajando).',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /fg.*foreground.*bg.*background/i, commands: ['fg', 'bg'], difficulty: 'medio',
   },
   {
@@ -676,6 +708,8 @@ export const PARCIAL_2_CHALLENGES: Challenge[] = [
     instruction: 'Describir la utilidad cron.',
     hint: 'Demonio que ejecuta tareas programadas.',
     solutionHint: 'El programa cron ejecuta las tareas planificadas para que se ejecuten en determinado momento con cierta periodicidad. Cron se activa cada minuto para verificar si hay tareas planificadas para ese instante, en caso afirmativo las ejecuta y envía la respuesta en forma de correspondencia a través del correo electrónico interno de Linux al usuario que encargó la tarea.',
+    executionCommand: 'crontab -e\n0 6 * * 1-5 tar -czf backup.tar.gz /home',
+    expectedOutput: 'Al editar crontab con crontab -e:\n  0 6 * * 1-5 tar -czf backup.tar.gz /home\n  → Ejecuta backup de /home todos los días de semana (1-5) a las 6:00 AM.\n\nEstructura de cron:\n  ┌ minuto (0-59)\n  │ ┌ hora (0-23)\n  │ │ ┌ día del mes (1-31)\n  │ │ │ ┌ mes (1-12)\n  │ │ │ │ ┌ día de la semana (0-7, 0=domingo)\n  │ │ │ │ │\n  * * * * * comando\n\ncron es un demonio (servicio en segundo plano) que se activa cada minuto, revisa si hay tareas programadas para ese instante y las ejecuta.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /cron.*tareas.*periódicas|cron.*cada.*minuto/i, commands: [], difficulty: 'medio',
   },
   {

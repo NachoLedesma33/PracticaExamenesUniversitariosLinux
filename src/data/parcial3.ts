@@ -48,6 +48,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Visualizar un listado de las variables locales y de las variables de entorno. Explicar la diferencia entre ambas y cómo convertir una local en entorno.',
     hint: 'set, export',
     solutionHint: 'set. Las variables locales solo son reconocidas durante la sesión de trabajo actual y no en sesiones posteriores, ni si cambiamos de shell. Las variables de entorno son reconocidas en cualquier sesión y shell. Para transformar una local en entorno: export nombredelavariable.',
+    executionCommand: 'set\nenv\nMI_VAR="Hola mundo"\nexport MI_VAR',
+    expectedOutput: '$ set\n( lista todas las variables LOCALES y DE ENTORNO de la shell actual )\n\n$ env\n( lista solo las variables DE ENTORNO )\n\n$ MI_VAR="Hola mundo"\nCrea una variable LOCAL (solo visible en esta shell).\n\n$ export MI_VAR\nConvierte MI_VAR en variable de ENTORNO.\n(ahora es visible para procesos hijo y otras shells)\n\nDiferencia:\n  Local: solo existe en la shell actual. Al cerrar la sesión se pierde.\n  Entorno: se hereda a procesos hijo y shells hijas.\n  Para convertir: export NOMBRE_VARIABLE.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /set.*export.*local.*entorno|variables.*local.*export/i, commands: ['set', 'env', 'export'], difficulty: 'medio',
   },
   {
@@ -97,6 +99,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: '¿Qué precaución debe tenerse antes de realizar el desmontaje de un dispositivo? ¿Por qué?',
     hint: 'No estar en el punto de montaje ni tener archivos abiertos.',
     solutionHint: 'No debemos desmontar un dispositivo si estamos trabajando sobre él, es decir si el directorio actual es el Punto de Montaje asociado a dicho dispositivo. Tampoco debemos desmontar si hay archivos abiertos.',
+    executionCommand: 'umount /media/KINGSTON',
+    expectedOutput: '$ umount /media/KINGSTON\numount: device is busy\n(Error si hay archivos abiertos o el directorio actual es /media/KINGSTON)\n\nPrimero debe:\n1. Salir del directorio: cd /\n2. Cerrar archivos abiertos en ese dispositivo.\n3. Luego: umount /media/KINGSTON\n\nSi aún así falla: umount -l /media/KINGSTON (desmontaje forzado diferido).',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /no.*desmontar.*punto.*montaje|archivos.*abiertos/i, commands: ['umount'], difficulty: 'medio',
   },
   {
@@ -104,6 +108,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Crear el usuario "usuario20" asignándole el número 710 e incorporándolo al grupo "gru50".',
     hint: 'useradd -u -g',
     solutionHint: 'useradd -u 710 -g gru50 usuario20',
+    executionCommand: 'useradd -u 710 -g gru50 usuario20',
+    expectedOutput: 'Crea el usuario "usuario20" con:\n  - UID (user ID): 710\n  - Grupo principal: gru50 (GID del grupo)\n  - Shell por defecto: /bin/bash\n  - Home: /home/usuario20\n\nVerificación:\n$ id usuario20\nuid=710(usuario20) gid=830(gru50) groups=830(gru50)\n\n$ grep usuario20 /etc/passwd\nusuario20:x:710:830::/home/usuario20:/bin/bash',
     initialState: goHome, validationType: 'command', expectedCommandRegex: /useradd\s+-u\s+710\s+-g\s+gru50/, commands: ['useradd'], difficulty: 'medio',
   },
   {
@@ -111,6 +117,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Cambiar el nombre de "usuario20" por "pepe".',
     hint: 'usermod -l',
     solutionHint: 'usermod -l pepe usuario20',
+    executionCommand: 'usermod -l pepe usuario20',
+    expectedOutput: 'Cambia el nombre de login de usuario20 a pepe.\n\nVerificación:\n$ id pepe\nuid=710(pepe) gid=830(gru50)\n\n$ grep pepe /etc/passwd\npepe:x:710:830::/home/usuario20:/bin/bash\n\nNota: el home directory NO se renombra automáticamente con -l.\nPara cambiar también el home: usermod -d /home/pepe -m pepe',
     initialState: goHome, validationType: 'command', expectedCommandRegex: /usermod\s+-l\s+pepe/, commands: ['usermod'], difficulty: 'medio',
   },
   {
@@ -118,6 +126,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Crear el usuario "usu40".',
     hint: 'useradd usu40',
     solutionHint: 'useradd usu40',
+    executionCommand: 'useradd usu40',
+    expectedOutput: 'Crea el usuario "usu40" con valores por defecto:\n  - UID: próximo disponible (ej: 1001)\n  - Grupo principal: usu40 (grupo propio)\n  - Home: /home/usu40\n  - Shell: /bin/bash\n\nVerificación:\n$ tail -1 /etc/passwd\nusu40:x:1001:1001::/home/usu40:/bin/bash',
     initialState: goHome, validationType: 'command', expectedCommandRegex: /useradd\s+usu40/, commands: ['useradd'], difficulty: 'fácil',
   },
   {
@@ -125,6 +135,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Crear el grupo "alumnos" asignándole el número 830.',
     hint: 'groupadd -g',
     solutionHint: 'groupadd -g 830 alumnos',
+    executionCommand: 'groupadd -g 830 alumnos',
+    expectedOutput: 'Crea el grupo "alumnos" con GID 830.\n\nVerificación:\n$ grep alumnos /etc/group\nalumnos:x:830:\n\nLos usuarios pueden agregarse al grupo con:\n  usermod -aG alumnos nombre_usuario\n  (o editando /etc/group manualmente)',
     initialState: goHome, validationType: 'command', expectedCommandRegex: /groupadd\s+-g\s+830/, commands: ['groupadd'], difficulty: 'medio',
   },
   {
@@ -132,6 +144,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Cambiarle el nombre a "alumnos" por "curso".',
     hint: 'groupmod -n',
     solutionHint: 'groupmod -n curso alumnos',
+    executionCommand: 'groupmod -n curso alumnos',
+    expectedOutput: 'Cambia el nombre del grupo "alumnos" a "curso".\nEl GID (830) se mantiene.\n\nVerificación:\n$ grep curso /etc/group\ncurso:x:830:\n\n$ grep alumnos /etc/group\n(ya no existe)\n\nLos usuarios que pertenecían a "alumnos" ahora están en "curso".',
     initialState: goHome, validationType: 'command', expectedCommandRegex: /groupmod\s+-n\s+curso/, commands: ['groupmod'], difficulty: 'medio',
   },
   {
@@ -139,6 +153,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Eliminar el usuario "pepe" y previamente asignarle a "usu40" la propiedad de sus archivos.',
     hint: 'find -uid chown, luego userdel',
     solutionHint: 'find / -uid 710 -type f -exec chown usu40 {} \;\nuserdel pepe',
+    executionCommand: 'find / -uid 710 -type f -exec chown usu40 {} \;\nuserdel pepe',
+    expectedOutput: 'Paso 1: Buscar todos los archivos de pepe (UID 710) y reasignarlos a usu40:\n$ find / -uid 710 -type f -exec chown usu40 {} \\;\n(No hay salida si es exitoso)\n\nPaso 2: Eliminar al usuario pepe:\n$ userdel pepe\n(pepe es eliminado de /etc/passwd)\n\nVerificación:\n$ id pepe\nid: pepe: no such user\n\nPor qué este orden:\n1. Si se elimina el usuario primero, sus archivos quedan huérfanos (UID sin nombre).\n2. Es buena práctica reasignar los archivos a otro usuario antes de borrar.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /find.*-uid.*chown.*userdel|chown.*usu40.*userdel.*pepe/i, commands: ['find', 'chown', 'userdel'], difficulty: 'difícil',
   },
   {
@@ -227,6 +243,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Completar:\nPara modificar el homedirectory debe cambiar el contenido de la variable ______\nPara modificar el prompt debe cambiar el contenido de la variable ______',
     hint: 'HOME y PS1',
     solutionHint: 'Para modificar el homedirectory debe cambiar HOME. Para modificar el prompt debe cambiar PS1.',
+    executionCommand: 'export HOME=/nuevo/home\nexport PS1="\\u@\\h:\\w\\$ "',
+    expectedOutput: '$ export HOME=/nuevo/home\nCambia el home directory a /nuevo/home para la sesión actual.\n\n$ export PS1="\\u@\\h:\\w\\$ "\nusuario@hostname:~$ (el prompt cambia)\n\nVariables:\n  HOME: define el directorio personal del usuario.\n  PS1: define la apariencia del prompt.\n    \\u = usuario, \\h = hostname, \\w = directorio actual, \\$ = $ o #.\n\nEstos cambios son SOLO para la sesión actual. Para hacerlos permanentes,\nagregar los export a ~/.bashrc o ~/.bash_profile.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /HOME.*PS1|home.*prompt/i, commands: ['export'], difficulty: 'fácil',
   },
   {
@@ -234,6 +252,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Crear la variable b guardando en ella la ruta /rhome/alumnox/dire10/dire20/dire30 y posteriormente transformarla en variable de entorno.',
     hint: 'b=... && export b',
     solutionHint: 'b=/rhome/alumnox/dire10/dire20/dire30 && export b',
+    executionCommand: 'b=/rhome/alumnox/dire10/dire20/dire30 && export b',
+    expectedOutput: 'Paso 1: crear variable LOCAL con la ruta:\n$ b=/rhome/alumnox/dire10/dire20/dire30\n\nPaso 2: exportarla para que sea variable de ENTORNO:\n$ export b\n\nVerificación:\n$ echo $b\n/rhome/alumnox/dire10/dire20/dire30\n\n$ env | grep ^b\nb=/rhome/alumnox/dire10/dire20/dire30\n\nEn un solo paso: b=/rhome/alumnox/dire10/dire20/dire30 && export b\n&& asegura que export solo se ejecute si la asignación fue exitosa.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /b=.*export b/i, commands: ['export'], difficulty: 'medio',
   },
   {
@@ -348,8 +368,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Indicar cuáles son los pasos que deben seguirse para crear un fichero swap de 1,5 Mb con bloques de 1Kb y con el nombre filesw.',
     hint: 'dd, mkswap, sync, swapon',
     solutionHint: 'dd if=/dev/zero of=filesw bs=1024 count=1536\nmkswap filesw 1536\nsync\nswapon filesw\n\nSignificado: dd crea una copia de /dev/zero con nombre filesw y tamaño bs×count = 1,5 Mb. bs=1024 bytes/bloque, count=1536 bloques (1,5×1024). mkswap inicializa el área swap. sync vuelca las modificaciones a disco. swapon activa el área swap.',
-    executionCommand: './script.sh /home/usuario',
-    expectedOutput: '-rw-r--r-- 1 usuario users 1024 ene 01 00:00 archivo1.txt\n-rw-r--r-- 1 usuario users 2048 ene 01 00:00 archivo2.txt',
+    executionCommand: 'dd if=/dev/zero of=filesw bs=1024 count=1536\nmkswap filesw 1536\nsync\nswapon filesw',
+    expectedOutput: '$ dd if=/dev/zero of=filesw bs=1024 count=1536\n1536+0 records in\n1536+0 records out\n1572864 bytes (1,5 MB) copied\n\n$ mkswap filesw 1536\nSetting up swapspace version 1, size = 1572864 bytes\n\n$ sync\n(Vuelca los buffers a disco — sin salida)\n\n$ swapon filesw\n(Activa el área swap — sin salida si es exitoso)\n\nVerificación:\n$ swapon -s\nFilename               Type            Size      Used   Priority\nfilesw                 file            1536      0      -1\n\n$ cat /proc/swaps\nFilename               Type            Size      Used   Priority\nfilesw                 file            1536      0      -1\n\nResumen:\n dd     → crea el archivo del tamaño exacto\n mkswap → lo inicializa como área swap\n sync   → asegura que los datos estén en disco\n swapon → activa el área swap',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /dd.*of=filesw.*mkswap.*swapon/i, commands: ['dd', 'mkswap', 'swapon'], difficulty: 'difícil',
   },
   {
@@ -357,6 +377,8 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: 'Indicar cuáles son los pasos que deben seguirse para crear un fichero swap de 1,75 Mb con el nombre archisw y bloques de 1Kb.',
     hint: 'dd, count=1792 (1,75×1024), mkswap, swapon',
     solutionHint: 'dd if=/dev/zero of=archisw bs=1024 count=1792\nmkswap archisw 1792\nsync\nswapon archisw\n\ncount=1792 (1,75×1024=1792).',
+    executionCommand: 'dd if=/dev/zero of=archisw bs=1024 count=1792\nmkswap archisw 1792\nsync\nswapon archisw',
+    expectedOutput: '$ dd if=/dev/zero of=archisw bs=1024 count=1792\n1792+0 records in\n1792+0 records out\n1835008 bytes (1,75 MB) copied\n\n$ mkswap archisw 1792\nSetting up swapspace version 1, size = 1835008 bytes\n\n$ sync\n\n$ swapon archisw\n\nVerificación:\n$ swapon -s\nFilename               Type            Size      Used   Priority\nfilesw                 file            1536      0      -1\narchisw                file            1792      0      -2\n\nNota: count=1792 = 1,75 × 1024 = 1792 bloques de 1024 bytes cada uno.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /dd.*of=archisw.*mkswap.*archisw|count=1792/i, commands: ['dd', 'mkswap', 'swapon'], difficulty: 'difícil',
   },
   {
