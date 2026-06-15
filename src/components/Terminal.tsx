@@ -3,9 +3,12 @@ import { TerminalInput } from './TerminalInput';
 import { ChallengeBanner } from './ChallengeBanner';
 import { Maximize2, Minimize2, Terminal as TerminalIcon } from 'lucide-react';
 import { useState } from 'react';
+import { useTerminalStore } from '../store/useTerminalStore';
 
 export function Terminal() {
   const [minimized, setMinimized] = useState(false);
+  const challenge = useTerminalStore((s) => s.getCurrentChallenge());
+  const isScripting = challenge?.validationType === 'text' && challenge.category.toLowerCase().includes('scripting');
 
   return (
     <div className={`flex flex-col h-full rounded-xl overflow-hidden shadow-2xl glow-edge ${minimized ? '' : 'animate-pulse-glow'}`}>
@@ -29,10 +32,12 @@ export function Terminal() {
       {!minimized && (
         <>
           <ChallengeBanner />
-          <div className="flex-1 overflow-y-auto min-h-0 bg-terminal-bg/95">
-            <TerminalOutput />
-          </div>
-          <TerminalInput />
+          {!isScripting && (
+            <div className="flex-1 overflow-y-auto min-h-0 bg-terminal-bg/95">
+              <TerminalOutput />
+            </div>
+          )}
+          {!isScripting && <TerminalInput />}
         </>
       )}
     </div>

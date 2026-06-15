@@ -61,6 +61,8 @@ export function TerminalInput() {
   const getPrevious = useTerminalStore((s) => s.getPrevious);
   const getNext = useTerminalStore((s) => s.getNext);
   const cwd = useTerminalStore((s) => s.cwd);
+  const user = useTerminalStore((s) => s.user);
+  const hostname = useTerminalStore((s) => s.hostname);
   const clearHistory = useTerminalStore((s) => s.clearHistory);
   const resetFS = useTerminalStore((s) => s.resetFS);
   const createFile = useTerminalStore((s) => s.createFile);
@@ -330,7 +332,7 @@ export function TerminalInput() {
           </>
         ) : (
           <>
-            <span className="text-[var(--color-terminal-green)] shrink-0 text-sm font-mono">$</span>
+            <span className="text-[var(--color-terminal-green)] shrink-0 text-sm font-mono whitespace-nowrap">{user}@{hostname}:{cwd}$</span>
             <input
               ref={inputRef}
               type="text"

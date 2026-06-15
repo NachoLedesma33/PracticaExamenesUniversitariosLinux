@@ -19,6 +19,7 @@ export function ChallengeBanner() {
   if (!challenge) return null;
 
   const isText = challenge.validationType === 'text';
+  const isScripting = isText && challenge.category.toLowerCase().includes('scripting');
   const result = challenge.id ? challengeResults[challenge.id] : undefined;
   const completed = result?.completed;
 
@@ -37,18 +38,33 @@ export function ChallengeBanner() {
     }
   };
 
-  const handleTextKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleTextSubmit();
+  const handleTextKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (isScripting) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const target = e.currentTarget;
+        const start = target.selectionStart;
+        const end = target.selectionEnd;
+        const newValue = textAnswer.substring(0, start) + '  ' + textAnswer.substring(end);
+        setTextAnswer(newValue);
+        requestAnimationFrame(() => {
+          target.selectionStart = start + 2;
+          target.selectionEnd = start + 2;
+        });
+      }
+    } else {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleTextSubmit();
+      }
     }
   };
 
   return (
-    <div className="banner-border banner-bg backdrop-blur-sm">
-      <div className="px-4 py-2.5">
-        <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
+    <div className={`banner-border banner-bg backdrop-blur-sm ${isScripting ? 'flex-1 flex flex-col overflow-hidden' : ''}`}>
+      <div className={`px-4 py-2.5 ${isScripting ? 'flex-1 flex flex-col min-h-0' : ''}`}>
+        <div className={`flex items-start gap-3 ${isScripting ? 'flex-1 flex flex-col min-h-0' : ''}`}>
+          <div className={`flex-1 min-w-0 ${isScripting ? 'flex flex-col min-h-0' : ''}`}>
             <div className="flex items-center gap-2 mb-1">
               <BookOpen size={11} className="text-terminal-cyan shrink-0" />
               <span className="text-[10px] font-mono text-terminal-cyan uppercase tracking-wider truncate">
@@ -128,29 +144,37 @@ export function ChallengeBanner() {
               </div>
             )}
             {!collapsed && isText && !completed && (
-              <div className="mt-3 animate-fade-slide">
-                <div className="relative">
+              <div className={`${isScripting ? 'flex-1 flex flex-col min-h-0' : ''} mt-3 animate-fade-slide`}>
+                <div className={`relative ${isScripting ? 'flex-1 flex flex-col' : ''}`}>
                   <textarea
                     ref={inputRef}
                     value={textAnswer}
                     onChange={(e) => setTextAnswer(e.target.value)}
                     onKeyDown={handleTextKeyDown}
-                    placeholder="Escribí tu respuesta aquí..."
-                    className="w-full textarea-bg textarea-border rounded-lg px-3 py-2 text-sm txa-fg font-mono placeholder:sidebar-dim outline-none focus:border-cyan-700/50 transition-all resize-none min-h-[60px] max-h-[120px]"
-                    rows={2}
+                    placeholder="Escribí tu script acá..."
+                    className={`w-full textarea-bg textarea-border rounded-lg px-3 py-2 text-sm txa-fg font-mono placeholder:sidebar-dim outline-none focus:border-cyan-700/50 transition-all ${
+                      isScripting
+                        ? 'flex-1 min-h-[200px] resize-y'
+                        : 'resize-y min-h-[120px] max-h-[300px]'
+                    }`}
+                    rows={isScripting ? 8 : 4}
                     autoFocus
                     spellCheck={false}
                   />
                   <button
                     onClick={handleTextSubmit}
-                    className="absolute right-2 bottom-2 p-1.5 rounded-md bg-cyan-700/40 text-terminal-cyan hover:bg-cyan-700/60 transition-all cursor-pointer"
+                    className={`${isScripting ? 'absolute right-2 top-2' : 'absolute right-2 bottom-2'} p-1.5 rounded-md bg-cyan-700/40 text-terminal-cyan hover:bg-cyan-700/60 transition-all cursor-pointer`}
                     title="Enviar respuesta"
                   >
                     <Send size={12} />
                   </button>
                 </div>
                 <div className="flex items-center gap-2 mt-1.5">
-                  <span className="text-[9px] sidebar-dim font-mono">Enter para enviar · Shift+Enter para nueva línea</span>
+                  {isScripting ? (
+                    <span className="text-[9px] sidebar-dim font-mono">Enter para nueva línea · Tab para indentar</span>
+                  ) : (
+                    <span className="text-[9px] sidebar-dim font-mono">Enter para enviar · Shift+Enter para nueva línea</span>
+                  )}
                 </div>
                 {textResult && (
                   <div className={`mt-2 rounded-lg p-2.5 border animate-fade-slide ${
