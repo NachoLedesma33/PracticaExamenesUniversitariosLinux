@@ -18,7 +18,7 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-01', category: 'PARCIAL 1 - Navegación', instruction: 'Ingresar al sistema como el usuario "alumnoxx".', hint: 'Usá "login alumnoxx".', solutionHint: 'login alumnoxx', initialState: (s) => { goHome(s); s.setUser('usuario'); }, validationType: 'state', validateState: (s) => s.user === 'alumnoxx' ? null : 'El usuario no es alumnoxx. Usá "login alumnoxx".', commands: ['login'], difficulty: 'fácil' },
 
-  { id: 'p1-02', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear dentro del directorio "dire" un subdirectorio llamado "lista".', hint: 'mkdir dire/lista', solutionHint: 'mkdir dire/lista', initialState: goHome, validationType: 'state', validateState: dirExists('dire/lista'), commands: ['mkdir'], difficulty: 'fácil' },
+  { id: 'p1-02', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear dentro del directorio "dire" un subdirectorio llamado "lista".', hint: 'mkdir dire/lista', solutionHint: 'mkdir dire/lista', initialState: (s) => { goHome(s); s.removeNode('/home/usuario/dire/lista'); }, validationType: 'state', validateState: dirExists('dire/lista'), commands: ['mkdir'], difficulty: 'fácil' },
 
   { id: 'p1-03', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear en el "home directory" el archivo "numeros" conteniendo en líneas separadas: 12, 34, 56.', hint: 'Usá cat > numeros y luego escribí cada número en una línea. Ctrl+D para finalizar.', solutionHint: 'cat > numeros', initialState: goHome, validationType: 'both', expectedCommandRegex: /cat\s+>\s+numeros/, validateState: fileContains('numeros', '12\n34\n56'), commands: ['cat'], difficulty: 'fácil' },
 

@@ -6,6 +6,7 @@ import { validateCommand, revalidateCurrentChallenge } from './validation';
 beforeEach(() => {
   const store = useTerminalStore.getState();
   store.resetFS();
+  store.setCurrentChallenge(null);
 });
 
 function makeChallenge(overrides: Partial<Challenge>): Challenge {
@@ -107,6 +108,35 @@ describe('validateCommand', () => {
       expect(result.passed).toBe(false);
     });
 
+    it('silences validation when command does not match regex but exitCode is 0', () => {
+      const challenge = makeChallenge({
+        id: 'test-silenced-01',
+        validationType: 'command',
+        expectedCommandRegex: /ls\s+-la/,
+        solutionHint: 'ls -la',
+      });
+      useTerminalStore.getState().importChallenges([challenge]);
+      useTerminalStore.getState().setCurrentChallenge('test-silenced-01');
+      const result = validateCommand('cd ..', 0);
+      expect(result.passed).toBe(false);
+      expect(result.ignored).toBe(true);
+    });
+
+    it('does not silence validation when command does not match regex and exitCode is non-zero', () => {
+      const challenge = makeChallenge({
+        id: 'test-silenced-02',
+        validationType: 'command',
+        expectedCommandRegex: /ls\s+-la/,
+        solutionHint: 'ls -la',
+      });
+      useTerminalStore.getState().importChallenges([challenge]);
+      useTerminalStore.getState().setCurrentChallenge('test-silenced-02');
+      const result = validateCommand('invalid_command', 127);
+      expect(result.passed).toBe(false);
+      expect(result.ignored).not.toBe(true);
+      expect(result.reason).toContain('El comando no coincide con el patrón esperado.');
+    });
+
     it('passes when output matches solution output', () => {
       const challenge = makeChallenge({
         id: 'test-06',
@@ -146,6 +176,20 @@ describe('validateCommand', () => {
       const result = validateCommand('anything');
       expect(result.passed).toBe(false);
       expect(result.reason).toContain('El archivo no existe');
+    });
+
+    it('fails validation when command exitCode is non-zero, even if state predicate passes', () => {
+      const challenge = makeChallenge({
+        id: 'test-state-fail-exitcode',
+        validationType: 'state',
+        solutionHint: '',
+        validateState: () => null,
+      });
+      useTerminalStore.getState().importChallenges([challenge]);
+      useTerminalStore.getState().setCurrentChallenge('test-state-fail-exitcode');
+      const result = validateCommand('mkdir dire/lista', 1);
+      expect(result.passed).toBe(false);
+      expect(result.reason).toContain('El comando falló');
     });
   });
 });

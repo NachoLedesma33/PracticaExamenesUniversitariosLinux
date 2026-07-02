@@ -25,8 +25,15 @@ export const createChallengeSlice: StateCreator<ChallengeSlice> = (set, get) => 
   showSolution: false,
   lastValidation: null,
 
-  setCurrentChallenge: (id: string | null) =>
-    set({ currentChallengeId: id, showSolution: false, lastValidation: null }),
+  setCurrentChallenge: (id: string | null) => {
+    set({ currentChallengeId: id, showSolution: false, lastValidation: null });
+    if (id) {
+      const challenge = get().challenges.find((c) => c.id === id);
+      if (challenge?.initialState) {
+        challenge.initialState(get() as any);
+      }
+    }
+  },
 
   markChallengeCompleted: (id: string) =>
     set((state) => {

@@ -13,6 +13,9 @@ function validateByCommand(input: string, challenge: Challenge, exitCode?: numbe
   if (challenge.expectedCommandRegex) {
     challenge.expectedCommandRegex.lastIndex = 0;
     if (!challenge.expectedCommandRegex.test(trimmed)) {
+      if (exitCode === 0) {
+        return 'ignore';
+      }
       return `El comando no coincide con el patrón esperado.`;
     }
     if (exitCode !== undefined && exitCode !== 0) {
@@ -84,6 +87,9 @@ export function validateCommand(input: string, exitCode?: number): ValidationRes
 
   if (challenge.validationType === 'command' || challenge.validationType === 'both') {
     const cmdErr = validateByCommand(cmd, challenge, exitCode);
+    if (cmdErr === 'ignore') {
+      return { passed: false, ignored: true };
+    }
     if (cmdErr) {
       result.reason = cmdErr;
       return result;
@@ -91,6 +97,10 @@ export function validateCommand(input: string, exitCode?: number): ValidationRes
   }
 
   if (challenge.validationType === 'state' || challenge.validationType === 'both') {
+    if (exitCode !== undefined && exitCode !== 0) {
+      result.reason = 'El comando falló. Revisá la salida de la terminal.';
+      return result;
+    }
     const stateErr = validateByState(store, challenge);
     if (stateErr) {
       result.reason = stateErr;

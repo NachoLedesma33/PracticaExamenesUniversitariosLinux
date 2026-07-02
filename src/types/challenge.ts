@@ -25,4 +25,5 @@ export interface ChallengeResult {
 export interface ValidationResult {
   passed: boolean;
   reason?: string;
+  ignored?: boolean;
 }

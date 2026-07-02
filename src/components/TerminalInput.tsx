@@ -203,6 +203,11 @@ export function TerminalInput() {
         const prevResult = store.challengeResults[currentChallenge.id];
         if (!prevResult?.completed) {
           const validation = validateCommand(cmd, result.exitCode);
+          if (validation.ignored) {
+            setInput('');
+            setTabSuggestions(null);
+            return;
+          }
           setLastValidation(validation);
           recordAttempt(currentChallenge.id, validation.passed, validation.reason);
 
@@ -238,6 +243,29 @@ export function TerminalInput() {
           timestamp: Date.now(),
           exitCode: 0,
         });
+
+        const currentChallenge = getCurrentChallenge();
+        if (currentChallenge && currentChallenge.validationType !== 'text') {
+          const store = useTerminalStore.getState();
+          const prevResult = store.challengeResults[currentChallenge.id];
+          if (!prevResult?.completed) {
+            const validation = validateCommand(`cat > ${captureTarget}`, 0);
+            if (!validation.ignored) {
+              setLastValidation(validation);
+              recordAttempt(currentChallenge.id, validation.passed, validation.reason);
+
+              if (validation.passed) {
+                markChallengeCompleted(currentChallenge.id);
+                addToHistory({
+                  command: '',
+                  output: '✅ ¡Correcto! Ejercicio completado.',
+                  timestamp: Date.now(),
+                  exitCode: 0,
+                });
+              }
+            }
+          }
+        }
 
         setCaptureMode(false);
         setCaptureBuffer('');
@@ -281,7 +309,7 @@ export function TerminalInput() {
     } else {
       setTabSuggestions(null);
     }
-  }, [getPrevious, getNext, captureMode, captureBuffer, captureTarget, cwd, createFile, addToHistory, input, vfs]);
+  }, [getPrevious, getNext, captureMode, captureBuffer, captureTarget, cwd, createFile, addToHistory, input, vfs, getCurrentChallenge, setLastValidation, recordAttempt, markChallengeCompleted]);
 
   const currentChallenge = useTerminalStore((s) => s.getCurrentChallenge());
   const challengeResults = useTerminalStore((s) => s.challengeResults);
