@@ -1,6 +1,7 @@
 import type { ValidationResult, Challenge } from '../types';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { executeCommand } from './executor';
+import { validateSemantically } from './semantic-validator';
 
 function normalise(s: string): string {
   return s.replace(/\s+/g, ' ').replace(/"/g, '').replace(/'/g, '').trim();
@@ -14,6 +15,11 @@ function validateByCommand(input: string, challenge: Challenge, exitCode?: numbe
     challenge.expectedCommandRegex.lastIndex = 0;
     if (!challenge.expectedCommandRegex.test(trimmed)) {
       if (exitCode === 0) {
+        const semantic = validateSemantically(trimmed, challenge);
+        if (semantic) {
+          if (semantic.matched) return null;
+          if (semantic.feedback) return semantic.feedback;
+        }
         return 'ignore';
       }
       return `El comando no coincide con el patrón esperado.`;
