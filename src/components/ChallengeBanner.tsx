@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { validateCommand } from '../engine/validation';
+import { getHint, categoryHints } from '../engine/hint-system';
 import { ChevronUp, ChevronDown, Lightbulb, Check, BookOpen, Send, X, Terminal, Copy, CheckCheck } from 'lucide-react';
 import { Badge } from './ui/badge';
 
@@ -22,6 +23,9 @@ export function ChallengeBanner() {
   const isScripting = isText && challenge.category.toLowerCase().includes('scripting');
   const result = challenge.id ? challengeResults[challenge.id] : undefined;
   const completed = result?.completed;
+
+  const attempts = result?.attempts ?? 0;
+  const progressiveHint = getHint(challenge, attempts);
 
   const diffColor = challenge.difficulty === 'fácil' ? 'success'
     : challenge.difficulty === 'medio' ? 'warning' : 'danger';
@@ -83,7 +87,7 @@ export function ChallengeBanner() {
             {collapsed && (
               <p className="text-xs sidebar-muted truncate">{challenge.instruction}</p>
             )}
-            {!collapsed && challenge.hint && (
+            {!collapsed && (
               <div className="mt-1.5">
                 <button
                   onClick={() => setShowHint(!showHint)}
@@ -91,11 +95,22 @@ export function ChallengeBanner() {
                 >
                   <Lightbulb size={10} />
                   {showHint ? 'Ocultar pista' : 'Ver pista'}
+                  {attempts > 0 && showHint && (
+                    <span className="text-[9px] sidebar-dim ml-1">({attempts + 1}/{categoryHints?.[challenge.category]?.length ?? 3})</span>
+                  )}
                 </button>
                 {showHint && (
                   <div className="mt-1 text-[11px] sidebar-secondary leading-relaxed bg-yellow-900/8 dark:bg-yellow-900/8 rounded px-2 py-1.5 border border-yellow-800/15 whitespace-pre-wrap font-mono">
-                    {challenge.hint && <p className="mb-1.5 text-[10px] uppercase tracking-wider text-terminal-yellow/60">Pista: {challenge.hint}</p>}
-                    {challenge.solutionHint}
+                    <p className="mb-1.5 text-[10px] uppercase tracking-wider text-terminal-yellow/60">
+                      {attempts > 0 ? `Pista (intento ${attempts + 1}):` : 'Pista:'}
+                    </p>
+                    <p className="text-[11px]">{progressiveHint}</p>
+                    {challenge.solutionHint && (
+                      <div className="mt-2 pt-2 border-t border-yellow-800/15">
+                        <p className="text-[9px] uppercase tracking-wider text-terminal-yellow/40 mb-0.5">Solución:</p>
+                        <p className="text-[11px] text-terminal-green">{challenge.solutionHint}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
