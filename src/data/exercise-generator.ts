@@ -759,7 +759,7 @@ export function generateAll(): Challenge[] {
     })
   })
 
-  return result
+  return result.map(c => ({ ...c, generated: true }))
 }
 
 export function generateByCategory(category: string): Challenge[] {

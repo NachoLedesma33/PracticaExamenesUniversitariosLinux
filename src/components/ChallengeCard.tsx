@@ -41,7 +41,9 @@ export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
               ? 'border-green-900/30 dark:border-green-900/30 card-bg opacity-60 hover:opacity-80'
               : highlight
                 ? 'border-yellow-600/50 bg-yellow-900/10 dark:bg-yellow-900/10 shadow-sm shadow-yellow-900/10'
-                : 'card-border card-bg hover-card-bg hover:border-[var(--card-border)]'
+                : challenge.generated
+                  ? 'border-purple-600/40 bg-purple-900/8 dark:bg-purple-900/8 hover:bg-purple-900/15'
+                  : 'card-border card-bg hover-card-bg hover:border-[var(--card-border)]'
           }`}
       onClick={() => setCurrentChallenge(challenge.id)}
     >
@@ -58,6 +60,7 @@ export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
         </div>
         <div className="flex items-center gap-1 shrink-0">
           {highlight && !completed && <Badge variant="warning">Siguiente</Badge>}
+          {challenge.generated && <Badge variant="info">Generado</Badge>}
           <Badge variant={diffColor}>{challenge.difficulty}</Badge>
         </div>
       </div>

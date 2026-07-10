@@ -16,6 +16,7 @@ export interface ChallengeSlice {
   getCurrentChallenge: () => Challenge | null;
   getProgress: () => { completed: number; total: number };
   importChallenges: (newChallenges: Challenge[]) => void;
+  removeGenerated: () => void;
 }
 
 export const createChallengeSlice: StateCreator<ChallengeSlice> = (set, get) => ({
@@ -93,5 +94,23 @@ export const createChallengeSlice: StateCreator<ChallengeSlice> = (set, get) => 
       const existingIds = new Set(state.challenges.map((c) => c.id));
       const unique = newChallenges.filter((c) => !existingIds.has(c.id));
       return { challenges: [...state.challenges, ...unique] };
+    }),
+
+  removeGenerated: () =>
+    set((state) => {
+      const remaining = state.challenges.filter((c) => !c.generated)
+      const removedIds = new Set(
+        state.challenges.filter((c) => c.generated).map((c) => c.id)
+      )
+      const challengeResults = { ...state.challengeResults }
+      for (const id of removedIds) delete challengeResults[id]
+      return {
+        challenges: remaining,
+        challengeResults,
+        currentChallengeId:
+          state.currentChallengeId && removedIds.has(state.currentChallengeId)
+            ? null
+            : state.currentChallengeId,
+      }
     }),
 });

@@ -2,13 +2,16 @@ import { useState, useMemo } from 'react'
 import { useTerminalStore } from '../store/useTerminalStore'
 import { Button } from './ui/button'
 import { generateAll, CATEGORIES } from '../data/exercise-generator'
-import { Sparkles, Check } from 'lucide-react'
+import { Sparkles, Check, Trash2 } from 'lucide-react'
 
 export function ExerciseGeneratorPanel() {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [imported, setImported] = useState(false)
   const importChallenges = useTerminalStore((s) => s.importChallenges)
+  const removeGenerated = useTerminalStore((s) => s.removeGenerated)
+  const challenges = useTerminalStore((s) => s.challenges)
+  const generatedCount = useMemo(() => challenges.filter((c) => c.generated).length, [challenges])
 
   const toggleCategory = (key: string) => {
     setSelected((prev) => {
@@ -96,11 +99,23 @@ export function ExerciseGeneratorPanel() {
             Generar {totalSelected > 0 ? totalSelected : ''} ejercicio{totalSelected !== 1 ? 's' : ''}
           </Button>
 
+          {generatedCount > 0 && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={removeGenerated}
+              className="w-full justify-center gap-1.5 text-terminal-red/80 hover:text-terminal-red hover:bg-red-900/10"
+            >
+              <Trash2 size={11} />
+              Borrar {generatedCount} ejercicio{generatedCount !== 1 ? 's' : ''} generado{generatedCount !== 1 ? 's' : ''}
+            </Button>
+          )}
+
           {imported && (
             <div className="bg-green-900/10 rounded-lg p-3 border border-green-800/20 animate-fade-slide">
               <div className="flex items-center gap-2">
                 <Check size={12} className="text-terminal-green shrink-0" />
-                <span className="text-[10px] font-mono text-terminal-green">
+                <span className="text-xs font-mono text-terminal-green">
                   Ejercicios generados e importados correctamente.
                 </span>
               </div>

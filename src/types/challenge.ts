@@ -12,6 +12,7 @@ export interface Challenge {
   commands: string[];
   category: string;
   difficulty: 'fácil' | 'medio' | 'difícil';
+  generated?: boolean;
 }
 
 export interface ChallengeResult {
