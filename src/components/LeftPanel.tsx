@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { ChallengeCard } from './ChallengeCard';
 import { ImportZone } from './ImportZone';
+import { ExerciseGeneratorPanel } from './ExerciseGeneratorPanel';
 import { Button } from './ui/button';
 import { Search, RotateCcw, Layers, ChevronRight } from 'lucide-react';
 import type { Challenge } from '../types';
@@ -99,6 +100,8 @@ export function LeftPanel() {
       </div>
 
       <ImportZone />
+
+      <ExerciseGeneratorPanel />
 
       <div className="relative mb-3 shrink-0">
         <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 sidebar-dim" />
