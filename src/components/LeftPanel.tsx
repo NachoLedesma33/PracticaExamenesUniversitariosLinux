@@ -101,14 +101,14 @@ export function LeftPanel() {
   const overallPct = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <div className="p-3 flex flex-col flex-1 min-h-0">
+    <div className="p-3 flex flex-col flex-1 min-h-0 overflow-y-auto">
       <div className="flex items-center justify-between mb-3 shrink-0">
         <div className="flex items-center gap-2">
           <Layers size={14} className="text-terminal-cyan" />
           <span className="text-xs font-semibold sidebar-fg uppercase tracking-wider">Práctica</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-terminal-dim font-mono">{completed}/{total}</span>
+          <span className="text-xs sidebar-secondary font-mono">{completed}/{total}</span>
           <Button size="sm" variant="ghost" onClick={resetFS} title="Reiniciar sistema de archivos">
             <RotateCcw size={12} />
           </Button>
@@ -128,13 +128,13 @@ export function LeftPanel() {
       />
 
       <div className="relative mb-3 shrink-0">
-        <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 sidebar-dim" />
+        <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 sidebar-secondary" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar ejercicios..."
-          className="w-full input-bg input-border rounded-lg pl-7 pr-3 py-1.5 text-xs sidebar-fg font-mono placeholder:sidebar-dim outline-none input-focus-bg focus:border-cyan-700/50 transition-all"
+          className="w-full input-bg input-border rounded-lg pl-7 pr-3 py-1.5 text-xs sidebar-fg font-mono placeholder:sidebar-secondary outline-none input-focus-bg focus:border-cyan-700/50 transition-all"
         />
       </div>
 
@@ -147,7 +147,7 @@ export function LeftPanel() {
         >
           <div className="flex items-center justify-between">
             <span className="font-semibold tracking-wide truncate">{currentPath.title}</span>
-            <span className="text-[10px] sidebar-muted font-mono shrink-0 ml-2">
+            <span className="text-xs sidebar-secondary font-mono shrink-0 ml-2">
               {getPathProgress(currentPath, completedIds).completed}/{getPathProgress(currentPath, completedIds).total}
             </span>
           </div>
@@ -157,7 +157,7 @@ export function LeftPanel() {
               style={{ width: `${getPathProgress(currentPath, completedIds).total > 0 ? Math.round((getPathProgress(currentPath, completedIds).completed / getPathProgress(currentPath, completedIds).total) * 100) : 0}%` }}
             />
           </div>
-          <p className="text-[9px] sidebar-dim mt-1">Click para salir del modo libre</p>
+          <p className="text-[11px] sidebar-secondary mt-1">Click para salir del modo libre</p>
         </button>
       ) : (
         <button
@@ -165,12 +165,12 @@ export function LeftPanel() {
           className={`w-full text-left px-3 py-2 rounded-lg mb-2 shrink-0 text-xs font-mono transition-all cursor-pointer
             ${filter === 'all'
               ? 'bg-cyan-900/25 text-terminal-cyan border border-cyan-700/30'
-              : 'sidebar-dim hover:text-[var(--sidebar-fg-secondary)] border border-transparent hover-bg'
+              : 'sidebar-secondary hover:text-[var(--sidebar-fg)] border border-transparent hover-bg'
             }`}
         >
           <div className="flex items-center justify-between">
             <span className="font-semibold tracking-wide">Todas las categorías</span>
-            <span className="text-[10px] sidebar-muted font-mono">{completed}/{total}</span>
+            <span className="text-xs sidebar-secondary font-mono">{completed}/{total}</span>
           </div>
           <div className="mt-1.5 h-1 track-bg rounded-full overflow-hidden">
             <div
@@ -182,7 +182,7 @@ export function LeftPanel() {
       )}
 
       {/* Accordion groups */}
-      <div className="space-y-0.5 mb-3 shrink-0 max-h-[40vh] overflow-y-auto">
+      <div className="space-y-0.5 mb-3 shrink-0">
         {groups.map((group) => {
           const isExpanded = expandedGroups.includes(group.label);
           const gp = groupProgress[group.label];
@@ -202,12 +202,12 @@ export function LeftPanel() {
                 className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-mono transition-all cursor-pointer
                   ${hasActive
                     ? 'bg-cyan-900/15 dark:bg-cyan-900/15 text-terminal-cyan'
-                    : 'sidebar-muted hover:text-[var(--sidebar-fg)] hover-bg'
+                    : 'sidebar-secondary hover:text-[var(--sidebar-fg)] hover-bg'
                   }`}
               >
                 <ChevronRight size={11} className={`shrink-0 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                 <span className="font-semibold tracking-wide">{group.label}</span>
-                <span className="text-[10px] sidebar-dim ml-auto">{gp?.completed ?? 0}/{gp?.total ?? 0}</span>
+                <span className="text-xs sidebar-secondary ml-auto">{gp?.completed ?? 0}/{gp?.total ?? 0}</span>
                 <div className="w-14 h-1 track-bg rounded-full overflow-hidden shrink-0">
                   <div
                     className="h-full bg-gradient-to-r from-cyan-600 to-terminal-green rounded-full transition-all duration-500"
@@ -227,14 +227,14 @@ export function LeftPanel() {
                       <button
                         key={cat}
                         onClick={() => setFilter(cat)}
-                        className={`w-full flex items-center gap-2 pl-8 pr-3 py-[5px] text-[11px] font-mono transition-all cursor-pointer
+                        className={`w-full flex items-center gap-2 pl-8 pr-3 py-[5px] text-xs font-mono transition-all cursor-pointer
                           ${isActive
                             ? 'bg-cyan-900/25 text-terminal-cyan border-l-2 border-terminal-cyan'
-                            : 'sidebar-dim hover:text-[var(--sidebar-fg-secondary)] hover-bg-sub border-l-2 border-transparent'
+                            : 'sidebar-secondary hover:text-[var(--sidebar-fg)] hover-bg-sub border-l-2 border-transparent'
                           }`}
                       >
                         <span className="truncate flex-1 text-left">{cat.replace(group.prefix, '')}</span>
-                        <span className="text-[10px] sidebar-dim">{prog?.completed ?? 0}/{prog?.total ?? 0}</span>
+                        <span className="text-xs sidebar-secondary">{prog?.completed ?? 0}/{prog?.total ?? 0}</span>
                         <div className="w-10 h-1 track-bg rounded-full overflow-hidden shrink-0">
                           <div
                             className="h-full bg-gradient-to-r from-cyan-600 to-terminal-green rounded-full transition-all duration-500"
@@ -251,12 +251,12 @@ export function LeftPanel() {
         })}
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-2 min-h-0 pr-1">
+      <div className="space-y-2 pb-2">
         {filtered.map((challenge) => (
           <ChallengeCard key={challenge.id} challenge={challenge} highlight={challenge.id === nextInPathId} />
         ))}
         {filtered.length === 0 && (
-          <div className="text-center py-8 sidebar-dim text-xs">
+          <div className="text-center py-8 sidebar-secondary text-xs">
             No hay ejercicios que coincidan con tu búsqueda.
           </div>
         )}

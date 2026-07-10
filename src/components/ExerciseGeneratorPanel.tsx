@@ -50,18 +50,18 @@ export function ExerciseGeneratorPanel() {
         className="w-full justify-between"
       >
         <div className="flex items-center gap-1.5">
-          <Sparkles size={11} />
-          <span className="text-[10px]">Generar ejercicios</span>
+          <Sparkles size={12} />
+          <span className="text-xs">Generar ejercicios</span>
         </div>
-        <span className="text-[10px] text-surface-500">{open ? '—' : '+'}</span>
+        <span className="text-xs sidebar-secondary">{open ? '—' : '+'}</span>
       </Button>
 
       {open && (
         <div className="mt-2 animate-fade-slide space-y-2">
           <button
             onClick={selectAll}
-            className="w-full text-left px-3 py-1.5 rounded-lg text-[10px] font-mono cursor-pointer
-              sidebar-dim hover:text-[var(--sidebar-fg)] hover-bg-sub transition-all"
+            className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-mono cursor-pointer
+              sidebar-secondary hover:text-[var(--sidebar-fg)] hover-bg-sub transition-all"
           >
             {selected.size === CATEGORIES.length ? '— Deseleccionar todas' : '✓ Seleccionar todas'}
           </button>
@@ -71,7 +71,7 @@ export function ExerciseGeneratorPanel() {
               <label
                 key={cat.key}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer
-                  hover-bg-sub transition-all text-[11px] font-mono sidebar-fg"
+                  hover-bg-sub transition-all text-xs font-mono sidebar-fg"
               >
                 <input
                   type="checkbox"
@@ -80,7 +80,7 @@ export function ExerciseGeneratorPanel() {
                   className="accent-cyan-600 w-3 h-3"
                 />
                 <span className="flex-1">{cat.key}</span>
-                <span className="text-[10px] sidebar-dim">{cat.count} ej.</span>
+                <span className="text-xs sidebar-secondary">{cat.count} ej.</span>
               </label>
             ))}
           </div>

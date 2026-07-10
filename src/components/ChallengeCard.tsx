@@ -48,8 +48,8 @@ export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <Terminal size={10} className="sidebar-dim shrink-0" />
-            <h3 className="text-[10px] font-semibold sidebar-dim uppercase tracking-wider truncate">{challenge.category}</h3>
+            <Terminal size={10} className="sidebar-secondary shrink-0" />
+            <h3 className="text-xs font-semibold sidebar-secondary uppercase tracking-wider truncate">{challenge.category}</h3>
             {completed && <Check size={11} className="shrink-0 text-terminal-green" />}
             {isValidationError && <X size={11} className="shrink-0 text-terminal-red" />}
             {isValidationSuccess && <Check size={11} className="shrink-0 text-terminal-green" />}
