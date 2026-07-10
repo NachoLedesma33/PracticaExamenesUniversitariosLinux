@@ -4,8 +4,9 @@ import { ChallengeCard } from './ChallengeCard';
 import { ImportZone } from './ImportZone';
 import { ExerciseGeneratorPanel } from './ExerciseGeneratorPanel';
 import { Button } from './ui/button';
-import { Search, RotateCcw, Layers, ChevronRight } from 'lucide-react';
+import { Search, RotateCcw, Layers, ChevronRight, Compass } from 'lucide-react';
 import type { Challenge } from '../types';
+import { learningPaths, getPathProgress, getNextInPath } from '../data/learning-paths';
 
 export function LeftPanel() {
   const challenges = useTerminalStore((s) => s.challenges);
@@ -14,6 +15,8 @@ export function LeftPanel() {
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [expandedGroups, setExpandedGroups] = useState<string[]>(['PARCIAL 1']);
+  const [activePath, setActivePath] = useState<string | null>(null);
+  const [pathOpen, setPathOpen] = useState(false);
 
   const categoryNames = useMemo(() => {
     return Array.from(new Set(challenges.map((c) => c.category)));
@@ -65,8 +68,20 @@ export function LeftPanel() {
     return map;
   }, [groups, categoryProgress]);
 
+  const completedIds = useMemo(
+    () => new Set(Object.entries(challengeResults).filter(([, r]) => r.completed).map(([id]) => id)),
+    [challengeResults],
+  )
+
+  const currentPath = activePath ? learningPaths.find((p) => p.key === activePath) ?? null : null
+  const nextInPathId = currentPath ? getNextInPath(currentPath, completedIds) : null
+
   const filtered = useMemo(() => {
     let result: Challenge[] = challenges;
+    if (currentPath) {
+      const pathIds = new Set(currentPath.sequence)
+      result = result.filter((c) => pathIds.has(c.id))
+    }
     if (filter !== 'all') result = result.filter((c) => c.category === filter);
     if (search) {
       const q = search.toLowerCase();
@@ -78,7 +93,7 @@ export function LeftPanel() {
       );
     }
     return result;
-  }, [challenges, filter, search]);
+  }, [challenges, filter, search, currentPath]);
 
   const completed = Object.values(challengeResults).filter((r) => r.completed).length;
   const total = challenges.length;
@@ -103,6 +118,55 @@ export function LeftPanel() {
 
       <ExerciseGeneratorPanel />
 
+      {/* Modo Libre */}
+      <div className="mb-3 shrink-0">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setPathOpen(!pathOpen)}
+          className="w-full justify-between"
+        >
+          <div className="flex items-center gap-1.5">
+            <Compass size={11} />
+            <span className="text-[10px]">Modo Libre</span>
+          </div>
+          <span className="text-[10px] text-surface-500">{pathOpen ? '—' : '+'}</span>
+        </Button>
+        {pathOpen && (
+          <div className="mt-2 animate-fade-slide space-y-1.5 max-h-[250px] overflow-y-auto pr-1">
+            {learningPaths.map((path) => {
+              const pathProgress = getPathProgress(path, completedIds)
+              const isActive = activePath === path.key
+              const pct = pathProgress.total > 0 ? Math.round((pathProgress.completed / pathProgress.total) * 100) : 0
+              return (
+                <button
+                  key={path.key}
+                  onClick={() => setActivePath(isActive ? null : path.key)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-[10px] font-mono transition-all cursor-pointer
+                    ${isActive
+                      ? 'bg-cyan-900/25 text-terminal-cyan border border-cyan-700/30'
+                      : 'sidebar-dim hover:text-[var(--sidebar-fg-secondary)] border border-transparent hover-bg'
+                    }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold truncate">{path.title}</span>
+                    <span className="text-[9px] sidebar-dim shrink-0 ml-2">{pathProgress.completed}/{pathProgress.total}</span>
+                  </div>
+                  <p className="text-[9px] sidebar-dim mt-0.5 truncate">{path.description}</p>
+                  <p className="text-[8px] sidebar-muted mt-0.5">{path.estimatedTime} · {path.sequence.length} ejercicios</p>
+                  <div className="mt-1 h-1 track-bg rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-cyan-600 to-terminal-green rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
       <div className="relative mb-3 shrink-0">
         <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 sidebar-dim" />
         <input
@@ -114,26 +178,48 @@ export function LeftPanel() {
         />
       </div>
 
-      {/* Todas button */}
-      <button
-        onClick={() => setFilter('all')}
-        className={`w-full text-left px-3 py-2 rounded-lg mb-2 shrink-0 text-xs font-mono transition-all cursor-pointer
-          ${filter === 'all'
-            ? 'bg-cyan-900/25 text-terminal-cyan border border-cyan-700/30'
-            : 'sidebar-dim hover:text-[var(--sidebar-fg-secondary)] border border-transparent hover-bg'
-          }`}
-      >
-        <div className="flex items-center justify-between">
-          <span className="font-semibold tracking-wide">Todas las categorías</span>
-          <span className="text-[10px] sidebar-muted font-mono">{completed}/{total}</span>
-        </div>
-        <div className="mt-1.5 h-1 track-bg rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-cyan-600 to-terminal-green rounded-full transition-all duration-500"
-            style={{ width: `${overallPct}%` }}
-          />
-        </div>
-      </button>
+      {/* Path active banner / Todas button */}
+      {currentPath ? (
+        <button
+          onClick={() => { setActivePath(null); setFilter('all'); }}
+          className="w-full text-left px-3 py-2 rounded-lg mb-2 shrink-0 text-xs font-mono transition-all cursor-pointer
+            border border-yellow-700/30 bg-yellow-900/15 text-terminal-yellow hover:bg-yellow-900/25"
+        >
+          <div className="flex items-center justify-between">
+            <span className="font-semibold tracking-wide truncate">{currentPath.title}</span>
+            <span className="text-[10px] sidebar-muted font-mono shrink-0 ml-2">
+              {getPathProgress(currentPath, completedIds).completed}/{getPathProgress(currentPath, completedIds).total}
+            </span>
+          </div>
+          <div className="mt-1.5 h-1 track-bg rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-cyan-600 to-terminal-green rounded-full transition-all duration-500"
+              style={{ width: `${getPathProgress(currentPath, completedIds).total > 0 ? Math.round((getPathProgress(currentPath, completedIds).completed / getPathProgress(currentPath, completedIds).total) * 100) : 0}%` }}
+            />
+          </div>
+          <p className="text-[9px] sidebar-dim mt-1">Click para salir del modo libre</p>
+        </button>
+      ) : (
+        <button
+          onClick={() => setFilter('all')}
+          className={`w-full text-left px-3 py-2 rounded-lg mb-2 shrink-0 text-xs font-mono transition-all cursor-pointer
+            ${filter === 'all'
+              ? 'bg-cyan-900/25 text-terminal-cyan border border-cyan-700/30'
+              : 'sidebar-dim hover:text-[var(--sidebar-fg-secondary)] border border-transparent hover-bg'
+            }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="font-semibold tracking-wide">Todas las categorías</span>
+            <span className="text-[10px] sidebar-muted font-mono">{completed}/{total}</span>
+          </div>
+          <div className="mt-1.5 h-1 track-bg rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-cyan-600 to-terminal-green rounded-full transition-all duration-500"
+              style={{ width: `${overallPct}%` }}
+            />
+          </div>
+        </button>
+      )}
 
       {/* Accordion groups */}
       <div className="space-y-0.5 mb-3 shrink-0 max-h-[40vh] overflow-y-auto">
@@ -207,7 +293,7 @@ export function LeftPanel() {
 
       <div className="flex-1 overflow-y-auto space-y-2 min-h-0 pr-1">
         {filtered.map((challenge) => (
-          <ChallengeCard key={challenge.id} challenge={challenge} />
+          <ChallengeCard key={challenge.id} challenge={challenge} highlight={challenge.id === nextInPathId} />
         ))}
         {filtered.length === 0 && (
           <div className="text-center py-8 sidebar-dim text-xs">

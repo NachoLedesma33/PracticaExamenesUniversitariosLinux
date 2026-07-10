@@ -6,9 +6,10 @@ import type { Challenge } from '../types';
 
 interface ChallengeCardProps {
   challenge: Challenge;
+  highlight?: boolean;
 }
 
-export function ChallengeCard({ challenge }: ChallengeCardProps) {
+export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
   const currentChallengeId = useTerminalStore((s) => s.currentChallengeId);
   const setCurrentChallenge = useTerminalStore((s) => s.setCurrentChallenge);
   const showSolution = useTerminalStore((s) => s.showSolution);
@@ -38,7 +39,9 @@ export function ChallengeCard({ challenge }: ChallengeCardProps) {
                 : 'border-cyan-600/40 bg-cyan-900/12 dark:bg-cyan-900/12 shadow-lg shadow-cyan-900/10'
             : completed
               ? 'border-green-900/30 dark:border-green-900/30 card-bg opacity-60 hover:opacity-80'
-              : 'card-border card-bg hover-card-bg hover:border-[var(--card-border)]'
+              : highlight
+                ? 'border-yellow-600/50 bg-yellow-900/10 dark:bg-yellow-900/10 shadow-sm shadow-yellow-900/10'
+                : 'card-border card-bg hover-card-bg hover:border-[var(--card-border)]'
           }`}
       onClick={() => setCurrentChallenge(challenge.id)}
     >
@@ -53,7 +56,10 @@ export function ChallengeCard({ challenge }: ChallengeCardProps) {
           </div>
           <p className="text-sm sidebar-fg mt-1 line-clamp-2 leading-snug">{challenge.instruction}</p>
         </div>
-        <Badge variant={diffColor}>{challenge.difficulty}</Badge>
+        <div className="flex items-center gap-1 shrink-0">
+          {highlight && !completed && <Badge variant="warning">Siguiente</Badge>}
+          <Badge variant={diffColor}>{challenge.difficulty}</Badge>
+        </div>
       </div>
 
       {isActive && (
