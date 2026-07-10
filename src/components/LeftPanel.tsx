@@ -93,7 +93,7 @@ export function LeftPanel() {
           c.commands.some((cmd) => cmd.includes(q))
       );
     }
-    return result;
+    return [...result].sort((a, b) => (a.generated === b.generated ? 0 : a.generated ? -1 : 1));
   }, [challenges, filter, search, currentPath]);
 
   const completed = Object.values(challengeResults).filter((r) => r.completed).length;
