@@ -581,6 +581,7 @@ Usá "man <comando>" para ver el manual de un comando específico.
 
 export const man: CommandHandler = {
   name: 'man',
+  aliases: ['?explica', '?'],
   execute: (args) => {
     const topic = args[0];
     if (!topic || topic === 'help') {
