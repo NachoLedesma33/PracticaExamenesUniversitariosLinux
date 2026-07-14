@@ -2,13 +2,21 @@ import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
 import { resolvePath } from '../../utils';
 
+function flagValue(flags: string[], prefix: string, fallback: string): string {
+  const idx = flags.findIndex(f => f.startsWith(prefix));
+  if (idx < 0) return fallback;
+  const inline = flags[idx].slice(prefix.length);
+  if (inline) return inline;
+  if (idx + 1 < flags.length && !flags[idx + 1].startsWith('-')) return flags[idx + 1];
+  return fallback;
+}
+
 export const cut: CommandHandler = {
   name: 'cut',
   execute: (args, flags, stdin) => {
-    const delimFlag = flags.find(f => f.startsWith('-d'));
-    const fieldFlag = flags.find(f => f.startsWith('-f'));
-    const delim = delimFlag ? delimFlag.slice(2) : '\t';
-    const fields = fieldFlag ? fieldFlag.slice(2).split(',').map(Number) : [];
+    const delim = flagValue(flags, '-d', '\t');
+    const raw = flagValue(flags, '-f', '');
+    const fields = raw ? raw.split(',').map(Number) : [];
 
     if (args.length === 0 && stdin !== undefined) {
       const lines = stdin.split('\n').map(line => {
