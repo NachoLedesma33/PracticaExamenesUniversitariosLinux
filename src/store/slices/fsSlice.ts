@@ -142,7 +142,9 @@ export const createFSSlice: StateCreator<FSSlice> = (set, get) => ({
   },
 
   createDir: (path: string) => {
-    const vfs = get().vfs;
+    const store = get();
+    if (findNode(store.vfs, path)) return true;
+    const vfs = store.vfs;
     const node: VFSNode = {
       name: basename(path),
       type: 'd',

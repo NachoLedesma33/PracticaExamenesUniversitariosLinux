@@ -2,21 +2,26 @@ import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
 import { resolvePath } from '../../utils';
 
-function flagValue(flags: string[], prefix: string, fallback: string): string {
+function flagWithArg(flags: string[], prefix: string, args: string[], valueTest: RegExp, fallback: string): { value: string; args: string[] } {
   const idx = flags.findIndex(f => f.startsWith(prefix));
-  if (idx < 0) return fallback;
+  if (idx < 0) return { value: fallback, args };
   const inline = flags[idx].slice(prefix.length);
-  if (inline) return inline;
-  if (idx + 1 < flags.length && !flags[idx + 1].startsWith('-')) return flags[idx + 1];
-  return fallback;
+  if (inline) return { value: inline, args };
+  if (idx + 1 < flags.length && !flags[idx + 1].startsWith('-'))
+    return { value: flags[idx + 1], args };
+  if (args.length > 0 && valueTest.test(args[0]))
+    return { value: args[0], args: args.slice(1) };
+  return { value: fallback, args };
 }
 
 export const cut: CommandHandler = {
   name: 'cut',
   execute: (args, flags, stdin) => {
-    const delim = flagValue(flags, '-d', '\t');
-    const raw = flagValue(flags, '-f', '');
-    const fields = raw ? raw.split(',').map(Number) : [];
+    let fieldStr = '';
+    let delim = '\t';
+    ({ value: fieldStr, args } = flagWithArg(flags, '-f', args, /^[\d,]+$/, ''));
+    ({ value: delim, args } = flagWithArg(flags, '-d', args, /^[^\w\s]$/, '\t'));
+    const fields = fieldStr ? fieldStr.split(',').map(Number) : [];
 
     if (args.length === 0 && stdin !== undefined) {
       const lines = stdin.split('\n').map(line => {

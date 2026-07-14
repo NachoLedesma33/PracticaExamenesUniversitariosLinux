@@ -2,21 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { cut } from './cut'
 import { useTerminalStore } from '../../store/useTerminalStore'
 
-function createFile(path: string, content: string) {
-  const store = useTerminalStore.getState()
-  const parts = path.split('/').filter(Boolean)
-  for (let i = 1; i < parts.length; i++) {
-    const dir = '/' + parts.slice(0, i).join('/')
-    store.createDir(dir)
-  }
-  store.createFile(path, content)
-}
-
 beforeEach(() => {
   const store = useTerminalStore.getState()
   store.resetFS()
   store.setCwd('/home/usuario')
-  createFile('/home/usuario/datos.csv', 'nombre,edad,ciudad\nJuan,30,Buenos Aires\nMaria,25,Cordoba')
+  store.createDir('/home')
+  store.createDir('/home/usuario')
+  store.createFile('/home/usuario/datos.csv', 'nombre,edad,ciudad\nJuan,30,Buenos Aires\nMaria,25,Cordoba')
+  store.createFile('/home/usuario/notas.txt', 'Apuntes de la materia Sistemas Operativos.')
 })
 
 describe('cut', () => {
@@ -36,6 +29,24 @@ describe('cut', () => {
     const result = cut.execute(['datos.csv'], ['-d,', '-f2'])
     expect(result.exitCode).toBe(0)
     expect(result.stdout).toBe('edad\n30\n25\n')
+  })
+
+  it('extracts fields 1,3 with space-separated -f flag', () => {
+    const result = cut.execute(['notas.txt'], ['-d', ' ', '-f', '1,3'])
+    expect(result.exitCode).toBe(0)
+    expect(result.stdout).toBe('Apuntes la\n')
+  })
+
+  it('extracts fields with -f value in args (space-separated)', () => {
+    const result = cut.execute(['datos.csv'], ['-d,', '-f', '1,3'])
+    expect(result.exitCode).toBe(0)
+    expect(result.stdout).toBe('nombre,ciudad\nJuan,Buenos Aires\nMaria,Cordoba\n')
+  })
+
+  it('handles -d with space delimiter', () => {
+    const result = cut.execute(['notas.txt'], ['-d', ' ', '-f1'])
+    expect(result.exitCode).toBe(0)
+    expect(result.stdout).toBe('Apuntes\n')
   })
 
   it('returns error for missing file', () => {
