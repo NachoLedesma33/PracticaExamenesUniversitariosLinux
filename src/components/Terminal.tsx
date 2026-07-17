@@ -8,7 +8,7 @@ import { useTerminalStore } from '../store/useTerminalStore';
 export function Terminal() {
   const [minimized, setMinimized] = useState(false);
   const challenge = useTerminalStore((s) => s.getCurrentChallenge());
-  const isScripting = challenge?.validationType === 'text' && challenge.category.toLowerCase().includes('scripting');
+  const isScripting = challenge?.validationType === 'text' && (challenge.category.toLowerCase().includes('scripting') || challenge.category.toLowerCase().includes('finales'));
 
   return (
     <div className={`flex flex-col h-full rounded-xl overflow-hidden shadow-2xl glow-edge ${minimized ? '' : 'animate-pulse-glow'}`}>

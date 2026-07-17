@@ -28,6 +28,8 @@ const HOME: VFSNode = d('home', {
     'num10': f('num10', '12\n56\n'),
     'nuevonum': f('nuevonum', '12\n34\n56\n'),
     'respaldo.tar': f('respaldo.tar', '[contenido tar simulado]'),
+    'datos.zip': f('datos.zip', '[zip archive containing: README.txt, datos.csv]'),
+    'proyecto.zip': f('proyecto.zip', '[zip archive containing: index.html, style.css, script.js]'),
     'notas.txt': f('notas.txt', 'Apuntes de la materia Sistemas Operativos.'),
     'script.sh': f('script.sh', '#!/bin/bash\necho "Hola mundo"\n'),
     'archi350': fPerm('archi350', 'contenido de archi350\n', 'rwx------'),

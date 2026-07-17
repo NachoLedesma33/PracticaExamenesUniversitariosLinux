@@ -172,6 +172,19 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-66', category: 'PARCIAL 1 - Compresión', instruction: 'Extraer de forma segura las copias de seguridad de "respaldo.tar" previniendo la sobreescritura accidental en el directorio actual.', hint: 'tar xvf respaldo.tar', solutionHint: 'tar xvf respaldo.tar', initialState: goHome, validationType: 'command', expectedCommandRegex: /tar\s+xvf/, commands: ['tar'], difficulty: 'medio' },
 
+  // ZIP / UNZIP
+  { id: 'p1-93', category: 'PARCIAL 1 - Compresión', instruction: 'Extraer el archivo "datos.zip" ubicado en el directorio home y visualizar el contenido del archivo extraído README.txt.', hint: 'unzip datos.zip && cat README.txt', solutionHint: 'unzip datos.zip y luego cat README.txt (o less, more, etc.)', initialState: goHome, validationType: 'state', validateState: allOf(fileExists('README.txt'), fileExists('datos.csv')), commands: ['unzip', 'cat'], difficulty: 'fácil' },
+
+  { id: 'p1-94', category: 'PARCIAL 1 - Compresión', instruction: 'Listar el contenido del archivo "proyecto.zip" sin extraerlo.', hint: 'unzip -l proyecto.zip', solutionHint: 'unzip -l proyecto.zip', initialState: goHome, validationType: 'command', expectedCommandRegex: /unzip\s+-l/, commands: ['unzip'], difficulty: 'fácil' },
+
+  { id: 'p1-95', category: 'PARCIAL 1 - Compresión', instruction: 'Extraer el contenido de "datos.zip" en el directorio "restauracion" (debe crear el directorio primero).', hint: 'mkdir restauracion && unzip datos.zip -d restauracion', solutionHint: 'mkdir restauracion && unzip datos.zip -d restauracion', initialState: (s) => { goHome(s); s.removeNode('/home/usuario/restauracion'); }, validationType: 'state', validateState: allOf(fileExists('restauracion/README.txt'), fileExists('restauracion/datos.csv')), commands: ['mkdir', 'unzip'], difficulty: 'medio' },
+
+  { id: 'p1-96', category: 'PARCIAL 1 - Compresión', instruction: 'Verificar la integridad del archivo "datos.zip".', hint: 'unzip -t datos.zip', solutionHint: 'unzip -t datos.zip', initialState: goHome, validationType: 'command', expectedCommandRegex: /unzip\s+-t/, commands: ['unzip'], difficulty: 'medio' },
+
+  { id: 'p1-97', category: 'PARCIAL 1 - Compresión', instruction: 'Comprimir los archivos "notas.txt" y "datos.txt" en un archivo llamado "backup.zip".', hint: 'zip backup.zip notas.txt datos.txt', solutionHint: 'zip backup.zip notas.txt datos.txt', initialState: goHome, validationType: 'state', validateState: fileExists('backup.zip'), commands: ['zip'], difficulty: 'difícil' },
+
+  { id: 'p1-98', category: 'PARCIAL 1 - Compresión', instruction: 'Comprimir recursivamente todo el contenido del directorio "proyectos" en un archivo llamado "proyectos.zip".', hint: 'zip -r proyectos.zip proyectos', solutionHint: 'zip -r proyectos.zip proyectos', initialState: goHome, validationType: 'state', validateState: fileExists('proyectos.zip'), commands: ['zip'], difficulty: 'difícil' },
+
   { id: 'p1-67', category: 'PARCIAL 1 - Permisos', instruction: 'Agregar de forma masiva permisos de lectura/escritura a otros y ejecución al grupo para todos los archivos ordinarios a partir de "dire".', hint: 'find dire -type f -exec chmod g+x,o+rw {} \\;', solutionHint: 'find dire -type f -exec chmod g+x,o+rw {} \\;', initialState: goHome, validationType: 'command', expectedCommandRegex: /find.*dire.*-exec.*chmod/, commands: ['find', 'chmod'], difficulty: 'difícil' },
 
   { id: 'p1-68', category: 'PARCIAL 1 - Permisos', instruction: 'Borrar en un solo paso todos los archivos ordinarios a partir de la posición actual que tengan exactamente los permisos numéricos 621 (rw- -w- --x).', hint: 'find . -type f -perm 621 -exec rm {} \\;', solutionHint: 'find . -type f -perm 621 -exec rm {} \\;', initialState: goHome, validationType: 'command', expectedCommandRegex: /find.*-perm.*-exec.*rm/, commands: ['find', 'rm'], difficulty: 'difícil' },

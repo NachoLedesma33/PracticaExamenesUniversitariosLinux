@@ -12,6 +12,7 @@ import { resolvePath } from '../utils';
 import { PARCIAL_1_CHALLENGES } from './parcial1';
 import { PARCIAL_2_CHALLENGES } from './parcial2';
 import { PARCIAL_3_CHALLENGES } from './parcial3';
+import { EXAMEN_FINAL_CHALLENGES } from './final';
 
 const HOME = '/home/usuario';
 
@@ -708,4 +709,5 @@ export const challenges: Challenge[] = [
   ...PARCIAL_1_CHALLENGES,
   ...PARCIAL_2_CHALLENGES,
   ...PARCIAL_3_CHALLENGES,
+  ...EXAMEN_FINAL_CHALLENGES,
 ];

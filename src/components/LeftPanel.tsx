@@ -15,7 +15,7 @@ export function LeftPanel() {
   const resetFS = useTerminalStore((s) => s.resetFS);
   const [filter, setFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['PARCIAL 1']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['PARCIAL 1', 'FINALES']);
   const [activePath, setActivePath] = useState<string | null>(null);
   const [pathOpen, setPathOpen] = useState(false);
 
@@ -34,13 +34,15 @@ export function LeftPanel() {
         groupKey = 'PARCIAL 2'; prefix = 'PARCIAL 2 - ';
       } else if (cat.startsWith('PARCIAL 3 - ')) {
         groupKey = 'PARCIAL 3'; prefix = 'PARCIAL 3 - ';
+      } else if (cat.startsWith('FINALES - ')) {
+        groupKey = 'FINALES'; prefix = 'FINALES - ';
       } else {
         groupKey = 'Original'; prefix = '';
       }
       if (!groupMap[groupKey]) groupMap[groupKey] = { label: groupKey, prefix, categories: [] };
       groupMap[groupKey].categories.push(cat);
     }
-    return ['PARCIAL 1', 'PARCIAL 2', 'PARCIAL 3', 'Original']
+    return ['PARCIAL 1', 'PARCIAL 2', 'PARCIAL 3', 'FINALES', 'Original']
       .filter((k) => groupMap[k])
       .map((k) => groupMap[k]);
   }, [categoryNames]);

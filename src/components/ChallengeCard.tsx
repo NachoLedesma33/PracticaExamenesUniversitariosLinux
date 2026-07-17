@@ -87,7 +87,7 @@ export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
                 <Lightbulb size={10} />
                 <span>Solución:</span>
               </div>
-              <pre className="text-xs text-terminal-green whitespace-pre-wrap font-mono leading-relaxed">{challenge.solutionHint}</pre>
+              <pre className="text-xs text-terminal-green whitespace-pre-wrap font-mono leading-relaxed max-h-[200px] overflow-y-auto select-text">{challenge.solutionHint}</pre>
             </div>
           )}
 
@@ -97,23 +97,45 @@ export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
                 <Terminal size={10} />
                 <span>Ejecución:</span>
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const store = useTerminalStore.getState();
-                  store.setPendingInput(challenge.executionCommand!);
-                }}
-                className="w-full text-left cursor-pointer group"
-                title="Hacé clic para pegar en la terminal"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <code className="text-xs font-mono text-terminal-green">
-                    <span className="text-terminal-dim select-none">$ </span>
-                    {challenge.executionCommand}
-                  </code>
-                  <Copy size={10} className="shrink-0 text-terminal-dim group-hover:text-terminal-cyan transition-colors" />
+              <div className="flex items-start justify-between gap-2">
+                <pre className="text-xs font-mono text-terminal-green whitespace-pre-wrap max-h-[240px] overflow-y-auto select-text flex-1 leading-relaxed">
+                  <span className="text-terminal-dim select-none">$ </span>
+                  {challenge.executionCommand}
+                </pre>
+                <div className="flex flex-col gap-1 shrink-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const txt = challenge.executionCommand!;
+                      if (navigator.clipboard?.writeText) {
+                        navigator.clipboard.writeText(txt);
+                      } else {
+                        const ta = document.createElement('textarea');
+                        ta.value = txt;
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                      }
+                    }}
+                    className="p-1 rounded hover:bg-terminal-cyan/10 transition-colors cursor-pointer"
+                    title="Copiar al portapapeles"
+                  >
+                    <Copy size={12} className="text-terminal-dim hover:text-terminal-cyan" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const store = useTerminalStore.getState();
+                      store.setPendingInput(challenge.executionCommand!);
+                    }}
+                    className="p-1 rounded hover:bg-terminal-cyan/10 transition-colors cursor-pointer"
+                    title="Pegar en la terminal"
+                  >
+                    <Terminal size={12} className="text-terminal-dim hover:text-terminal-cyan" />
+                  </button>
                 </div>
-              </button>
+              </div>
             </div>
           )}
 
@@ -123,7 +145,7 @@ export function ChallengeCard({ challenge, highlight }: ChallengeCardProps) {
                 <CheckCheck size={10} />
                 <span>Salida esperada:</span>
               </div>
-              <pre className="text-xs text-terminal-green/90 whitespace-pre-wrap font-mono leading-relaxed max-h-[100px] overflow-y-auto">{challenge.expectedOutput}</pre>
+              <pre className="text-xs text-terminal-green/90 whitespace-pre-wrap font-mono leading-relaxed max-h-[250px] overflow-y-auto select-text">{challenge.expectedOutput}</pre>
             </div>
           )}
 
