@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { validateCommand } from '../engine/validation';
 import { getHint, categoryHints } from '../engine/hint-system';
@@ -17,6 +17,11 @@ export function ChallengeBanner() {
   const [textResult, setTextResult] = useState<{ passed: boolean; reason?: string } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  useEffect(() => {
+    setTextAnswer('');
+    setTextResult(null);
+  }, [challenge?.id]);
+
   if (!challenge) return null;
 
   const isText = challenge.validationType === 'text';
@@ -30,10 +35,10 @@ export function ChallengeBanner() {
   const diffColor = challenge.difficulty === 'fácil' ? 'success'
     : challenge.difficulty === 'medio' ? 'warning' : 'danger';
 
-  const handleTextSubmit = () => {
+  const handleTextSubmit = async () => {
     const answer = textAnswer.trim();
     if (!answer) return;
-    const validation = validateCommand(answer);
+    const validation = await validateCommand(answer);
     setLastValidation(validation);
     recordAttempt(challenge.id, validation.passed, validation.reason);
     setTextResult({ passed: validation.passed, reason: validation.reason });

@@ -57,6 +57,8 @@ const EQUIVALENCES: [RegExp, string][] = [
   [/^cls\b/, 'clear'],
   [/^findstr\b/, 'grep'],
   [/^chdir\b/, 'cd'],
+  [/^md\b/, 'mkdir'],
+  [/^rd\b/, 'rmdir'],
 ];
 
 export function resolveEquivalence(cmd: string): string | null {
@@ -101,8 +103,14 @@ const FEEDBACK_RULES: {
       if (cmdName === 'grep' && !input.includes('-r') && !input.includes('-R') && challenge.solutionHint.includes('-r')) {
         return 'Falta -r (recursivo) para buscar en subdirectorios.';
       }
+      if (cmdName === 'grep' && !input.includes('-i') && challenge.solutionHint.includes('-i')) {
+        return 'Falta -i (ignore case) para que la búsqueda no distinga mayúsculas de minúsculas.';
+      }
       if (cmdName === 'cp' && !input.includes('-r') && !input.includes('-R') && challenge.solutionHint.includes('-r')) {
         return 'Falta -r (recursivo) para copiar directorios.';
+      }
+      if (cmdName === 'rm' && !input.includes('-r') && !input.includes('-R') && challenge.solutionHint.includes('-r')) {
+        return 'Falta -r (recursivo) para borrar directorios. rm solo borra archivos sin -r.';
       }
       if (cmdName === 'head' && !input.includes('-') && challenge.solutionHint.includes('-')) {
         const nMatch = challenge.solutionHint.match(/-(\d+)/);

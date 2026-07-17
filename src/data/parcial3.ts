@@ -268,7 +268,7 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     instruction: '¿Qué archivo contiene información sobre las áreas swap? Describir sus campos.',
     hint: '/proc/swaps',
     solutionHint: 'El archivo es /proc/swaps. Campos:\n1ro: Nombre del archivo.\n2do: Tipo (fichero o partición).\n3ro: Tamaño en Kbytes.\n4to: Cantidad utilizada en Kbytes.\n5to: Priority (menor número = mayor prioridad, más probabilidad de ser usada).',
-    initialState: goHome, validationType: 'text', expectedCommandRegex: /\/proc\/swaps.*nombre.*tipo.*tamaño.*utilizado.*priority/i, commands: [], difficulty: 'medio',
+    initialState: goHome, validationType: 'text', expectedCommandRegex: /\/proc\/swaps[\s\S]*nombre[\s\S]*tipo[\s\S]*tamaño[\s\S]*utilizado[\s\S]*priority/i, commands: [], difficulty: 'medio',
   },
   {
     id: 'p3-35', category: 'PARCIAL 3 - Shell Scripting',

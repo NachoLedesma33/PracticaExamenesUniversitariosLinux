@@ -26,23 +26,23 @@ function makeChallenge(overrides: Partial<Challenge>): Challenge {
 }
 
 describe('validateCommand', () => {
-  it('returns fail when no challenge is active', () => {
-    const result = validateCommand('anything');
+  it('returns fail when no challenge is active', async () => {
+    const result = await validateCommand('anything');
     expect(result.passed).toBe(false);
     expect(result.reason).toContain('No hay un ejercicio activo');
   });
 
-  it('returns fail for empty input', () => {
+  it('returns fail for empty input', async () => {
     const store = useTerminalStore.getState();
     store.importChallenges([makeChallenge({ id: 'test-empty' })]);
     store.setCurrentChallenge('test-empty');
-    const result = validateCommand('');
+    const result = await validateCommand('');
     expect(result.passed).toBe(false);
     expect(result.reason).toContain('No escribiste');
   });
 
   describe('text validation', () => {
-    it('passes when answer matches regex', () => {
+    it('passes when answer matches regex', async () => {
       const challenge = makeChallenge({
         id: 'test-01',
         validationType: 'text',
@@ -51,11 +51,11 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-01');
-      const result = validateCommand('Foreground y Background');
+      const result = await validateCommand('Foreground y Background');
       expect(result.passed).toBe(true);
     });
 
-    it('fails when answer does not match regex', () => {
+    it('fails when answer does not match regex', async () => {
       const challenge = makeChallenge({
         id: 'test-02',
         validationType: 'text',
@@ -64,11 +64,24 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-02');
-      const result = validateCommand('no se');
+      const result = await validateCommand('no se');
       expect(result.passed).toBe(false);
     });
 
-    it('passes with 60% fuzzy match when no regex', () => {
+    it('passes with semantic matching when regex fails', async () => {
+      const challenge = makeChallenge({
+        id: 'test-02b',
+        validationType: 'text',
+        expectedCommandRegex: /foreground.*background/i,
+        solutionHint: 'foreground y background',
+      });
+      useTerminalStore.getState().importChallenges([challenge]);
+      useTerminalStore.getState().setCurrentChallenge('test-02b');
+      const result = await validateCommand('primer plano y segundo plano');
+      expect(result.passed).toBe(true);
+    });
+
+    it('passes with 60% fuzzy match when no regex', async () => {
       const challenge = makeChallenge({
         id: 'test-03',
         validationType: 'text',
@@ -76,13 +89,13 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-03');
-      const result = validateCommand('el comando top');
+      const result = await validateCommand('el comando top');
       expect(result.passed).toBe(true);
     });
   });
 
   describe('command validation', () => {
-    it('passes when command matches regex', () => {
+    it('passes when command matches regex', async () => {
       const challenge = makeChallenge({
         id: 'test-04',
         validationType: 'command',
@@ -91,11 +104,11 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-04');
-      const result = validateCommand('ls -la /home');
+      const result = await validateCommand('ls -la /home');
       expect(result.passed).toBe(true);
     });
 
-    it('fails when command regex does not match', () => {
+    it('fails when command regex does not match', async () => {
       const challenge = makeChallenge({
         id: 'test-05',
         validationType: 'command',
@@ -104,11 +117,11 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-05');
-      const result = validateCommand('pwd');
+      const result = await validateCommand('pwd');
       expect(result.passed).toBe(false);
     });
 
-    it('silences validation when command does not match regex but exitCode is 0', () => {
+    it('silences validation when command does not match regex but exitCode is 0', async () => {
       const challenge = makeChallenge({
         id: 'test-silenced-01',
         validationType: 'command',
@@ -117,12 +130,12 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-silenced-01');
-      const result = validateCommand('cd ..', 0);
+      const result = await validateCommand('cd ..', 0);
       expect(result.passed).toBe(false);
       expect(result.ignored).toBe(true);
     });
 
-    it('does not silence validation when command does not match regex and exitCode is non-zero', () => {
+    it('does not silence validation when command does not match regex and exitCode is non-zero', async () => {
       const challenge = makeChallenge({
         id: 'test-silenced-02',
         validationType: 'command',
@@ -131,13 +144,13 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-silenced-02');
-      const result = validateCommand('invalid_command', 127);
+      const result = await validateCommand('invalid_command', 127);
       expect(result.passed).toBe(false);
       expect(result.ignored).not.toBe(true);
       expect(result.reason).toContain('El comando no coincide con el patrón esperado.');
     });
 
-    it('passes when output matches solution output', () => {
+    it('passes when output matches solution output', async () => {
       const challenge = makeChallenge({
         id: 'test-06',
         validationType: 'command',
@@ -145,13 +158,13 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-06');
-      const result = validateCommand('echo hola mundo');
+      const result = await validateCommand('echo hola mundo');
       expect(result.passed).toBe(true);
     });
   });
 
   describe('state validation', () => {
-    it('passes when state predicate returns null', () => {
+    it('passes when state predicate returns null', async () => {
       const challenge = makeChallenge({
         id: 'test-07',
         validationType: 'state',
@@ -160,11 +173,11 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-07');
-      const result = validateCommand('anything');
+      const result = await validateCommand('anything');
       expect(result.passed).toBe(true);
     });
 
-    it('fails when state predicate returns error', () => {
+    it('fails when state predicate returns error', async () => {
       const challenge = makeChallenge({
         id: 'test-08',
         validationType: 'state',
@@ -173,12 +186,12 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-08');
-      const result = validateCommand('anything');
+      const result = await validateCommand('anything');
       expect(result.passed).toBe(false);
       expect(result.reason).toContain('El archivo no existe');
     });
 
-    it('fails validation when command exitCode is non-zero, even if state predicate passes', () => {
+    it('fails validation when command exitCode is non-zero, even if state predicate passes', async () => {
       const challenge = makeChallenge({
         id: 'test-state-fail-exitcode',
         validationType: 'state',
@@ -187,7 +200,7 @@ describe('validateCommand', () => {
       });
       useTerminalStore.getState().importChallenges([challenge]);
       useTerminalStore.getState().setCurrentChallenge('test-state-fail-exitcode');
-      const result = validateCommand('mkdir dire/lista', 1);
+      const result = await validateCommand('mkdir dire/lista', 1);
       expect(result.passed).toBe(false);
       expect(result.reason).toContain('El comando falló');
     });

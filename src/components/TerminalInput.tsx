@@ -73,6 +73,15 @@ export function TerminalInput() {
   const vfs = useTerminalStore((s) => s.vfs);
   const pendingInput = useTerminalStore((s) => s.pendingInput);
   const setPendingInput = useTerminalStore((s) => s.setPendingInput);
+  const currentChallengeId = useTerminalStore((s) => s.currentChallengeId);
+
+  useEffect(() => {
+    setInput('');
+    setCaptureMode(false);
+    setCaptureBuffer('');
+    setCaptureTarget('');
+    setTabSuggestions(null);
+  }, [currentChallengeId]);
 
   useEffect(() => {
     if (pendingInput !== null) {
@@ -86,7 +95,7 @@ export function TerminalInput() {
     inputRef.current?.focus();
   }, [captureMode]);
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (captureMode) {
@@ -152,7 +161,7 @@ export function TerminalInput() {
       const store = useTerminalStore.getState();
       const prevResult = store.challengeResults[challenge.id];
       if (!prevResult?.completed) {
-        const validation = validateCommand(cmd);
+        const validation = await validateCommand(cmd);
         setLastValidation(validation);
         recordAttempt(challenge.id, validation.passed, validation.reason);
         if (validation.passed) {
@@ -202,7 +211,7 @@ export function TerminalInput() {
         const store = useTerminalStore.getState();
         const prevResult = store.challengeResults[currentChallenge.id];
         if (!prevResult?.completed) {
-          const validation = validateCommand(cmd, result.exitCode);
+          const validation = await validateCommand(cmd, result.exitCode);
           if (validation.ignored) {
             setInput('');
             setTabSuggestions(null);
@@ -228,7 +237,7 @@ export function TerminalInput() {
     setTabSuggestions(null);
   }, [input, captureMode, captureBuffer, captureTarget, addToHistory, clearHistory, resetFS, createFile, setLastValidation, recordAttempt, markChallengeCompleted, getCurrentChallenge]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback(async (e: React.KeyboardEvent) => {
     if (captureMode) {
       if (e.ctrlKey && e.key === 'd') {
         e.preventDefault();
@@ -249,7 +258,7 @@ export function TerminalInput() {
           const store = useTerminalStore.getState();
           const prevResult = store.challengeResults[currentChallenge.id];
           if (!prevResult?.completed) {
-            const validation = validateCommand(`cat > ${captureTarget}`, 0);
+            const validation = await validateCommand(`cat > ${captureTarget}`, 0);
             if (!validation.ignored) {
               setLastValidation(validation);
               recordAttempt(currentChallenge.id, validation.passed, validation.reason);
