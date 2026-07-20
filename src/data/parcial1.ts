@@ -20,13 +20,23 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-02', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear dentro del directorio "dire" un subdirectorio llamado "lista".', hint: 'mkdir dire/lista', solutionHint: 'mkdir dire/lista', initialState: (s) => { goHome(s); s.removeNode('/home/usuario/dire/lista'); }, validationType: 'state', validateState: dirExists('dire/lista'), commands: ['mkdir'], difficulty: 'fácil' },
 
-  { id: 'p1-03', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear en el "home directory" el archivo "numeros" conteniendo en líneas separadas: 12, 34, 56.', hint: 'Usá cat > numeros y luego escribí cada número en una línea. Ctrl+D para finalizar.', solutionHint: 'cat > numeros', initialState: goHome, validationType: 'both', expectedCommandRegex: /cat\s+>\s+numeros/, validateState: fileContains('numeros', '12\n34\n56'), commands: ['cat'], difficulty: 'fácil' },
+  { id: 'p1-03', category: 'PARCIAL 1 - FileSystem', instruction: `Crear en el "home directory" el archivo "numeros" conteniendo en líneas separadas:
+12
+34
+56`, hint: 'Usá cat > numeros y luego escribí cada número en una línea. Ctrl+D para finalizar.', solutionHint: `cat > numeros
+12
+34
+56`, initialState: goHome, validationType: 'both', expectedCommandRegex: /cat\s+>\s+numeros/, validateState: fileContains('numeros', '12\n34\n56'), commands: ['cat'], difficulty: 'fácil' },
 
   { id: 'p1-04', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear en "dire" el archivo "let10" conteniendo las 10 primeras letras del abecedario.', hint: 'cat > dire/let10', solutionHint: 'cat > dire/let10', initialState: goHome, validationType: 'state', validateState: fileExists('dire/let10'), commands: ['cat'], difficulty: 'fácil' },
 
   { id: 'p1-05', category: 'PARCIAL 1 - Navegación', instruction: 'Cambiarse al directorio "grupo".', hint: 'cd dire/grupo', solutionHint: 'cd dire/grupo', initialState: goHome, validationType: 'state', validateState: cwdIs(GRUPO), commands: ['cd'], difficulty: 'fácil' },
 
-  { id: 'p1-06', category: 'PARCIAL 1 - FileSystem', instruction: 'Estando en "grupo", crear en el directorio padre ("dire") el archivo "num10" conteniendo en líneas separadas: 12, 56.', hint: 'cat > ../num10', solutionHint: 'cat > ../num10', initialState: goGrupo, validationType: 'state', validateState: fileContains('../num10', '12\n56'), commands: ['cat'], difficulty: 'medio' },
+  { id: 'p1-06', category: 'PARCIAL 1 - FileSystem', instruction: `Estando en "grupo", crear en el directorio padre ("dire") el archivo "num10" conteniendo en líneas separadas:
+12
+56`, hint: 'cat > ../num10 y escribí cada número en una línea. Ctrl+D para finalizar.', solutionHint: `cat > ../num10
+12
+56`, initialState: goGrupo, validationType: 'state', validateState: fileContains('../num10', '12\n56'), commands: ['cat'], difficulty: 'medio' },
 
   { id: 'p1-07', category: 'PARCIAL 1 - Filtros', instruction: 'Contar desde tu posición actual el número de caracteres y líneas del archivo "numeros" (ubicado en el home).', hint: 'wc -cl ../../numeros', solutionHint: 'wc -cl ../../numeros', initialState: goGrupo, validationType: 'command', expectedCommandRegex: /wc\s+-[cl]{1,2}\s+/, commands: ['wc'], difficulty: 'fácil' },
 
