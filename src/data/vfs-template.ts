@@ -50,7 +50,12 @@ const HOME: VFSNode = d('home', {
       'README.md': f('README.md', '# Mi Proyecto\n'),
     }),
     dire: d('dire', {
-      lista: d('lista', {}),
+      lista: d('lista', {
+        'archivo1.txt': f('archivo1.txt', 'contenido del archivo 1\n'),
+        'archivo2.txt': f('archivo2.txt', 'contenido del archivo 2\n'),
+        'script.sh': fPerm('script.sh', '#!/bin/bash\necho "hola"\n', 'rwxr-xrwx'),
+        'datos.csv': fPerm('datos.csv', 'a,b,c\n1,2,3\n', 'rwxrwxrwx'),
+      }),
       grupo: d('grupo', {}),
       let10: f('let10', 'a\nb\nc\nd\ne\nf\ng\nh\ni\nj\n'),
     }, false),
