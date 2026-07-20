@@ -74,7 +74,7 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-24', category: 'PARCIAL 1 - FileSystem', instruction: 'Comparar byte a byte de forma mecánica los archivos "num10" y "nuevonum".', hint: 'Desde dire/: cmp ../num10 ../nuevonum', solutionHint: 'cmp ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cmp\s/, commands: ['cmp'], difficulty: 'medio' },
 
-  { id: 'p1-25', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar los archivos "notas" y "num10" en forma concatenada uno detrás del otro.', hint: 'cat ../notas ../num10', solutionHint: 'cat ../notas ../num10', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cat\s+/, commands: ['cat'], difficulty: 'fácil' },
+  { id: 'p1-25', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar los archivos "notas" y "num10" en forma concatenada uno detrás del otro.', hint: 'Desde dire/: cat ../notas ../num10', solutionHint: 'cat ../notas ../num10', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cat\s+.*notas.*num10|^cat\s+.*num10.*notas/, commands: ['cat'], difficulty: 'fácil' },
 
   { id: 'p1-26', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar línea por línea las modificaciones necesarias en "num10" para igualarlo a "nuevonum".', hint: 'diff ../num10 ../nuevonum', solutionHint: 'diff ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^diff\s/, commands: ['diff'], difficulty: 'medio' },
 
