@@ -258,7 +258,7 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
   },
   {
     id: 'p3-33', category: 'PARCIAL 3 - Sistemas de Archivos',
-    instruction: 'Listar los dispositivos del sistema Linux y si la ejecución fue exitosa agregar el listado a un archivo previamente creado.',
+    instruction: 'Listar los dispositivos del sistema Linux y si la ejecución fue exitosa agregar el listado a un archivo.',
     hint: 'ls /dev && ls /dev >> archi',
     solutionHint: 'ls /dev && ls /dev >> archi',
     initialState: goHome, validationType: 'command', expectedCommandRegex: /ls.*\/dev.*&&.*ls.*\/dev.*>>/, commands: ['ls'], difficulty: 'medio',

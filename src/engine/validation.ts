@@ -91,9 +91,6 @@ async function validateByCommand(input: string, challenge: Challenge, exitCode?:
       }
       return `El comando no coincide con el patrón esperado.`;
     }
-    if (exitCode !== undefined && exitCode !== 0) {
-      return `El comando falló. Revisá que los archivos/directorios necesarios existan.`;
-    }
     return null;
   }
 

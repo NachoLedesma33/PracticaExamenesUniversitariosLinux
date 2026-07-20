@@ -72,7 +72,7 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-23', category: 'PARCIAL 1 - Filtros', instruction: 'Mostrar por pantalla un listado de "notas" que incluya únicamente el apellido (columna 1) y condición (columna 3) delimitados por espacios.', hint: 'cut -d" " -f 1,3 ../notas', solutionHint: 'cut -d" " -f 1,3 ../notas', initialState: goDire, validationType: 'command', expectedCommandRegex: /cut\s+-d.*-f/, commands: ['cut'], difficulty: 'medio' },
 
-  { id: 'p1-24', category: 'PARCIAL 1 - FileSystem', instruction: 'Comparar byte a byte de forma mecánica los archivos "num10" y "nuevonum".', hint: 'cmp ../num10 ../nuevonum', solutionHint: 'cmp ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cmp\s/, commands: ['cmp'], difficulty: 'medio' },
+  { id: 'p1-24', category: 'PARCIAL 1 - FileSystem', instruction: 'Comparar byte a byte de forma mecánica los archivos "num10" y "nuevonum".', hint: 'Desde dire/: cmp ../num10 ../nuevonum', solutionHint: 'cmp ../num10 ../nuevonum', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cmp\s/, commands: ['cmp'], difficulty: 'medio' },
 
   { id: 'p1-25', category: 'PARCIAL 1 - FileSystem', instruction: 'Visualizar los archivos "notas" y "num10" en forma concatenada uno detrás del otro.', hint: 'cat ../notas ../num10', solutionHint: 'cat ../notas ../num10', initialState: goDire, validationType: 'command', expectedCommandRegex: /^cat\s+/, commands: ['cat'], difficulty: 'fácil' },
 
