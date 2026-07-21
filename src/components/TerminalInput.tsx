@@ -3,6 +3,7 @@ import { useTerminalStore } from '../store/useTerminalStore';
 import { executeCommand } from '../engine/executor';
 import { validateCommand } from '../engine/validation';
 import { parseCommand } from '../engine/parser';
+import { resolvePath } from '../utils';
 import { BookOpen } from 'lucide-react';
 
 function getAllVfsPaths(vfs: Record<string, any>, prefix: string): string[] {
@@ -243,7 +244,7 @@ export function TerminalInput() {
         e.preventDefault();
         const resolvedTarget = captureTarget.startsWith('/')
           ? captureTarget
-          : (cwd.endsWith('/') ? cwd + captureTarget : cwd + '/' + captureTarget);
+          : resolvePath(cwd, captureTarget);
 
         createFile(resolvedTarget, captureBuffer);
         addToHistory({
