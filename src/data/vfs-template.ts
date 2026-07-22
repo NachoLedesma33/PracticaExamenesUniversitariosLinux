@@ -154,12 +154,30 @@ export function setGlobalInode(value: number): void {
   globalInode = value;
 }
 
+function deepCloneNode(node: VFSNode): VFSNode {
+  const cloned: VFSNode = {
+    name: node.name,
+    type: node.type,
+    permissions: { ...node.permissions },
+    inode: node.inode === 1 ? 1 : getNextInode(),
+    content: node.content,
+  };
+  if (node.type === 'd' && node.children) {
+    const clonedChildren: Record<string, VFSNode> = {};
+    for (const [key, child] of Object.entries(node.children)) {
+      clonedChildren[key] = deepCloneNode(child);
+    }
+    cloned.children = clonedChildren;
+  }
+  return cloned;
+}
+
 export function createVFS(): VFS {
   inodeCounter = 2;
   globalInode = 1000;
 
   return {
-    '/': {
+    '/': deepCloneNode({
       name: '/',
       type: 'd',
       permissions: defaultPerms('d', true),
@@ -176,6 +194,6 @@ export function createVFS(): VFS {
         'opt': OPT,
         'sys': SYS,
       },
-    },
+    }),
   };
 }
