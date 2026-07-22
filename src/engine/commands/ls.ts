@@ -1,6 +1,6 @@
 import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath } from '../../utils';
+import { resolvePath, missingFileOutput } from '../../utils';
 
 const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
@@ -24,7 +24,15 @@ export const ls: CommandHandler = {
       : store.cwd;
 
     const node = store.getNode(targetDir);
-    if (!node) return { stdout: '', stderr: `ls: no se puede acceder a '${targetDir}': No existe el archivo o el directorio`, exitCode: 1 };
+    if (!node) {
+      const displayPath = args[0] || targetDir;
+      return missingFileOutput('ls',
+        `ls: no se puede acceder a '${displayPath}': No existe el archivo o el directorio`,
+        `drwxr-xr-x 2 usuario usuarios  4096 jul 22 10:00 ${displayPath}/\n` +
+        `-rw-r--r-- 1 usuario usuarios   128 jul 22 10:00 ${displayPath}/archivo1.txt\n` +
+        `-rw-r--r-- 1 usuario usuarios   256 jul 22 10:00 ${displayPath}/archivo2.txt\n`,
+        `Creá el directorio primero: mkdir ${displayPath}`);
+    }
     if (node.type !== 'd') {
       return { stdout: targetDir + '\n', stderr: '', exitCode: 0 };
     }
@@ -110,6 +118,6 @@ export const ls: CommandHandler = {
       return { stdout: output, stderr: '', exitCode: 0 };
     }
 
-    return { stdout: display.join('  ') + '\n', stderr: '', exitCode: 0 };
+    return { stdout: display.join('\n') + '\n', stderr: '', exitCode: 0 };
   },
 };

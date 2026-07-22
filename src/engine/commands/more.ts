@@ -1,6 +1,6 @@
 import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath } from '../../utils';
+import { resolvePath, missingFileOutput } from '../../utils';
 
 const DEFAULT_LINES_PER_PAGE = 20;
 
@@ -15,6 +15,8 @@ export const more: CommandHandler = {
     for (const arg of args) {
       if (/^\+\d+$/.test(arg)) {
         startLine = parseInt(arg.slice(1), 10);
+      } else if (/^\d+$/.test(arg) && parsedArgs.length === 0) {
+        linesPerPage = parseInt(arg, 10);
       } else {
         parsedArgs.push(arg);
       }
@@ -35,7 +37,14 @@ export const more: CommandHandler = {
       const resolved = resolvePath(store.cwd, parsedArgs[0]);
       content = store.readFile(resolved);
       if (content === null) {
-        return { stdout: '', stderr: `more: no se puede abrir '${parsedArgs[0]}'`, exitCode: 1 };
+        return missingFileOutput('more',
+          `more: no se puede abrir '${parsedArgs[0]}'`,
+          `abcd\n` +
+          `efgh\n` +
+          `ijkl\n` +
+          `mnop\n` +
+          `qrst\n`,
+          `Creá el archivo primero: echo "contenido" > ${parsedArgs[0]}`);
       }
     }
 

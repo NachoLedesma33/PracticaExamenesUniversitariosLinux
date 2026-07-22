@@ -1,6 +1,6 @@
 import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath, parseMode } from '../../utils';
+import { resolvePath, parseMode, missingFileNoOutput } from '../../utils';
 
 export const chmod: CommandHandler = {
   name: 'chmod',
@@ -17,7 +17,9 @@ export const chmod: CommandHandler = {
       const resolved = resolvePath(store.cwd, file);
       const node = store.getNode(resolved);
       if (!node) {
-        return { stdout: '', stderr: `chmod: no se puede acceder a '${file}': No existe el archivo`, exitCode: 1 };
+        return missingFileNoOutput('chmod',
+          `chmod: no se puede acceder a '${file}': No existe el archivo`,
+          `Creá el archivo primero: touch ${file}`);
       }
 
       const newNode = { ...node, permissions: { ...node.permissions } };

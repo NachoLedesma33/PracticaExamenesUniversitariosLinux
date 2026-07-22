@@ -1,6 +1,6 @@
 import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath } from '../../utils';
+import { resolvePath, missingFileOutput } from '../../utils';
 
 export const unzip: CommandHandler = {
   name: 'unzip',
@@ -15,7 +15,38 @@ export const unzip: CommandHandler = {
 
     const content = store.readFile(resolved);
     if (content === null) {
-      return { stdout: '', stderr: `unzip: no se puede encontrar o abrir ${target}`, exitCode: 1 };
+      const hasList = flags.includes('-l');
+      const hasTest = flags.includes('-t');
+      const hasExtract = flags.includes('-d');
+
+      if (hasList) {
+        return missingFileOutput('unzip',
+          `unzip: no se puede encontrar o abrir ${target}`,
+          `Archive:  ${target}\n` +
+          `  Length      Date    Time    Name\n` +
+          `---------  ---------- -----   ----\n` +
+          `       12  2024-01-01 00:00   README.txt\n` +
+          `      256  2024-01-01 00:00   datos/archivo1.csv\n` +
+          `      512  2024-01-01 00:00   datos/archivo2.csv\n` +
+          `---------                    ----\n` +
+          `      780                    3 files\n`,
+          `Creá el archivo zip primero: zip ${target} <archivos>`);
+      }
+
+      if (hasTest) {
+        return missingFileOutput('unzip',
+          `unzip: no se puede encontrar o abrir ${target}`,
+          `No errors detected in compressed data of ${target}.\n`,
+          `Creá el archivo zip primero: zip ${target} <archivos>`);
+      }
+
+      return missingFileOutput('unzip',
+        `unzip: no se puede encontrar o abrir ${target}`,
+        `Archive:  ${target}\n` +
+        `  inflating: README.txt\n` +
+        `  inflating: datos/archivo1.csv\n` +
+        `  inflating: datos/archivo2.csv\n`,
+        `Creá el archivo zip primero: zip ${target} <archivos>`);
     }
 
     const match = content.match(/\[zip archive containing: (.+?)\]/);

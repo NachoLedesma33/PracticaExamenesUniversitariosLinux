@@ -1,6 +1,6 @@
 import type { CommandHandler, VFSNode } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath, basename } from '../../utils';
+import { resolvePath, basename, missingFileNoOutput } from '../../utils';
 import { getNextInode } from '../../data/vfs-template';
 
 export const ln: CommandHandler = {
@@ -22,7 +22,9 @@ export const ln: CommandHandler = {
       const srcResolved = resolvePath(store.cwd, src);
       const srcNode = store.getNode(srcResolved);
       if (!srcNode) {
-        return { stdout: '', stderr: `ln: no se puede acceder a '${src}': No existe el archivo`, exitCode: 1 };
+        return missingFileNoOutput('ln',
+          `ln: no se puede acceder a '${src}': No existe el archivo`,
+          `Creá el archivo primero: touch ${src}`);
       }
 
       if (isSym) {

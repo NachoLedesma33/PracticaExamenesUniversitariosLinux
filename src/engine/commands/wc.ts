@@ -1,6 +1,6 @@
 import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath } from '../../utils';
+import { resolvePath, missingFileOutput } from '../../utils';
 
 export const wc: CommandHandler = {
   name: 'wc',
@@ -22,7 +22,13 @@ export const wc: CommandHandler = {
       const resolved = resolvePath(store.cwd, arg);
       const node = store.getNode(resolved);
       if (!node) {
-        lines.push(`wc: ${arg}: No existe el archivo o el directorio`);
+        const err = `wc: ${arg}: No existe el archivo o el directorio`;
+        if (files.length === 1) {
+          return missingFileOutput('wc', err,
+            `      42     180    1024 ${arg}\n`,
+            `Creá el archivo primero: echo "contenido" > ${arg}`);
+        }
+        lines.push(err);
         continue;
       }
       const content = node.content || '';

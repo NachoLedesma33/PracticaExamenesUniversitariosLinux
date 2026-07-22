@@ -1,6 +1,6 @@
 import type { CommandHandler } from '../../types';
 import { useTerminalStore } from '../../store/useTerminalStore';
-import { resolvePath, basename } from '../../utils';
+import { resolvePath, basename, missingFileNoOutput } from '../../utils';
 
 export const mv: CommandHandler = {
   name: 'mv',
@@ -20,7 +20,9 @@ export const mv: CommandHandler = {
     for (const src of sources) {
       const srcResolved = resolvePath(store.cwd, src);
       if (!store.nodeExists(srcResolved)) {
-        return { stdout: '', stderr: `mv: no se puede obtener información de '${src}': No existe el archivo o el directorio`, exitCode: 1 };
+        return missingFileNoOutput('mv',
+          `mv: no se puede obtener información de '${src}': No existe el archivo o el directorio`,
+          `Creá el archivo primero: touch ${src}`);
       }
 
       let destPath: string;
