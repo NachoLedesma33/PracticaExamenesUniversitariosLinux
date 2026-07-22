@@ -482,4 +482,132 @@ describe('executeCommand', () => {
       expect(result.exitCode).toBe(1);
     });
   });
+
+  // ============================
+  // Simulated output for missing files
+  // ============================
+  describe('simulated output — missing files', () => {
+    it('wc on missing file returns simulatedOutput with tip', () => {
+      const result = executeCommand('wc -cl /home/usuario/noexiste.txt');
+      expect(result.exitCode).toBe(1);
+      expect(result.stderr).toContain('No existe');
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('si existiera');
+      expect(result.simulatedOutput).toContain('💡 Tip:');
+    });
+
+    it('ln on missing source returns simulatedOutput', () => {
+      const result = executeCommand('ln /home/usuario/noexiste.txt /home/usuario/link.txt');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('no produce salida');
+    });
+
+    it('mv on missing source returns simulatedOutput', () => {
+      const result = executeCommand('mv /home/usuario/noexiste.txt /home/usuario/dest.txt');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('no produce salida');
+    });
+
+    it('ls on missing directory returns simulatedOutput', () => {
+      const result = executeCommand('ls /home/usuario/noexiste');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('si existiera');
+    });
+
+    it('tar cvf with missing file returns simulatedOutput', () => {
+      const result = executeCommand('tar cvf /home/usuario/test.tar /home/usuario/noexiste');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('si existiera');
+    });
+
+    it('tar tvf on missing tar returns simulatedOutput', () => {
+      const result = executeCommand('tar tvf /home/usuario/noexiste.tar');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('si existiera');
+    });
+
+    it('unzip on missing zip returns simulatedOutput', () => {
+      const result = executeCommand('unzip /home/usuario/noexiste.zip');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('si existiera');
+    });
+
+    it('unzip -l on missing zip returns simulatedOutput with listing', () => {
+      const result = executeCommand('unzip -l /home/usuario/noexiste.zip');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('Archive:');
+    });
+
+    it('unzip -t on missing zip returns simulatedOutput', () => {
+      const result = executeCommand('unzip -t /home/usuario/noexiste.zip');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('No errors detected');
+    });
+
+    it('chmod on missing file returns simulatedOutput', () => {
+      const result = executeCommand('chmod 755 /home/usuario/noexiste.sh');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('no produce salida');
+    });
+
+    it('more on missing file returns simulatedOutput', () => {
+      const result = executeCommand('more /home/usuario/noexiste.txt');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('si existiera');
+    });
+
+    it('more parses positional number as lines per page', () => {
+      const store = useTerminalStore.getState();
+      store.createFile('/home/usuario/let10', 'a\nb\nc\nd\ne\nf\ng\nh\ni\nj\n');
+      const result = executeCommand('more 3 +4 /home/usuario/let10');
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('d');
+      expect(result.stdout).toContain('e');
+      expect(result.stdout).toContain('f');
+      expect(result.stdout).not.toContain('c');
+    });
+
+    it('existing files do NOT return simulatedOutput', () => {
+      const result = executeCommand('ls /home/usuario');
+      expect(result.exitCode).toBe(0);
+      expect(result.simulatedOutput).toBeUndefined();
+    });
+
+    it('&& chain: simulatedOutput preserved when first command fails', () => {
+      const result = executeCommand('mv /home/usuario/noexiste.txt /home/usuario/dest.txt && ls /home/usuario');
+      expect(result.exitCode).toBe(1);
+      expect(result.simulatedOutput).toBeDefined();
+      expect(result.simulatedOutput).toContain('no produce salida');
+    });
+  });
+
+  // ============================
+  // VFS /bin content for grep exercises
+  // ============================
+  describe('VFS /bin has realistic content', () => {
+    it('ls /bin | grep "^m" returns results', () => {
+      const result = executeCommand('ls /bin | grep "^m"');
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('mkdir');
+      expect(result.stdout).toContain('mv');
+    });
+
+    it('ls /bin | grep "^l" returns results', () => {
+      const result = executeCommand('ls /bin | grep "^l"');
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('ls');
+      expect(result.stdout).toContain('ln');
+      expect(result.stdout).toContain('less');
+    });
+  });
 });
