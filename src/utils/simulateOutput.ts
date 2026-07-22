@@ -5,7 +5,7 @@ import type { CommandOutput } from '../types';
  * Returns the original error + a simulated example of what would happen.
  */
 export function missingFileOutput(
-  commandName: string,
+  _commandName: string,
   error: string,
   simulated: string,
   tip?: string,
@@ -22,7 +22,7 @@ export function missingFileOutput(
 
 /** Convenience for commands that produce no stdout on success (mv, ln, chmod) */
 export function missingFileNoOutput(
-  commandName: string,
+  _commandName: string,
   error: string,
   tip?: string,
 ): CommandOutput {

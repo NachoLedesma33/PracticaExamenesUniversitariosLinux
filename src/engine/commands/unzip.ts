@@ -17,7 +17,6 @@ export const unzip: CommandHandler = {
     if (content === null) {
       const hasList = flags.includes('-l');
       const hasTest = flags.includes('-t');
-      const hasExtract = flags.includes('-d');
 
       if (hasList) {
         return missingFileOutput('unzip',
