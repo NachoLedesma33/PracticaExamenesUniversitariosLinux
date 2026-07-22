@@ -12,7 +12,7 @@
 | F6 Ejercicios | ✅ Completada | 24 tests (exercise-integration.test.ts) |
 | F7 Hints | ✅ Completada | 6 tests (hint-system.test.ts, pre-existente) |
 | F8 Flujos de Usuario | ✅ Completada | 10 tests (user-flow.test.ts) |
-| F9 Build | Pendiente | |
+| F9 Build | ✅ Completada | 9 tests (build-regression.test.ts) |
 
 ## Objetivo
 
