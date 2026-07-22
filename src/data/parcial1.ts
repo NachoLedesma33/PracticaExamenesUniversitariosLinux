@@ -28,7 +28,7 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 34
 56`, initialState: goHome, validationType: 'both', expectedCommandRegex: /cat\s+>\s+numeros/, validateState: fileContains('numeros', '12\n34\n56'), commands: ['cat'], difficulty: 'fácil' },
 
-  { id: 'p1-04', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear en "dire" el archivo "let10" conteniendo las 10 primeras letras del abecedario.', hint: 'cat > dire/let10', solutionHint: 'cat > dire/let10', initialState: goHome, validationType: 'state', validateState: fileExists('dire/let10'), commands: ['cat'], difficulty: 'fácil' },
+  { id: 'p1-04', category: 'PARCIAL 1 - FileSystem', instruction: 'Crear en "dire" el archivo "let10" conteniendo las 10 primeras letras del abecedario.', hint: 'cat > dire/let10', solutionHint: 'cat > dire/let10', initialState: (s) => { goHome(s); s.removeNode('/home/usuario/dire/let10'); }, validationType: 'state', validateState: fileExists('dire/let10'), commands: ['cat'], difficulty: 'fácil' },
 
   { id: 'p1-05', category: 'PARCIAL 1 - Navegación', instruction: 'Cambiarse al directorio "grupo".', hint: 'cd dire/grupo', solutionHint: 'cd dire/grupo', initialState: goHome, validationType: 'state', validateState: cwdIs(GRUPO), commands: ['cd'], difficulty: 'fácil' },
 
@@ -176,7 +176,7 @@ export const PARCIAL_1_CHALLENGES: Challenge[] = [
 
   { id: 'p1-63', category: 'PARCIAL 1 - Compresión', instruction: '¿Qué comando entrega un tamaño menor de compresión? ¿gzip -4 archivo o gzip -7 archivo?', hint: 'gzip -7, a mayor número mayor compresión.', solutionHint: 'gzip -7 archivo. A mayor número, mayor factor de compresión, archivo más pequeño.', initialState: goHome, validationType: 'text', expectedCommandRegex: /gzip\s+-7/, commands: [], difficulty: 'medio' },
 
-  { id: 'p1-64', category: 'PARCIAL 1 - Compresión', instruction: 'Crear un empaquetado de respaldo llamado "respaldo.tar" que contenga de forma conjunta los directorios dire1, dire2 y dire3.', hint: 'tar cvf respaldo.tar dire1 dire2 dire3', solutionHint: 'tar cvf respaldo.tar dire1 dire2 dire3', initialState: goHome, validationType: 'state', validateState: fileExists('respaldo.tar'), commands: ['tar'], difficulty: 'medio' },
+  { id: 'p1-64', category: 'PARCIAL 1 - Compresión', instruction: 'Crear un empaquetado de respaldo llamado "respaldo.tar" que contenga de forma conjunta los directorios dire1, dire2 y dire3.', hint: 'tar cvf respaldo.tar dire1 dire2 dire3', solutionHint: 'tar cvf respaldo.tar dire1 dire2 dire3', initialState: (s) => { goHome(s); s.removeNode('/home/usuario/respaldo.tar'); }, validationType: 'state', validateState: fileExists('respaldo.tar'), commands: ['tar'], difficulty: 'medio' },
 
   { id: 'p1-65', category: 'PARCIAL 1 - Compresión', instruction: 'Visualizar la tabla de contenidos e información interna del archivo de empaquetado "respaldo.tar" sin extraerlo.', hint: 'tar tvf respaldo.tar', solutionHint: 'tar tvf respaldo.tar', initialState: goHome, validationType: 'command', expectedCommandRegex: /tar\s+tvf/, commands: ['tar'], difficulty: 'medio' },
 

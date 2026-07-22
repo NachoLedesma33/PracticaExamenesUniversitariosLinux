@@ -157,6 +157,15 @@ export async function validateCommand(input: string, exitCode?: number): Promise
       result.reason = 'El comando falló. Revisá la salida de la terminal.';
       return result;
     }
+
+    if (challenge.validationType === 'state' && challenge.commands.length > 0) {
+      const cmdName = cmd.split(/\s/)[0];
+      if (!challenge.commands.includes(cmdName)) {
+        result.reason = `El comando "${cmdName}" no está relacionado con este ejercicio. Probá con: ${challenge.commands.join(', ')}.`;
+        return result;
+      }
+    }
+
     const stateErr = validateByState(store, challenge);
     if (stateErr) {
       result.reason = stateErr;

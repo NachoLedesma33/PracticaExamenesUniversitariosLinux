@@ -151,7 +151,7 @@ export const challenges: Challenge[] = [
     instruction: 'Crea un archivo llamado "datos.txt" en el directorio /home/usuario.',
     hint: 'Usa el comando "touch".',
     solutionHint: 'touch datos.txt',
-    initialState: goHome,
+    initialState: (s) => { goHome(s); s.removeNode('/home/usuario/datos.txt'); },
     validationType: 'state',
     validateState: fileExists('datos.txt'),
     commands: ['touch'],
@@ -511,7 +511,7 @@ export const challenges: Challenge[] = [
     instruction: 'Agrega permiso de ejecución al archivo "script.sh" en descargas.',
     hint: 'Usa "chmod" con +x.',
     solutionHint: 'chmod +x descargas/script.sh',
-    initialState: goHome,
+    initialState: (s) => { goHome(s); s.setNode(resolvePath(s.cwd, 'descargas/script.sh'), { ...s.getNode(resolvePath(s.cwd, 'descargas/script.sh')), permissions: { owner: 'usuario', group: 'usuarios', mode: 'rw-r--r--' } }); },
     validationType: 'state',
     validateState: (s) => {
       const resolved = resolvePath(s.cwd, 'descargas/script.sh');
@@ -543,7 +543,7 @@ export const challenges: Challenge[] = [
     instruction: 'Saca el permiso de escritura al grupo del archivo "notas.txt".',
     hint: 'Usa chmod con g-w.',
     solutionHint: 'chmod g-w notas.txt',
-    initialState: goHome,
+    initialState: (s) => { goHome(s); s.setNode(resolvePath(s.cwd, 'notas.txt'), { ...s.getNode(resolvePath(s.cwd, 'notas.txt')), permissions: { owner: 'usuario', group: 'usuarios', mode: 'rwxrw-r-x' } }); },
     validationType: 'state',
     validateState: (s) => {
       const resolved = resolvePath(s.cwd, 'notas.txt');
@@ -561,7 +561,7 @@ export const challenges: Challenge[] = [
     instruction: 'Cambia los permisos de "script.sh" a 755 (rwxr-xr-x).',
     hint: 'Usa chmod 755.',
     solutionHint: 'chmod 755 descargas/script.sh',
-    initialState: goHome,
+    initialState: (s) => { goHome(s); s.setNode(resolvePath(s.cwd, 'descargas/script.sh'), { ...s.getNode(resolvePath(s.cwd, 'descargas/script.sh')), permissions: { owner: 'usuario', group: 'usuarios', mode: 'rw-r--r--' } }); },
     validationType: 'state',
     validateState: fileMode('descargas/script.sh', 'rwxr-xr-x'),
     commands: ['chmod'],

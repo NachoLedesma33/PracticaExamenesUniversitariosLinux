@@ -45,10 +45,9 @@ describe('Parcial 1 — Exercise Integration', () => {
     expect(validation.passed).toBe(true);
   });
 
-  it('E7.4: p1-04 (cat > dire/let10) — state validates file exists', async () => {
-    const ch = loadChallenge('p1-04');
-    const store = useTerminalStore.getState();
-    expect(ch.validateState?.(store as any)).toBeNull();
+  it('E7.4: p1-04 (cat > dire/let10) — state validates file exists after creation', async () => {
+    const { validation } = await solveAndValidate('p1-04', 'cat > dire/let10');
+    expect(validation.passed).toBe(true);
   });
 
   it('E7.5: p1-05 (cd dire/grupo) — state validates cwd', async () => {

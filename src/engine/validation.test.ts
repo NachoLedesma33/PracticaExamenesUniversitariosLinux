@@ -381,3 +381,33 @@ describe('revalidateCurrentChallenge', () => {
     expect(result.reason).toContain('Error de estado');
   });
 });
+
+// ============================
+// P017 REGRESSION: state + commands rejects unrelated commands
+// ============================
+describe('P017 — state challenges reject unrelated commands', () => {
+  it('rejects ls when state challenge requires cat and state is already satisfied', async () => {
+    setupChallenge(makeChallenge({
+      id: 'p017-regression',
+      validationType: 'state',
+      validateState: () => null,
+      commands: ['cat'],
+      solutionHint: 'cat > dire/let10',
+    }));
+    const result = await validateCommand('ls', 0);
+    expect(result.passed).toBe(false);
+    expect(result.reason).toContain('no está relacionado');
+  });
+
+  it('accepts ls when state challenge requires ls and state is satisfied', async () => {
+    setupChallenge(makeChallenge({
+      id: 'p017-regression-2',
+      validationType: 'state',
+      validateState: () => null,
+      commands: ['ls'],
+      solutionHint: 'ls',
+    }));
+    const result = await validateCommand('ls', 0);
+    expect(result.passed).toBe(true);
+  });
+});
