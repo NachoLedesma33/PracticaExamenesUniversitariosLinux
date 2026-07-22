@@ -2,8 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTerminalStore } from '../store/useTerminalStore';
 import { executeCommand } from '../engine/executor';
 import { validateCommand } from '../engine/validation';
-import { parseCommand } from '../engine/parser';
-import { resolvePath } from '../utils';
+import { detectCaptureCommand, resolveCaptureTarget, buildCaptureHistoryEntry, shouldValidateAfterCapture, buildCaptureValidationCommand } from '../engine/capture-mode';
 import { BookOpen } from 'lucide-react';
 
 function getAllVfsPaths(vfs: Record<string, any>, prefix: string): string[] {
@@ -179,9 +178,9 @@ export function TerminalInput() {
       return;
     }
 
-    const parsed = parseCommand(cmd);
-    if (parsed?.name === 'cat' && parsed.args.length === 0 && parsed.redirect?.type === '>') {
-      setCaptureTarget(parsed.redirect.target);
+    const capture = detectCaptureCommand(cmd);
+    if (capture.isCapture && capture.target) {
+      setCaptureTarget(capture.target);
       setCaptureBuffer('');
       setCaptureMode(true);
       addToHistory({
@@ -242,24 +241,23 @@ export function TerminalInput() {
     if (captureMode) {
       if (e.ctrlKey && e.key === 'd') {
         e.preventDefault();
-        const resolvedTarget = captureTarget.startsWith('/')
-          ? captureTarget
-          : resolvePath(cwd, captureTarget);
+        const resolvedTarget = resolveCaptureTarget(cwd, captureTarget);
 
         createFile(resolvedTarget, captureBuffer);
+        const historyEntry = buildCaptureHistoryEntry(captureTarget, captureBuffer);
         addToHistory({
-          command: `cat > ${captureTarget} (${captureBuffer.split('\n').filter(Boolean).length} líneas)`,
-          output: `✅ Archivo '${captureTarget}' guardado (${captureBuffer.length} bytes).`,
+          command: historyEntry.command,
+          output: historyEntry.output,
           timestamp: Date.now(),
           exitCode: 0,
         });
 
         const currentChallenge = getCurrentChallenge();
-        if (currentChallenge && currentChallenge.validationType !== 'text') {
+        if (currentChallenge && shouldValidateAfterCapture(currentChallenge, false)) {
           const store = useTerminalStore.getState();
           const prevResult = store.challengeResults[currentChallenge.id];
           if (!prevResult?.completed) {
-            const validation = await validateCommand(`cat > ${captureTarget}`, 0);
+            const validation = await validateCommand(buildCaptureValidationCommand(captureTarget), 0);
             if (!validation.ignored) {
               setLastValidation(validation);
               recordAttempt(currentChallenge.id, validation.passed, validation.reason);
