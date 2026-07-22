@@ -32,6 +32,9 @@ export function TerminalOutput() {
           {entry.output && (
             <div className={entry.exitCode !== 0 ? 'text-terminal-red' : 'text-terminal-fg'} style={{ whiteSpace: 'pre-wrap' }}>{entry.output}</div>
           )}
+          {entry.simulatedOutput && (
+            <div className="text-yellow-400" style={{ whiteSpace: 'pre-wrap' }}>{entry.simulatedOutput}</div>
+          )}
         </div>
       ))}
       <div ref={bottomRef} />

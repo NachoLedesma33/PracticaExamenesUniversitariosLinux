@@ -55,7 +55,7 @@ export function executeCommand(input: string): CommandOutput {
 
   for (const { cmd, op } of parts) {
     if (op === '&&' && lastResult.exitCode !== 0) {
-      continue;
+      return lastResult;
     }
     if (op === '||' && lastResult.exitCode === 0) {
       continue;
@@ -156,5 +156,5 @@ function applyRedirect(
     store.createFile(resolved, result.stdout);
   }
 
-  return { stdout: '', stderr: '', exitCode: 0 };
+  return { stdout: '', stderr: '', exitCode: 0, simulatedOutput: result.simulatedOutput };
 }

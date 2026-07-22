@@ -204,6 +204,7 @@ export function TerminalInput() {
         output,
         timestamp: Date.now(),
         exitCode: result.exitCode,
+        simulatedOutput: result.simulatedOutput,
       });
 
       const currentChallenge = getCurrentChallenge();

@@ -5,6 +5,7 @@ export interface HistoryEntry {
   output: string;
   timestamp: number;
   exitCode: number;
+  simulatedOutput?: string;
 }
 
 export interface HistorySlice {
