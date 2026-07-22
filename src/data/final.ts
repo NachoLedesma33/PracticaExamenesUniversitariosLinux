@@ -2467,5 +2467,115 @@ Nuevo dueño y grupo (formato: usuario:grupo): admin:seguridad
     difficulty: 'difícil',
   },
 
+  // ============================
+  // FINAL - Script con menú y gestión de directorios
+  // ============================
+  {
+    id: 'final-dirmenu', category: 'FINALES - Script Menú Directorios',
+    instruction: `Se pide:
+
+1) Crear un script Bash que reciba como único parámetro un directorio. El script debe validar que el parámetro fue proporcionado y que es un directorio válido. Si no se cumple, mostrar un mensaje de error y salir.
+
+El script debe presentar un menú con las siguientes opciones:
+
+A) Mostrar la cantidad de archivos regulares del directorio recibido.
+B) Mostrar la cantidad de archivos cuyos nombres comiencen con la letra "b" (case-insensitive).
+C) Copiar el contenido del directorio a un directorio destino solicitado al usuario. Si el directorio destino no existe, crearlo automáticamente.
+D) Comprimir y empaquetar el directorio recibido como parámetro, generando un archivo en formato .tgz con el nombre "<directorio>.tgz" en la ubicación actual.
+E) Salir.
+
+El menú debe repetirse hasta que el usuario elija la opción E.
+
+2) Responder brevemente:
+a) ¿Qué hace el comando "free -m"? ¿Qué significan las columnas "used" y "available"?
+b) ¿Qué hace el comando "mount"? Mencione un ejemplo de uso.
+c) ¿Cuál es la diferencia entre "rm -r" y "rm -rf"?
+d) ¿Qué hace el comando "chmod 755 archivo.sh"? Explique los permisos resultantes.
+e) ¿Qué significa el operador "|" (pipe) en Linux? Dé un ejemplo.`,
+    hint: `Usá: if [ $# -eq 1 ], if [ -d "$1" ], find "$dir" -maxdepth 1 -type f | wc -l, find "$dir" -maxdepth 1 -type f -iname "b*" | wc -l, cp -r, tar czf. ${CREAR_EJECUTAR}`,
+    solutionHint: `#!/bin/bash
+if [ $# -ne 1 ]; then
+  echo "Uso: $0 <directorio>"
+  exit 1
+fi
+if [ ! -d "$1" ]; then
+  echo "Error: '$1' no es un directorio válido."
+  exit 1
+fi
+DIR="$1"
+while true; do
+  echo ""
+  echo "=== GESTIÓN DE DIRECTORIOS ==="
+  echo "A) Cantidad de archivos regulares"
+  echo "B) Archivos que comienzan con 'b'"
+  echo "C) Copiar contenido a directorio destino"
+  echo "D) Comprimir en .tgz"
+  echo "E) Salir"
+  echo -n "Seleccione una opción: "
+  read op
+  case $op in
+    a|A)
+      cant=$(find "$DIR" -maxdepth 1 -type f | wc -l)
+      echo "El directorio '$DIR' tiene $cant archivos regulares."
+      ;;
+    b|B)
+      cant=$(find "$DIR" -maxdepth 1 -type f -iname "b*" | wc -l)
+      echo "Hay $cant archivos que comienzan con 'b' en '$DIR'."
+      ;;
+    c|C)
+      echo -n "Ingrese directorio destino: "
+      read destino
+      mkdir -p "$destino"
+      cp -r "$DIR"/* "$destino"/
+      echo "Contenido copiado a '$destino'."
+      ;;
+    d|D)
+      tar czf "$(basename "$DIR").tgz" "$DIR"
+      echo "Archivo '$(basename "$DIR").tgz' generado."
+      ;;
+    e|E)
+      echo "Saliendo..."
+      exit 0
+      ;;
+    *)
+      echo "Opción inválida."
+      ;;
+  esac
+done`,
+    expectedOutput: `$ bash dirmenu.sh /home/usuario/dire
+Error: falta el parámetro directorio.
+
+$ bash dirmenu.sh /home/usuario/noexiste
+Error: '/home/usuario/noexiste' no es un directorio válido.
+
+$ bash dirmenu.sh /home/usuario/dire
+
+=== GESTIÓN DE DIRECTORIOS ===
+A) Cantidad de archivos regulares
+B) Archivos que comienzan con 'b'
+C) Copiar contenido a directorio destino
+D) Comprimir en .tgz
+E) Salir
+Seleccione una opción: A
+El directorio '/home/usuario/dire' tiene 5 archivos regulares.
+
+Seleccione una opción: B
+Hay 1 archivos que comienzan con 'b' en '/home/usuario/dire'.
+
+Seleccione una opción: C
+Ingrese directorio destino: /home/usuario/backup
+Contenido copiado a '/home/usuario/backup'.
+
+Seleccione una选项: D
+Archivo 'dire.tgz' generado.
+
+Seleccione una opción: E
+Saliendo...`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /if\s+\[\s+\$#.*-ne\s+1\s+\]|if\s+\[\s+!.*-d|find.*-maxdepth.*-type\s+f.*wc\s+-l|find.*-iname.*wc\s+-l|cp\s+-r|mkdir\s+-p|tar\s+czf|free\s+-m|mount|rm\s+-[r]+f|chmod\s+7[0-7]{2}\|/i,
+    commands: ['find', 'wc', 'cp', 'mkdir', 'tar', 'free', 'mount', 'chmod', 'rm'],
+    difficulty: 'difícil',
+  },
+
 ];
 
