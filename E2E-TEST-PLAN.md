@@ -9,7 +9,7 @@
 | F3 Validación | ✅ Completada | 30 tests (validation.test.ts) |
 | F4 Capture Mode | ✅ Completada | 28 tests (capture-mode.test.ts) |
 | F5 Persistencia | ✅ Completada | 30 tests (state-persistence.test.ts) |
-| F6 Ejercicios | Pendiente | |
+| F6 Ejercicios | ✅ Completada | 24 tests (exercise-integration.test.ts) |
 | F7 Hints | Pendiente | |
 | F8 Flujos de Usuario | Pendiente | |
 | F9 Build | Pendiente | |
