@@ -6,7 +6,7 @@
 |------|--------|-------|
 | F1 Core Engine | ✅ Completada | 57 tests (executor.test.ts) |
 | F2 VFS | ✅ Completada | 40 tests (fsSlice.test.ts) |
-| F3 Validación | Pendiente | |
+| F3 Validación | ✅ Completada | 30 tests (validation.test.ts) |
 | F4 Capture Mode | Pendiente | |
 | F5 Persistencia | Pendiente | |
 | F6 Ejercicios | Pendiente | |

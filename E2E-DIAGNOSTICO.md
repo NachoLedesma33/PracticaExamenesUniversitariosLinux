@@ -232,3 +232,18 @@ Cada entrada sigue este formato:
              de verificar el return value. Un fix real sería chequear `name in parent.children`
              antes de `delete`.
 - Secuelas:  Nadie depende de este return value actualmente.
+
+---
+
+## P016 — Test E4.11 usaba `fileExists('dire/lista')` pero `lista` es directorio
+
+- Fecha:     2026-07-21
+- Commit:    (en curso)
+- Fase E2E:  F3 (Validación) — test "state validation with real fileExists predicate"
+- Síntoma:   Test fallaba: `validateCommand('ls', 0)` con `fileExists('dire/lista')` retornaba
+             `passed: false` en vez de `true`.
+- Causa:     `dire/lista` es un directorio (`type: 'd'`), pero `fileExists()` exige
+             `node.type === '-'` (archivo regular). El test incorrectamente asumía que `lista`
+             era un archivo.
+- Fix:       Cambiar a `fileExists('dire/let10')` que sí es un archivo regular existente.
+- Secuelas:  Ninguna.
