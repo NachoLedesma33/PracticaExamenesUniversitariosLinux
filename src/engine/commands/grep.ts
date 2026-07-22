@@ -38,7 +38,7 @@ export const grep: CommandHandler = {
       }
 
       if (count) output.push(`${matchCount}`);
-      return { stdout: output.join('\n') + '\n', stderr: '', exitCode: 0 };
+      return { stdout: output.join('\n') + '\n', stderr: '', exitCode: matchCount === 0 ? 1 : 0 };
     }
 
     if (files.length === 0) {
@@ -77,7 +77,7 @@ function processFiles(targets: string[], regex: RegExp, count: boolean, invert: 
   }
 
   if (count) output.push(`${totalMatchCount}`);
-  return { stdout: output.length > 0 ? output.join('\n') + '\n' : '', stderr: '', exitCode: 0 };
+  return { stdout: output.length > 0 ? output.join('\n') + '\n' : '', stderr: '', exitCode: totalMatchCount === 0 ? 1 : 0 };
 }
 
 function findAllFiles(dir: string, store: any): string[] {

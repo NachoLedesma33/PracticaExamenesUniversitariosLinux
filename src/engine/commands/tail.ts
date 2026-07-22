@@ -6,7 +6,12 @@ export const tail: CommandHandler = {
   name: 'tail',
   execute: (args, flags, stdin) => {
     const nFlag = flags.find(f => f.startsWith('-n'));
-    const lines = nFlag ? parseInt(nFlag.slice(2)) || 10 : 10;
+    const dashNum = flags.find(f => /^-\d+$/.test(f));
+    const argNum = args.length > 0 && /^-\d+$/.test(args[0]) ? args.shift() : undefined;
+    const lines = nFlag ? parseInt(nFlag.slice(2)) || 10
+      : dashNum ? parseInt(dashNum.slice(1))
+      : argNum ? parseInt(argNum.slice(1))
+      : 10;
 
     if (args.length === 0 && stdin !== undefined) {
       const allLines = stdin.split('\n');

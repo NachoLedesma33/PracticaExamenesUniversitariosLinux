@@ -10,14 +10,16 @@ export const chown: CommandHandler = {
     }
     const store = useTerminalStore.getState();
     const [ownerGroup, ...files] = args;
-    const owner = ownerGroup.split(':')[0];
+    const [owner, group] = ownerGroup.split(':');
     for (const file of files) {
       const resolved = resolvePath(store.cwd, file);
       const node = store.getNode(resolved);
       if (!node) {
         return { stdout: '', stderr: `chown: no se puede acceder a '${file}': No existe el archivo`, exitCode: 1 };
       }
-      store.setNode(resolved, { ...node, permissions: { ...node.permissions, owner } });
+      const updatedPerms = { ...node.permissions, owner };
+      if (group) updatedPerms.group = group;
+      store.setNode(resolved, { ...node, permissions: updatedPerms });
     }
     return { stdout: '', stderr: '', exitCode: 0 };
   },
