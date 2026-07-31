@@ -166,4 +166,21 @@ describe('Finales — Exercise Integration', () => {
     expect(ch.id).toBeTruthy();
     expect(ch.instruction).toBeTruthy();
   });
+
+  it.each([
+    ['final-teo-free', 'free -m muestra la memoria RAM en megabytes. used es la memoria en uso por procesos y available la disponible para nuevos procesos sin swap.'],
+    ['final-teo-mount', 'mount incorpora un dispositivo al sistema de archivos asociándolo a un punto de montaje. Ejemplo: mount /dev/sdc1 /media/usb'],
+    ['final-teo-rm', 'rm -r elimina recursivamente directorios y su contenido. rm -rf lo hace forzado, sin pedir confirmación.'],
+    ['final-teo-chmod', 'chmod 755 archivo.sh cambia permisos a rwxr-xr-x: dueño lee/escribe/ejecuta, grupo lee/ejecuta, otros leen/ejecutan.'],
+    ['final-teo-pipe', 'El pipe (|) conecta la salida de un comando con la entrada del siguiente. Ejemplo: ls | grep txt'],
+  ])('theory %s — text answer validates', async (id, solution) => {
+    const { validation } = await solveAndValidate(id, solution);
+    expect(validation.passed).toBe(true);
+  });
+
+  it('final-dirmenu — no longer includes theory part in instruction', () => {
+    const ch = loadChallenge('final-dirmenu');
+    expect(ch.instruction).not.toContain('Responder brevemente');
+    expect(ch.commands).toEqual(['find', 'wc', 'cp', 'mkdir', 'tar']);
+  });
 });

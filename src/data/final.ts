@@ -2484,14 +2484,7 @@ C) Copiar el contenido del directorio a un directorio destino solicitado al usua
 D) Comprimir y empaquetar el directorio recibido como parámetro, generando un archivo en formato .tgz con el nombre "<directorio>.tgz" en la ubicación actual.
 E) Salir.
 
-El menú debe repetirse hasta que el usuario elija la opción E.
-
-2) Responder brevemente:
-a) ¿Qué hace el comando "free -m"? ¿Qué significan las columnas "used" y "available"?
-b) ¿Qué hace el comando "mount"? Mencione un ejemplo de uso.
-c) ¿Cuál es la diferencia entre "rm -r" y "rm -rf"?
-d) ¿Qué hace el comando "chmod 755 archivo.sh"? Explique los permisos resultantes.
-e) ¿Qué significa el operador "|" (pipe) en Linux? Dé un ejemplo.`,
+El menú debe repetirse hasta que el usuario elija la opción E.`,
     hint: `Usá: if [ $# -eq 1 ], if [ -d "$1" ], find "$dir" -maxdepth 1 -type f | wc -l, find "$dir" -maxdepth 1 -type f -iname "b*" | wc -l, cp -r, tar czf. ${CREAR_EJECUTAR}`,
     solutionHint: `#!/bin/bash
 if [ $# -ne 1 ]; then
@@ -2572,9 +2565,64 @@ Archivo 'dire.tgz' generado.
 Seleccione una opción: E
 Saliendo...`,
     initialState: goHome, validationType: 'text',
-    expectedCommandRegex: /if\s+\[\s+\$#.*-ne\s+1\s+\]|if\s+\[\s+!.*-d|find.*-maxdepth.*-type\s+f.*wc\s+-l|find.*-iname.*wc\s+-l|cp\s+-r|mkdir\s+-p|tar\s+czf|free\s+-m|mount|rm\s+-[r]+f|chmod\s+7[0-7]{2}\|/i,
-    commands: ['find', 'wc', 'cp', 'mkdir', 'tar', 'free', 'mount', 'chmod', 'rm'],
+    expectedCommandRegex: /if\s+\[\s+\$#.*-ne\s+1\s+\]|if\s+\[\s+!.*-d|find.*-maxdepth.*-type\s+f.*wc\s+-l|find.*-iname.*wc\s+-l|cp\s+-r|mkdir\s+-p|tar\s+czf/i,
+    commands: ['find', 'wc', 'cp', 'mkdir', 'tar'],
     difficulty: 'difícil',
+  },
+
+  {
+    id: 'final-teo-free', category: 'FINALES - Monitoreo del Sistema',
+    instruction: `Responder brevemente:
+¿Qué hace el comando "free -m"? ¿Qué significan las columnas "used" y "available"?`,
+    hint: 'free muestra la memoria; -m expresa los valores en megabytes. "used" = en uso por procesos; "available" = disponible para nuevos procesos.',
+    solutionHint: `free -m muestra el uso de la memoria RAM del sistema en megabytes. La columna "used" indica la memoria que está en uso por los procesos, y la columna "available" indica la memoria disponible para nuevos procesos sin necesidad de usar swap.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /free.*-m.*memoria.*megabytes|memoria.*ram.*megabytes|used.*memoria.*uso.*available.*disponible|disponible.*nuevos.*procesos/i,
+    commands: ['free'], difficulty: 'medio',
+  },
+
+  {
+    id: 'final-teo-mount', category: 'FINALES - Análisis de Discos',
+    instruction: `Responder brevemente:
+¿Qué hace el comando "mount"? Mencione un ejemplo de uso.`,
+    hint: 'Incorporar un dispositivo al sistema de archivos mediante un punto de montaje. Ej: mount /dev/sdc1 /media/usb',
+    solutionHint: `mount incorpora un dispositivo (pendrive, partición, disco) al sistema de archivos, asociándolo a un directorio llamado punto de montaje. A partir de ahí se accede a sus archivos como si estuvieran en ese directorio. Ejemplo: mount /dev/sdc1 /media/usb.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /mount.*incorpora.*dispositivo.*sistema.*archivos|incorporar.*dispositivo.*punto.*montaje|montar.*dispositivo.*directorio|mount.*\/dev\/.*\/media|example|ejemplo/i,
+    commands: ['mount'], difficulty: 'medio',
+  },
+
+  {
+    id: 'final-teo-rm', category: 'FINALES - Gestión de Archivos',
+    instruction: `Responder brevemente:
+¿Cuál es la diferencia entre "rm -r" y "rm -rf"?`,
+    hint: '-r es recursivo (borra directorios y contenido). -f es forzado: no pregunta ni falla si no existe.',
+    solutionHint: `rm -r elimina recursivamente un directorio y todo su contenido, pidiendo confirmación según la configuración. rm -rf hace lo mismo pero de forma forzada (-f): no pregunta confirmación, no muestra errores si el archivo no existe, y evita avisos de protección.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /rm\s+-r.*recursiv.*directorio|rm\s+-rf.*fuerza|f.*forzad.*no.*pregunta|-f.*sin.*confirmacion|-f.*evita.*avisos/i,
+    commands: ['rm'], difficulty: 'medio',
+  },
+
+  {
+    id: 'final-teo-chmod', category: 'FINALES - Auditoría de Permisos',
+    instruction: `Responder brevemente:
+¿Qué hace el comando "chmod 755 archivo.sh"? Explique los permisos resultantes.`,
+    hint: '755 = rwxr-xr-x. 7: dueño lee/escribe/ejecuta; 5: grupo lee/ejecuta; 5: otros leen/ejecutan.',
+    solutionHint: `chmod 755 archivo.sh cambia los permisos del archivo a rwxr-xr-x: el dueño puede leer, escribir y ejecutar (7); el grupo puede leer y ejecutar (5); y los demás pueden leer y ejecutar (5).`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /chmod\s+755.*rwxr-xr-x|7.*dueño.*leer.*escribir.*ejecutar.*5.*leer.*ejecutar|rwxr-xr-x.*lee.*escribe.*ejecuta/i,
+    commands: ['chmod'], difficulty: 'medio',
+  },
+
+  {
+    id: 'final-teo-pipe', category: 'FINALES - Shell Scripting',
+    instruction: `Responder brevemente:
+¿Qué significa el operador "|" (pipe) en Linux? Dé un ejemplo.`,
+    hint: 'El pipe conecta la salida de un comando con la entrada del siguiente. Ej: ls | grep txt',
+    solutionHint: `El pipe (|) es un operador que conecta la salida estándar de un comando con la entrada estándar del siguiente, permitiendo encadenar comandos. Ejemplo: ls | grep txt lista los archivos y filtra los que contienen "txt".`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /pipe.*conecta.*salida.*entrada|tuber[ií]a.*salida.*comando.*entrada.*siguiente|salida.*primer.*comando.*entrada.*segundo|\|.*encadena.*comandos/i,
+    commands: ['grep', 'ls'], difficulty: 'medio',
   },
 
 ];
