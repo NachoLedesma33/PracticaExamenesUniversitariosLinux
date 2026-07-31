@@ -38,11 +38,16 @@ function splitSmart(input: string): { cmd: string; op: '&&' | '||' | null }[] {
 }
 
 export function executeCommand(input: string): CommandOutput {
-  if (!input.trim()) {
+  let cmdInput = input.trim();
+  if (!cmdInput) {
     return { stdout: '', stderr: '', exitCode: 0 };
   }
 
-  const parts = splitSmart(input);
+  while (/^sudo\s+/i.test(cmdInput)) {
+    cmdInput = cmdInput.replace(/^sudo\s+/i, '').trim();
+  }
+
+  const parts = splitSmart(cmdInput);
   if (parts.length === 0) {
     return { stdout: '', stderr: '', exitCode: 0 };
   }

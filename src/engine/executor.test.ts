@@ -610,4 +610,36 @@ describe('executeCommand', () => {
       expect(result.stdout).toContain('less');
     });
   });
+
+  // ============================
+  // sudo passthrough + lpstat
+  // ============================
+  describe('sudo and lpstat', () => {
+    it('sudo executes the following command (passthrough)', () => {
+      const store = useTerminalStore.getState();
+      store.createFile('/home/usuario/test_sudo.txt', 'contenido\n');
+      const result = executeCommand('sudo chown root /home/usuario/test_sudo.txt');
+      expect(result.exitCode).toBe(0);
+      const node = store.getNode('/home/usuario/test_sudo.txt');
+      expect(node?.permissions.owner).toBe('root');
+    });
+
+    it('multiple sudo prefixes stripped', () => {
+      const result = executeCommand('sudo sudo whoami');
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('lpstat -p lists connected printers', () => {
+      const result = executeCommand('lpstat -p');
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('HP_LaserJet');
+      expect(result.stdout).toContain('Epson');
+    });
+
+    it('lpstat -d shows default printer', () => {
+      const result = executeCommand('lpstat -d');
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('HP_LaserJet_Pro_M404');
+    });
+  });
 });

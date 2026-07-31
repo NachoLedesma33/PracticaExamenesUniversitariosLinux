@@ -72,6 +72,7 @@ import { mkswap } from './mkswap';
 import { swapon } from './swapon';
 import { quota } from './quota';
 import { vi } from './vi';
+import { lpstat } from './lpstat';
 
 export const commandRegistry: Record<string, CommandHandler> = {};
 
@@ -158,3 +159,4 @@ register(mkswap);
 register(swapon);
 register(quota);
 register(vi);
+register(lpstat);

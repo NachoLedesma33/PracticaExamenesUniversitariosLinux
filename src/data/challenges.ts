@@ -705,6 +705,115 @@ export const challenges: Challenge[] = [
     difficulty: 'fácil',
   },
 
+  // ============ SHELL SCRIPTING ============
+  {
+    id: 'shell-menu1',
+    instruction: `Desarrolle un script cuyo nombre sea Apellido-Menu1 (Ej. Funes-Menu1) que muestre el siguiente menú:
+
+MENU 1
+A. Cambiar el propietario de un archivo
+B. Mostrar los nombres de grupos
+C. Listar impresoras conectadas
+S- Salir
+
+Consideraciones:
+Opción A- Se debe solicitar el ingreso por teclado del archivo y del nuevo propietario. Verificar que el archivo ingresado exista y sea regular. Al finalizar mostrar los cambios realizados.
+Opción B – Mostrar los últimos 10 grupos creados en el sistema.
+Opción C- Listar las impresoras conectadas al sistema.
+Opción S- Deberá salir del menú.
+Luego de cada opción se debe limpiar la pantalla y regresar al menú.`,
+    hint: 'Usá: clear, while true, case, read, test -e/-f, chown, tail, lpstat. Ejecutalo con: bash script.sh',
+    solutionHint: `#!/bin/bash
+clear
+while true
+do
+echo "----- Menú de Opciones -----"
+echo "1) Cambiar el propietario de un archivo."
+echo "2) Mostrar los nombres de grupos"
+echo "3) Listar impresoras conectadas"
+echo "0) Salir."
+echo -n "Ingrese una opción: "
+read opcion
+case $opcion in
+1)
+echo -n "Ingrese la ruta archivo/directorio: "
+read archivo
+echo -n "Ingrese el nombre del nuevo propietario: "
+read nomPro
+if test -e $archivo && test -f $archivo
+then
+chown $nomPro $archivo
+echo "Se ha realizado el cambio correctamente"
+read e
+echo "Información de los cambios realizados"
+ls -l $archivo
+else
+echo "No se ha podido realizar la operación solicitada."
+fi
+read a
+clear
+;;
+2)
+echo "Informe de los últimos 10 nombres de grupos en el sistema"
+tail -10 /etc/passwd
+read a
+clear
+;;
+3)
+echo "Lista de las impresoras conectadas: "
+lpstat -p
+read a
+clear
+;;
+0)
+echo "Gracias por utilizar nuestro programa !!!"
+break
+;;
+*)
+echo "Opción incorrecta ..."
+clear
+;;
+esac
+done`,
+    expectedOutput: `$ bash Funes-Menu1.sh
+
+----- Menú de Opciones -----
+1) Cambiar el propietario de un archivo.
+2) Mostrar los nombres de grupos
+3) Listar impresoras conectadas
+0) Salir.
+Ingrese una opción: 1
+Ingrese la ruta archivo/directorio: notas.txt
+Ingrese el nombre del nuevo propietario: root
+Se ha realizado el cambio correctamente
+
+Información de los cambios realizados
+-rw-r--r-- 1 root usuarios  128 jul 22 10:00 notas.txt
+
+----- Menú de Opciones -----
+Ingrese una opción: 2
+Informe de los últimos 10 nombres de grupos en el sistema
+usuario:x:1000:1000:Usuario,,,:/home/usuario:/bin/bash
+(últimas 10 líneas de /etc/passwd)
+
+----- Menú de Opciones -----
+Ingrese una opción: 3
+Lista de las impresoras conectadas:
+HP_LaserJet_Pro_M404 -idle -accepting-jobs
+Epson_L3150 -idle -accepting-jobs
+Xerox_WorkCentre -processing -accepting-jobs
+
+----- Menú de Opciones -----
+Ingrese una opción: 0
+Gracias por utilizar nuestro programa !!!`,
+    initialState: goHome,
+    validationType: 'text',
+    expectedCommandRegex: /while\s+true.*case|test\s+-e|test\s+-f|chown|lpstat|tail\s+-10|clear/i,
+    commands: ['chown', 'tail', 'lpstat', 'ls', 'clear'],
+    category: 'Shell Scripting',
+    difficulty: 'difícil',
+  },
+
   // ============ PARCIAL 1: File System, Enlaces, Permisos y Filtros ============
   ...PARCIAL_1_CHALLENGES,
   ...PARCIAL_2_CHALLENGES,
