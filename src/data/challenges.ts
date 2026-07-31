@@ -810,7 +810,7 @@ Gracias por utilizar nuestro programa !!!`,
     validationType: 'text',
     expectedCommandRegex: /while\s+true.*case|test\s+-e|test\s+-f|chown|lpstat|tail\s+-10|clear/i,
     commands: ['chown', 'tail', 'lpstat', 'ls', 'clear'],
-    category: 'Shell Scripting',
+    category: 'FINALES - Shell Scripting',
     difficulty: 'difícil',
   },
 
