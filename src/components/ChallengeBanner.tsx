@@ -113,7 +113,7 @@ export function ChallengeBanner() {
                     {challenge.solutionHint && (
                       <div className="mt-2 pt-2 border-t border-yellow-800/15">
                         <p className="text-[9px] uppercase tracking-wider text-terminal-yellow/40 mb-0.5">Solución:</p>
-                        <p className="text-[11px] text-terminal-green">{challenge.solutionHint}</p>
+                        <pre className="text-[11px] text-terminal-green whitespace-pre-wrap font-mono leading-relaxed select-text">{challenge.solutionHint}</pre>
                       </div>
                     )}
                   </div>
