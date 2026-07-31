@@ -514,4 +514,124 @@ export const PARCIAL_3_CHALLENGES: Challenge[] = [
     solutionHint: ':r fich permite insertar el contenido del fichero "fich" tras la línea actual.',
     initialState: goHome, validationType: 'text', expectedCommandRegex: /:r.*insertar|:r.*fich/i, commands: ['vi'], difficulty: 'medio',
   },
+
+  {
+    id: 'p3-dirmenu', category: 'PARCIAL 3 - Shell Scripting',
+    instruction: `Se pide:
+
+1) Crear un script Bash que reciba como único parámetro un directorio. El script debe validar que el parámetro fue proporcionado y que es un directorio válido. Si no se cumple, mostrar un mensaje de error y salir.
+
+El script debe presentar un menú con las siguientes opciones:
+
+A) Mostrar la cantidad de archivos regulares del directorio recibido.
+B) Mostrar la cantidad de archivos cuyos nombres comiencen con la letra "b" (case-insensitive).
+C) Copiar el contenido del directorio a un directorio destino solicitado al usuario. Si el directorio destino no existe, crearlo automáticamente.
+D) Comprimir y empaquetar el directorio recibido como parámetro, generando un archivo en formato .tgz con el nombre "<directorio>.tgz" en la ubicación actual.
+E) Salir.
+
+El menú debe repetirse hasta que el usuario elija la opción E.`,
+    hint: `Usá: if [ $# -eq 1 ], if [ -d "$1" ], find "$dir" -maxdepth 1 -type f | wc -l, find "$dir" -maxdepth 1 -type f -iname "b*" | wc -l, cp -r, tar czf. Creá el script con: cat > script.sh << 'EOF' ... EOF  |  Luego: chmod +x script.sh  |  Ejecutá con: ./script.sh`,
+    solutionHint: `#!/bin/bash
+if [ $# -ne 1 ]; then
+  echo "Uso: $0 <directorio>"
+  exit 1
+fi
+if [ ! -d "$1" ]; then
+  echo "Error: '$1' no es un directorio válido."
+  exit 1
+fi
+DIR="$1"
+while true; do
+  echo ""
+  echo "=== GESTIÓN DE DIRECTORIOS ==="
+  echo "A) Cantidad de archivos regulares"
+  echo "B) Archivos que comienzan con 'b'"
+  echo "C) Copiar contenido a directorio destino"
+  echo "D) Comprimir en .tgz"
+  echo "E) Salir"
+  echo -n "Seleccione una opción: "
+  read op
+  case $op in
+    a|A)
+      cant=$(find "$DIR" -maxdepth 1 -type f | wc -l)
+      echo "El directorio '$DIR' tiene $cant archivos regulares."
+      ;;
+    b|B)
+      cant=$(find "$DIR" -maxdepth 1 -type f -iname "b*" | wc -l)
+      echo "Hay $cant archivos que comienzan con 'b' en '$DIR'."
+      ;;
+    c|C)
+      echo -n "Ingrese directorio destino: "
+      read destino
+      mkdir -p "$destino"
+      cp -r "$DIR"/* "$destino"/
+      echo "Contenido copiado a '$destino'."
+      ;;
+    d|D)
+      tar czf "$(basename "$DIR").tgz" "$DIR"
+      echo "Archivo '$(basename "$DIR").tgz' generado."
+      ;;
+    e|E)
+      echo "Saliendo..."
+      exit 0
+      ;;
+    *)
+      echo "Opción inválida."
+      ;;
+  esac
+done`,
+    expectedOutput: `$ bash dirmenu.sh /home/usuario/dire
+Error: falta el parámetro directorio.
+
+$ bash dirmenu.sh /home/usuario/noexiste
+Error: '/home/usuario/noexiste' no es un directorio válido.
+
+$ bash dirmenu.sh /home/usuario/dire
+
+=== GESTIÓN DE DIRECTORIOS ===
+A) Cantidad de archivos regulares
+B) Archivos que comienzan con 'b'
+C) Copiar contenido a directorio destino
+D) Comprimir en .tgz
+E) Salir
+Seleccione una opción: A
+El directorio '/home/usuario/dire' tiene 5 archivos regulares.
+
+Seleccione una opción: B
+Hay 1 archivos que comienzan con 'b' en '/home/usuario/dire'.
+
+Seleccione una opción: C
+Ingrese directorio destino: /home/usuario/backup
+Contenido copiado a '/home/usuario/backup'.
+
+Seleccione una opción: D
+Archivo 'dire.tgz' generado.
+
+Seleccione una opción: E
+Saliendo...`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /if\s+\[\s+\$#.*-ne\s+1\s+\]|if\s+\[\s+!.*-d|find.*-maxdepth.*-type\s+f.*wc\s+-l|find.*-iname.*wc\s+-l|cp\s+-r|mkdir\s+-p|tar\s+czf/i,
+    commands: ['find', 'wc', 'cp', 'mkdir', 'tar'],
+    difficulty: 'difícil',
+  },
+
+  {
+    id: 'p3-dirmenu-teoria', category: 'PARCIAL 3 - Shell Scripting',
+    instruction: `2) Responder brevemente:
+a) ¿Qué hace el comando "free -m"? ¿Qué significan las columnas "used" y "available"?
+b) ¿Qué hace el comando "mount"? Mencione un ejemplo de uso.
+c) ¿Cuál es la diferencia entre "rm -r" y "rm -rf"?
+d) ¿Qué hace el comando "chmod 755 archivo.sh"? Explique los permisos resultantes.
+e) ¿Qué significa el operador "|" (pipe) en Linux? Dé un ejemplo.`,
+    hint: 'a) free -m muestra la RAM en megabytes; used = en uso, available = disponible. b) mount incorpora un dispositivo al sistema de archivos (ej: mount /dev/sdc1 /media/usb). c) -r es recursivo, -f fuerza sin confirmar. d) 755 = rwxr-xr-x. e) El pipe conecta salida de un comando con entrada del siguiente.',
+    solutionHint: `a) free -m muestra el uso de la memoria RAM del sistema en megabytes. La columna "used" indica la memoria en uso por los procesos, y "available" la memoria disponible para nuevos procesos sin usar swap.
+b) mount incorpora un dispositivo (pendrive, partición, disco) al sistema de archivos, asociándolo a un directorio llamado punto de montaje. Ejemplo: mount /dev/sdc1 /media/usb.
+c) rm -r elimina recursivamente un directorio y todo su contenido. rm -rf lo hace de forma forzada: no pide confirmación ni muestra errores si el archivo no existe.
+d) chmod 755 archivo.sh cambia los permisos a rwxr-xr-x: el dueño lee, escribe y ejecuta (7); el grupo lee y ejecuta (5); y los demás leen y ejecutan (5).
+e) El pipe (|) conecta la salida estándar de un comando con la entrada estándar del siguiente, permitiendo encadenar comandos. Ejemplo: ls | grep txt.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /(?=.*free.*-m.*memoria)(?=.*mount.*dispositivo)(?=.*rm.*-rf)(?=.*chmod.*755)(?=.*pipe.*salida.*entrada|.*tuber[ií]a.*entrada)/is,
+    commands: ['free', 'mount', 'rm', 'chmod', 'grep'],
+    difficulty: 'difícil',
+  },
 ];
