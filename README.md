@@ -59,12 +59,12 @@ Simulador de terminal Linux 100% local para practicar comandos, con ejercicios i
 | **Búsqueda** | `find` (`-name`, `-type`, `-perm`, `-exec`) |
 | **Enlaces** | `ln` (duros y simbólicos `-s`) |
 
-### Ejercicios Incorporados (330 total)
+### Ejercicios Incorporados (339 total)
 
 | Fuente | Cantidad | Temas |
 |---|---|---|
 | **Base** (`challenges.ts`) | 54 | Navegación, listado, archivos, visualización, búsqueda, redirección, permisos, comodines, avanzados |
-| **PARCIAL 1** (`parcial1.ts`) | 93 | FileSystem, filtros/pipes, enlaces, permisos (SUID/SGID/sticky), compresión (tar/gzip), teoría |
+| **PARCIAL 1** (`parcial1.ts`) | 102 | FileSystem, filtros/pipes, enlaces, permisos (SUID/SGID/sticky), compresión (tar/gzip), teoría |
 | **PARCIAL 2** (`parcial2.ts`) | 100 | Procesos (PID/prioridades/foreground-background), control de trabajos, planificación (crontab), monitoreo (vmstat/free), shell scripting |
 | **PARCIAL 3** (`parcial3.ts`) | 67 | Sistemas de archivos (df/du/mount/fstab), usuarios/grupos, variables de entorno, swap, shell scripting avanzado, editor vi |
 | **Finales** (`final.ts`) | 16 | Scripts con menú (backup, monitoreo, usuarios, logs, permisos, procesos, cron), teoría y comandos |

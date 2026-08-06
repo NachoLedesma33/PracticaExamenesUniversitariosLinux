@@ -1,7 +1,7 @@
 # Índice de Documentación — SO-ejercitacion
 
 > Mapa de navegación de toda la documentación oficial del proyecto.
-> Última actualización: 2026-07-31
+> Última actualización: 2026-08-06
 
 ---
 
@@ -9,7 +9,7 @@
 
 | Métrica | Valor |
 |---|---|
-| Ejercicios | **330** (base 54 · parcial1 93 · parcial2 100 · parcial3 67 · final 16) |
+| Ejercicios | **339** (base 54 · parcial1 102 · parcial2 100 · parcial3 67 · final 16) |
 | Comandos simulados | **74** |
 | Archivos VFS | 28 directorios + 111 archivos |
 | Tests | **358** en 17 archivos |
@@ -29,8 +29,8 @@
 | `02-MOTOR-TERMINAL.md` | Motor de terminal | Parser, executor, capture mode, tab completion, historial | Desarrolladores | ✅ |
 | `03-VALIDACION.md` | Validación de ejercicios | 4 modos, hint system, validación semántica y AI | Desarrolladores | ✅ |
 | `04-VFS.md` | Sistema de archivos virtual | Modelo de nodo, árbol inicial, operaciones, simulatedOutput | Desarrolladores | ✅ |
-| `05-COMANDOS.md` | Catálogo de comandos | Los 74 comandos con firma, flags y ejemplos | Desarrolladores y estudiantes | ⏳ |
-| `06-EJERCICIOS.md` | Catálogo de ejercicios | 330 ejercicios por archivo/categoría, tipos de validación | Estudiantes | ⏳ |
+| `05-COMANDOS.md` | Catálogo de comandos | Los 74 módulos / 75 comandos con firma, flags y ejemplos | Desarrolladores y estudiantes | ✅ |
+| `06-EJERCICIOS.md` | Catálogo de ejercicios | 339 ejercicios por archivo/categoría, tipos de validación | Estudiantes | ✅ |
 | `07-GENERADOR-EJERCICIOS.md` | Generador y learning paths | exercise-generator, learning-paths, ModoLibre | Desarrolladores | ⏳ |
 | `08-UI.md` | Interfaz de usuario | Componentes, layout 3 paneles, sistema de temas | Desarrolladores | ⏳ |
 | `09-ESTADO.md` | Estado global | Zustand, 5 slices, persistencia | Desarrolladores | ⏳ |

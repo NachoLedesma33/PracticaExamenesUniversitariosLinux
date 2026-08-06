@@ -163,7 +163,7 @@ Los comandos no implementados devuelven `command not found` con exit code 127.
 |---|---|
 | `vfs-template.ts` | Árbol VFS inicial: 28 dirs + 111 archivos (`d()`, `f()`, `fPerm()`) |
 | `challenges.ts` | 54 ejercicios base + combina parciales y finales |
-| `parcial1.ts` / `parcial2.ts` / `parcial3.ts` | 93 / 100 / 67 ejercicios |
+| `parcial1.ts` / `parcial2.ts` / `parcial3.ts` | 102 / 100 / 67 ejercicios |
 | `final.ts` | 16 ejercicios de finales |
 | `learning-paths.ts` | 15 rutas didácticas |
 | `exercise-generator.ts` | Generación programática de ejercicios |
