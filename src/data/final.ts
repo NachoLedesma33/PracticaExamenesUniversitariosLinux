@@ -2467,5 +2467,153 @@ Nuevo dueño y grupo (formato: usuario:grupo): admin:seguridad
     difficulty: 'difícil',
   },
 
+
+  {
+    id: 'final-13', category: 'FINALES - Examen Final',
+    instruction: `Escriba un programa (script Bash) con menú que permita al usuario elegir entre las siguientes 4 acciones:
+
+1) Crear un backup comprimido del directorio ~/Descargas con el nombre backup.tar.gz. La ubicación del backup (directorio destino) debe ser solicitada al usuario luego de que elija esta opción. Asuma que ~/Descargas ya existe, pero valide que el directorio destino exista.
+2) Mostrar una lista con los nombres de los archivos regulares de un directorio. El directorio debe ser solicitado al usuario luego de que elija esta opción. Valide que el directorio exista y sea válido.
+3) Mostrar el directorio actual de trabajo.
+4) Salir.
+
+Consideraciones:
+- El menú debe repetirse hasta que el usuario elija "Salir".
+- Realice todas las validaciones correspondientes.
+- Muestre mensajes de error adecuados y, ante la ocurrencia de alguno, permita volver a elegir una opción del menú.
+- Estructura del menú y la opción "Salir": 10 puntos. El resto de las opciones: 10 puntos.
+
+💡 Creá el archivo con: cat > script.sh (luego pegar el código y presionar Ctrl+D)
+💡 Ejecutalo con: bash script.sh`,
+    hint: `Usá: while true, case, read -p, tar czf, ls -l | grep '^-' | awk, find, pwd, if [ ! -d ], echo. ${CREAR_EJECUTAR}`,
+    solutionHint: `#!/bin/bash
+while true; do
+  clear
+  echo "=== MENÚ PRINCIPAL ==="
+  echo "1) Backup comprimido de ~/Descargas"
+  echo "2) Listar archivos regulares de un directorio"
+  echo "3) Mostrar directorio actual"
+  echo "4) Salir"
+  read -p "Seleccione una opción: " op
+  case $op in
+    1)
+      read -p "Directorio destino del backup: " dest
+      if [ ! -d "$dest" ]; then
+        echo "Error: '$dest' no es un directorio válido."
+        continue
+      fi
+      tar czf "$dest/backup.tar.gz" ~/Descargas
+      echo "Backup creado en $dest/backup.tar.gz"
+      ;;
+    2)
+      read -p "Directorio a listar: " dir
+      if [ ! -d "$dir" ]; then
+        echo "Error: '$dir' no es un directorio válido."
+        continue
+      fi
+      echo "Archivos regulares de '$dir':"
+      ls -l "$dir" | grep '^-' | awk '{print $NF}'
+      ;;
+    3)
+      pwd
+      ;;
+    4)
+      echo "Saliendo..."
+      exit 0
+      ;;
+    *)
+      echo "Opción inválida."
+      ;;
+  esac
+  echo ""
+  read -p "Presione [Enter] para continuar..."
+done`,
+    expectedOutput: `$ bash script.sh
+=== MENÚ PRINCIPAL ===
+1) Backup comprimido de ~/Descargas
+2) Listar archivos regulares de un directorio
+3) Mostrar directorio actual
+4) Salir
+Seleccione una opción: 1
+Directorio destino del backup: /home/usuario/backups
+Backup creado en /home/usuario/backups/backup.tar.gz
+
+=== MENÚ PRINCIPAL ===
+Seleccione una opción: 2
+Directorio a listar: /home/usuario/dire
+Archivos regulares de '/home/usuario/dire':
+archivo1.txt
+archivo2.txt
+script.sh
+datos.csv
+
+=== MENÚ PRINCIPAL ===
+Seleccione una opción: 2
+Directorio a listar: /home/usuario/noexiste
+Error: '/home/usuario/noexiste' no es un directorio válido.
+
+=== MENÚ PRINCIPAL ===
+Seleccione una opción: 3
+/home/usuario
+
+=== MENÚ PRINCIPAL ===
+Seleccione una opción: 4
+Saliendo...`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /while\s+true.*case\s+\$op|tar\s+czf.*backup\.tar\.gz|find.*-type\s+f|ls\s+-l.*grep.*awk|pwd|if\s+\[.*-d/i,
+    commands: ['tar', 'find', 'pwd', 'ls'],
+    difficulty: 'difícil',
+  },
+
+  {
+    id: 'final-14', category: 'FINALES - Examen Final',
+    instruction: `Indique la secuencia correcta de comandos para:
+- Crear el usuario "alumno".
+- Crear el grupo "admin".
+- Agregar el usuario "alumno" al grupo "admin" como grupo secundario.
+
+Opciones:
+a) groupadd admin; useradd -G admin alumno; groupmod alumno admin
+b) useradd alumno; groupadd admin; usermod -g admin alumno
+c) useradd alumno; groupadd admin; usermod -aG admin alumno`,
+    hint: '-aG agrega a un grupo secundario conservando los grupos existentes; -g cambia el grupo principal.',
+    solutionHint: `Respuesta correcta: c) useradd alumno; groupadd admin; usermod -aG admin alumno.
+
+useradd alumno crea el usuario. groupadd admin crea el grupo. usermod -aG admin alumno agrega a "alumno" como miembro secundario del grupo "admin". La opción -g (b) modificaría el grupo PRIMARIO del usuario, no lo agrega como secundario. La opción (a) es incorrecta: -G en useradd requiere que el grupo ya exista (admin aún no fue creado) y groupmod modifica un grupo, no un usuario.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /useradd\s+alumno.*groupadd\s+admin.*usermod\s+-aG|usermod\s+-aG\s+admin\s+alumno/i,
+    commands: ['useradd', 'groupadd', 'usermod'],
+    difficulty: 'fácil',
+  },
+
+  {
+    id: 'final-15', category: 'FINALES - Examen Final',
+    instruction: 'Escriba la línea de comando para otorgar permisos de lectura, escritura y ejecución al propietario, y solo lectura para el grupo y otros, sobre el archivo /tmp/script.sh.',
+    hint: 'Convertí rwx (7), r-- (4), r-- (4) a notación octal: 744.',
+    solutionHint: `chmod 744 /tmp/script.sh
+
+7 = rwx: lectura, escritura y ejecución para el propietario.
+4 = r--: solo lectura para el grupo.
+4 = r--: solo lectura para otros.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /chmod\s+744\s+\/tmp\/script\.sh/i,
+    commands: ['chmod'],
+    difficulty: 'fácil',
+  },
+
+  {
+    id: 'final-16', category: 'FINALES - Examen Final',
+    instruction: 'Escriba la línea de cron que realice una copia del directorio /Descargas/tmp el día 1 de cada mes a las 22:30 horas.',
+    hint: 'Orden de campos de cron: minuto, hora, día del mes, mes, día de la semana, comando.',
+    solutionHint: `30 22 1 cp -r /Descargas/tmp
+
+minuto = 30, hora = 22, día del mes = 1 (mes y día de la semana en *). La tarea se ejecuta el día 1 de cada mes a las 22:30 hs y copia el directorio /Descargas/tmp.`,
+    initialState: goHome, validationType: 'text',
+    expectedCommandRegex: /30\s+22\s+1\s+.*cp\s+-r.*Descargas/i,
+    commands: ['crontab', 'cp'],
+    difficulty: 'medio',
+  },
+
+
 ];
 
