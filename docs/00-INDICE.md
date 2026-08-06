@@ -16,7 +16,7 @@
 | Slices de Zustand | 5 |
 | Learning paths | 15 |
 | Líneas de código `src/` | ~16.240 |
-| Commits en `main` | 63 |
+| Commits en `main` | 68 |
 
 ---
 
@@ -31,14 +31,14 @@
 | `04-VFS.md` | Sistema de archivos virtual | Modelo de nodo, árbol inicial, operaciones, simulatedOutput | Desarrolladores | ✅ |
 | `05-COMANDOS.md` | Catálogo de comandos | Los 74 módulos / 75 comandos con firma, flags y ejemplos | Desarrolladores y estudiantes | ✅ |
 | `06-EJERCICIOS.md` | Catálogo de ejercicios | 339 ejercicios por archivo/categoría, tipos de validación | Estudiantes | ✅ |
-| `07-GENERADOR-EJERCICIOS.md` | Generador y learning paths | exercise-generator, learning-paths, ModoLibre | Desarrolladores | ⏳ |
-| `08-UI.md` | Interfaz de usuario | Componentes, layout 3 paneles, sistema de temas | Desarrolladores | ⏳ |
-| `09-ESTADO.md` | Estado global | Zustand, 5 slices, persistencia | Desarrolladores | ⏳ |
+| `07-GENERADOR-EJERCICIOS.md` | Generador y learning paths | exercise-generator, learning-paths, ModoLibre | Desarrolladores | ✅ |
+| `08-UI.md` | Interfaz de usuario | Componentes, layout 3 paneles, sistema de temas | Desarrolladores | ✅ |
+| `09-ESTADO.md` | Estado global | Zustand, 5 slices, persistencia | Desarrolladores | ✅ |
 | `10-TESTING.md` | Estrategia de tests | Cómo correrlos, mapa de archivos de test, fases | Desarrolladores | ✅ |
-| `11-DEPLOY.md` | Deploy | Vercel, build, pipeline | Desarrolladores | ⏳ |
-| `12-HERRAMIENTAS.md` | Herramientas | graphify, scripts Python, quirks Windows/PowerShell | Desarrolladores | ⏳ |
+| `11-DEPLOY.md` | Deploy | Vercel, build, pipeline | Desarrolladores | ✅ |
+| `12-HERRAMIENTAS.md` | Herramientas | graphify, scripts Python, quirks Windows/PowerShell | Desarrolladores | ✅ |
 | `13-GUIA-DESARROLLADOR.md` | Guía del desarrollador | Recetas para agregar comando/ejercicio/test/VFS | Desarrolladores | ✅ |
-| `14-CHANGELOG.md` | Historial de cambios | Historia del proyecto desde git log | Todos | ⏳ |
+| `14-CHANGELOG.md` | Historial de cambios | Historia del proyecto desde git log | Todos | ✅ |
 
 Leyenda de estado: ✅ listo · ⏳ pendiente
 
@@ -46,9 +46,9 @@ Leyenda de estado: ✅ listo · ⏳ pendiente
 
 ## Lectura recomendada por rol
 
-- **Desarrollador nuevo**: `00` → `01` → `02` → `03` → `04` → `13` → `10` → `11`
+- **Desarrollador nuevo**: `00` → `01` → `02` → `03` → `04` → `09` → `08` → `13` → `10` → `11`
 - **Estudiante / usuario**: `00` → `06` → `05` → `14`
-- **Autor / mantenedor**: `12` → `09` → `14`
+- **Autor / mantenedor**: `12` → `09` → `07` → `14`
 
 ---
 
