@@ -26,9 +26,9 @@
 |---|---|---|---|---|
 | `00-INDICE.md` | Índice | Este documento | Todos | ✅ |
 | `01-ARQUITECTURA.md` | Arquitectura | Visión general, flujo de datos, módulos de `src/` | Desarrolladores | ✅ |
-| `02-MOTOR-TERMINAL.md` | Motor de terminal | Parser, executor, capture mode, tab completion, historial | Desarrolladores | ⏳ |
-| `03-VALIDACION.md` | Validación de ejercicios | 4 modos, hint system, validación semántica y AI | Desarrolladores | ⏳ |
-| `04-VFS.md` | Sistema de archivos virtual | Modelo de nodo, árbol inicial, operaciones, simulatedOutput | Desarrolladores | ⏳ |
+| `02-MOTOR-TERMINAL.md` | Motor de terminal | Parser, executor, capture mode, tab completion, historial | Desarrolladores | ✅ |
+| `03-VALIDACION.md` | Validación de ejercicios | 4 modos, hint system, validación semántica y AI | Desarrolladores | ✅ |
+| `04-VFS.md` | Sistema de archivos virtual | Modelo de nodo, árbol inicial, operaciones, simulatedOutput | Desarrolladores | ✅ |
 | `05-COMANDOS.md` | Catálogo de comandos | Los 74 comandos con firma, flags y ejemplos | Desarrolladores y estudiantes | ⏳ |
 | `06-EJERCICIOS.md` | Catálogo de ejercicios | 330 ejercicios por archivo/categoría, tipos de validación | Estudiantes | ⏳ |
 | `07-GENERADOR-EJERCICIOS.md` | Generador y learning paths | exercise-generator, learning-paths, ModoLibre | Desarrolladores | ⏳ |
