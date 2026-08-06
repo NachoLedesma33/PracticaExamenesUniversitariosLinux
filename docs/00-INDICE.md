@@ -34,10 +34,10 @@
 | `07-GENERADOR-EJERCICIOS.md` | Generador y learning paths | exercise-generator, learning-paths, ModoLibre | Desarrolladores | ⏳ |
 | `08-UI.md` | Interfaz de usuario | Componentes, layout 3 paneles, sistema de temas | Desarrolladores | ⏳ |
 | `09-ESTADO.md` | Estado global | Zustand, 5 slices, persistencia | Desarrolladores | ⏳ |
-| `10-TESTING.md` | Estrategia de tests | Cómo correrlos, mapa de archivos de test, fases | Desarrolladores | ⏳ |
+| `10-TESTING.md` | Estrategia de tests | Cómo correrlos, mapa de archivos de test, fases | Desarrolladores | ✅ |
 | `11-DEPLOY.md` | Deploy | Vercel, build, pipeline | Desarrolladores | ⏳ |
 | `12-HERRAMIENTAS.md` | Herramientas | graphify, scripts Python, quirks Windows/PowerShell | Desarrolladores | ⏳ |
-| `13-GUIA-DESARROLLADOR.md` | Guía del desarrollador | Recetas para agregar comando/ejercicio/test/VFS | Desarrolladores | ⏳ |
+| `13-GUIA-DESARROLLADOR.md` | Guía del desarrollador | Recetas para agregar comando/ejercicio/test/VFS | Desarrolladores | ✅ |
 | `14-CHANGELOG.md` | Historial de cambios | Historia del proyecto desde git log | Todos | ⏳ |
 
 Leyenda de estado: ✅ listo · ⏳ pendiente
