@@ -42,6 +42,12 @@
 
 Leyenda de estado: ✅ listo · ⏳ pendiente
 
+### Material de consulta (anexo)
+
+| Doc | Título | Contenido | Público |
+|---|---|---|---|
+| `anexo-vi.md` | Editor vi | Referencia del editor `vi` (modos, comandos, ejemplos) para estudiantes | Estudiantes |
+
 ---
 
 ## Lectura recomendada por rol
