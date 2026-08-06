@@ -18,13 +18,13 @@ Simulador de terminal Linux 100% local para practicar comandos, con ejercicios i
 ### Motor de Terminal
 - **Parser** de comandos con soporte de pipes (`|`), redirección (`>`, `>>`), flags cortos y largos, comillas
 - **Executor** de pipelines: encadena comandos, propaga exit codes, aplica redirecciones al VFS
-- **72+ comandos simulados** con la misma firma `execute(args, flags, stdin?)`
+- **74 comandos simulados** con la misma firma `execute(args, flags, stdin?)`
 - **Tab completion** de rutas VFS (hasta 12 sugerencias)
 - **Modo captura** para `cat > archivo` (Ctrl+D para finalizar)
 - **Historial** navegable con flechas arriba/abajo
 
 ### Sistema de Archivos Virtual (VFS)
-- Árbol JSON mutable en memoria con ~50+ nodos
+- Árbol JSON mutable en memoria con 28 directorios y ~111 archivos
 - Estructura realista: `/home`, `/etc`, `/bin`, `/dev`, `/var`, `/tmp`, `/mnt`, `/opt`, `/sys`
 - Archivos con permisos, dueño, grupo, i-nodo, contenido
 - Operaciones: crear, leer, escribir, eliminar, copiar, mover
@@ -59,15 +59,15 @@ Simulador de terminal Linux 100% local para practicar comandos, con ejercicios i
 | **Búsqueda** | `find` (`-name`, `-type`, `-perm`, `-exec`) |
 | **Enlaces** | `ln` (duros y simbólicos `-s`) |
 
-### Ejercicios Incorporados (~329 total)
+### Ejercicios Incorporados (330 total)
 
 | Fuente | Cantidad | Temas |
 |---|---|---|
-| **Base** | ~78 | Navegación, listado, archivos, visualización, búsqueda, redirección, permisos, comodines, avanzados |
-| **PARCIAL 1** | ~92 | FileSystem, filtros/pipes, enlaces, permisos (SUID/SGID/sticky), compresión (tar/gzip), teoría |
-| **PARCIAL 2** | ~107 | Procesos (PID/prioridades/foreground-background), control de trabajos, planificación (crontab), monitoreo (vmstat/free), shell scripting |
-| **PARCIAL 3** | ~53 | Sistemas de archivos (df/du/mount/fstab), usuarios/grupos, variables de entorno, swap, shell scripting avanzado |
-| **ANEXO vi** | ~12 | Modos, movimiento, inserción, borrado, búsqueda, guardado/salida |
+| **Base** (`challenges.ts`) | 54 | Navegación, listado, archivos, visualización, búsqueda, redirección, permisos, comodines, avanzados |
+| **PARCIAL 1** (`parcial1.ts`) | 93 | FileSystem, filtros/pipes, enlaces, permisos (SUID/SGID/sticky), compresión (tar/gzip), teoría |
+| **PARCIAL 2** (`parcial2.ts`) | 100 | Procesos (PID/prioridades/foreground-background), control de trabajos, planificación (crontab), monitoreo (vmstat/free), shell scripting |
+| **PARCIAL 3** (`parcial3.ts`) | 67 | Sistemas de archivos (df/du/mount/fstab), usuarios/grupos, variables de entorno, swap, shell scripting avanzado, editor vi |
+| **Finales** (`final.ts`) | 16 | Scripts con menú (backup, monitoreo, usuarios, logs, permisos, procesos, cron), teoría y comandos |
 
 Cada ejercicio incluye: instrucción, pista, hint de solución, validación, categoría y dificultad (fácil/medio/difícil).
 
@@ -99,6 +99,10 @@ Cada ejercicio incluye: instrucción, pista, hint de solución, validación, cat
 - **HistorySlice**: Historial de comandos, navegación con flechas
 - **ChallengeSlice**: Ejercicios activos, resultados, progreso, importación
 - **UISlice**: Tema, paneles toggleables, layout, nodo seleccionado
+
+## Documentación
+
+La documentación completa del proyecto vive en [`docs/`](docs/00-INDICE.md) — el índice enlaza arquitectura, motor de terminal, validación, VFS, catálogo de comandos y ejercicios, testing, deploy y la guía del desarrollador.
 
 ## Scripts
 
